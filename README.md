@@ -190,6 +190,12 @@ Para CPF, CNPJ, telefone e códigos, prefira **`escreverTexto(...)`**.
 | `realcarSeIgual("B2:B20", "Atrasado", CorEnum.VERMELHO_ESCURO)` | pinta se for igual (texto ou número) |
 | `escalaDeCores("B2:B20")` | escala vermelho→amarelo→verde (semáforo) |
 
+### Lista suspensa (dropdown)
+| Comando | O que faz |
+|---|---|
+| `listaSuspensa("C2:C50", "Pendente", "Pago", "Atrasado")` | menu com opções fixas |
+| `listaSuspensaDoIntervalo("A2:A50", "F2:F5")` | menu com opções vindas de outra coluna (sem limite de 255 caracteres) |
+
 ### Aparência (estilos)
 | Comando | O que faz |
 |---|---|
@@ -255,6 +261,11 @@ No caminho que você passar em `salvar(...)`. Use uma pasta que exista.
 
 **Dá pra abrir uma planilha existente e editar?**
 Sim! Use `Planilha.abrir("caminho.xlsx")` e edite com os mesmos comandos.
+
+**Minha lista suspensa não aceita todas as opções que eu passei.**
+O Excel tem um limite de 255 caracteres somados para listas com opções fixas
+(`listaSuspensa`). Para listas maiores, use `listaSuspensaDoIntervalo`,
+apontando para uma coluna com as opções — não tem esse limite.
 
 **Preciso fechar a planilha?**
 Se usar `try (Planilha planilha = ...)`, é automático. Senão, chame `fechar()`.

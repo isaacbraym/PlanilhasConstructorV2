@@ -11,16 +11,19 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellRangeAddressList;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import com.abnote.planilhas.estilos.EstiloCelula;
 import com.abnote.planilhas.estilos.estilos.CorEnum;
+import com.abnote.planilhas.exceptions.DadosInvalidosException;
 import com.abnote.planilhas.impl.PlanilhaXlsx;
 import com.abnote.planilhas.interfaces.IPlanilha;
 import com.abnote.planilhas.utils.CopiadorDeCelulas;
 import com.abnote.planilhas.utils.FiltroDeLinhas;
 import com.abnote.planilhas.utils.FormatacaoCondicionalHelper;
 import com.abnote.planilhas.utils.FormatosDeCelula;
+import com.abnote.planilhas.utils.ListaSuspensaHelper;
 import com.abnote.planilhas.utils.OrdenadorDeLinhas;
 import com.abnote.planilhas.utils.PosicaoConverter;
 
@@ -596,6 +599,73 @@ public final class Planilha implements AutoCloseable {
 		return this;
 	}
 
+	// ==================== LISTA SUSPENSA (DROPDOWN) ====================
+
+	/**
+	 * Cria uma lista suspensa (menu de opções) em um intervalo de células, com
+	 * opções fixas. Útil para formulários (ex.: "Status": Pendente/Pago/Atrasado).
+	 *
+	 * @param intervalo Célula(s) que receberão a lista suspensa (ex.: "C2:C50").
+	 * @param opcoes    As opções que aparecerão no menu (ex.: "Sim", "Não").
+	 * @return Esta planilha, para encadear comandos.
+	 * @throws DadosInvalidosException se não houver opções, ou se a soma dos
+	 *                                  textos ultrapassar 255 caracteres (limite
+	 *                                  do Excel para listas com opções fixas —
+	 *                                  nesse caso, use
+	 *                                  {@link #listaSuspensaDoIntervalo}).
+	 */
+	public Planilha listaSuspensa(final String intervalo, final String... opcoes) {
+		validarOpcoesDaLista(opcoes);
+		ListaSuspensaHelper.comOpcoesFixas(xssf(), regiaoDe(intervalo), opcoes);
+		return this;
+	}
+
+	/**
+	 * Cria uma lista suspensa cujas opções vêm de um intervalo de células (ex.:
+	 * uma coluna auxiliar com a lista de opções). Sem limite de 255 caracteres.
+	 *
+	 * @param intervaloDestino  Célula(s) que receberão a lista suspensa.
+	 * @param intervaloOpcoes   Intervalo com as opções (ex.: "F2:F5").
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha listaSuspensaDoIntervalo(final String intervaloDestino, final String intervaloOpcoes) {
+		ListaSuspensaHelper.doIntervalo(xssf(), regiaoDe(intervaloDestino), paraReferenciaAbsoluta(intervaloOpcoes));
+		return this;
+	}
+
+	private void validarOpcoesDaLista(final String[] opcoes) {
+		if (opcoes == null || opcoes.length == 0) {
+			throw new DadosInvalidosException("A lista suspensa precisa de pelo menos uma opção");
+		}
+		final int tamanhoTotal = String.join(",", opcoes).length();
+		if (tamanhoTotal > 255) {
+			throw new DadosInvalidosException("Lista de opções muito longa para o Excel (limite de 255 "
+					+ "caracteres somados); use listaSuspensaDoIntervalo(...) referenciando uma coluna com as opções",
+					tamanhoTotal);
+		}
+	}
+
+	private String paraReferenciaAbsoluta(final String intervalo) {
+		if (intervalo.contains("!")) {
+			return intervalo; // Já qualificado com aba — mantém como está.
+		}
+		final String[] partes = intervalo.split(":", 2);
+		final StringBuilder referencia = new StringBuilder();
+		for (int i = 0; i < partes.length; i++) {
+			if (i > 0) {
+				referencia.append(':');
+			}
+			referencia.append(absoluta(partes[i].trim()));
+		}
+		return referencia.toString();
+	}
+
+	private String absoluta(final String celula) {
+		final String colunaParte = celula.replaceAll("\\d", "");
+		final String linhaParte = celula.replaceAll("\\D", "");
+		return "$" + colunaParte + "$" + linhaParte;
+	}
+
 	// ==================== COLUNAS ====================
 
 	/**
@@ -1128,6 +1198,13 @@ public final class Planilha implements AutoCloseable {
 		final int[] inicio = PosicaoConverter.converterPosicao(partes[0]);
 		final int[] fim = PosicaoConverter.converterPosicao(partes[1]);
 		return new CellRangeAddress[] { new CellRangeAddress(inicio[1], fim[1], inicio[0], fim[0]) };
+	}
+
+	private CellRangeAddressList regiaoDe(final String intervalo) {
+		final String[] partes = separarIntervalo(intervalo);
+		final int[] inicio = PosicaoConverter.converterPosicao(partes[0]);
+		final int[] fim = PosicaoConverter.converterPosicao(partes[1]);
+		return new CellRangeAddressList(inicio[1], fim[1], inicio[0], fim[0]);
 	}
 
 	private void copiarLinhasEncontradas(final String coluna, final String valor, final String abaDestino) {

@@ -80,6 +80,20 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
 - Todas essas regras assumem planilha `.xlsx` (XSSF) — coerente com o resto da
   biblioteca, que só cria/edita workbooks XSSF.
 
+## Lista suspensa (dropdown)
+
+- **Quando** `listaSuspensa(intervalo, "A", "B", "C")`, **Então** uma validação
+  de dados do tipo lista é criada sobre o intervalo, com exatamente essas
+  opções, seta do menu visível (`getSuppressDropDownArrow()` verdadeiro) e uma
+  caixa de erro amigável para valores fora da lista.
+- Sem opções → `DadosInvalidosException`. Soma dos textos das opções > 255
+  caracteres → `DadosInvalidosException` (limite real do Excel para listas com
+  valores fixos), sugerindo `listaSuspensaDoIntervalo`.
+- **Quando** `listaSuspensaDoIntervalo(intervaloDestino, "F2:F5")`, **Então** a
+  restrição referencia a fórmula `$F$2:$F$5` (convertida para referência
+  absoluta automaticamente); se o intervalo já contiver `!` (ex.:
+  `"Opcoes!$A$1:$A$3"`), é usado exatamente como informado, sem conversão.
+
 ## Colunas e linhas
 
 - `moverColuna(de, para)`, `removerColuna(c)`, `limparColuna(c)`,

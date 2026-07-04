@@ -52,7 +52,10 @@ trabalho desta sessão (lotes E-I), **marque aqui o que já foi feito**:
   `Entre`/`Igual` + `escalaDeCores` (semáforo), via novo
   `utils/FormatacaoCondicionalHelper`. Testes validam a estrutura POI real
   (operador, fórmula, cor, thresholds), não só "não lança exceção".
-- [ ] **Lote F** — Listas suspensas / dropdown (validação de dados).
+- [x] **Lote F** — Listas suspensas: `listaSuspensa` (opções fixas, valida
+  limite real do Excel de 255 caracteres somados) e `listaSuspensaDoIntervalo`
+  (opções vindas de um intervalo, sem esse limite), via novo
+  `utils/ListaSuspensaHelper`.
 - [ ] **Lote G** — Gráficos (barras/pizza/linha) via `XDDFChart`.
 - [ ] **Lote H** — Inserir imagem/logo na planilha.
 - [ ] **Lote I** — Cobertura de testes diretos para `EstiloCelula` e helpers de
@@ -152,7 +155,8 @@ interfaces/            → contratos públicos (IPlanilha, ISelecao, IConversao,
 utils/                 → PosicaoConverter, PositionManager, InsersorDeDados,
                          ManipuladorPlanilha(Helper), LoggerUtil,
                          FiltroDeLinhas, OrdenadorDeLinhas, CopiadorDeCelulas,
-                         FormatosDeCelula, ...
+                         FormatosDeCelula, FormatacaoCondicionalHelper,
+                         ListaSuspensaHelper, ...
 ```
 
 Detalhes em [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
@@ -225,3 +229,5 @@ Já entregue:
   `IPlanilhaBasica.abrirPlanilha` (via `WorkbookFactory`).
 - Formatação condicional: `realcarSeMaiorQue`/`MenorQue`/`Entre`/`Igual` +
   `escalaDeCores`, via `utils/FormatacaoCondicionalHelper`.
+- Listas suspensas: `listaSuspensa`/`listaSuspensaDoIntervalo`, via
+  `utils/ListaSuspensaHelper`.

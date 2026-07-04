@@ -39,6 +39,10 @@ public class Gerar {
 - Ordenar: `ordenarPorCrescente`, `ordenarPorDecrescente`, `ordenarPor`.
 - Busca/filtro: `buscarLinhas`, `contarLinhasOnde`, `copiarLinhasParaAba`,
   `moverLinhasParaAba`, `removerLinhasOnde`.
+- Formatação condicional: `realcarSeMaiorQue`, `realcarSeMenorQue`,
+  `realcarSeEntre`, `realcarSeIgual`, `escalaDeCores`.
+- Lista suspensa: `listaSuspensa(intervalo, opcoes...)`,
+  `listaSuspensaDoIntervalo(intervaloDestino, intervaloOpcoes)`.
 - Formatos: `formatarComoMoeda`, `formatarComoContabil`, `formatarComoNumero`,
   `formatarComoTexto`, `formatarComoData`, `formatarComoPorcentagem`.
 - Colunas/linhas: `moverColuna`, `removerColuna`, `limparColuna`,
