@@ -153,7 +153,13 @@ sugestões e mandar "pode ir pra cima") — em andamento
   `ManipuladorPlanilhaHelper.CellData` (45%), `LogsDeModificadores` (7%, área
   de log/auditoria, baixo risco). Candidatos para um próximo lote de
   cobertura se o Codex quiser continuar essa frente.
-- [ ] "Colar como valores" (remover fórmulas antes de compartilhar).
+- [x] **"Colar como valores"**: `colarComoValores(intervalo)` +
+  `colarComoValores()` (toda a área usada), via novo
+  `utils/ColarComoValoresHelper`. **Bug real encontrado e corrigido pelos
+  testes**: `Cell.setCellValue(...)` sozinho não remove a fórmula de uma
+  célula `FORMULA` (só atualiza o valor em cache, tipo continua `FORMULA`) —
+  é preciso `celula.removeFormula()` antes. Ver regra 7 na seção 4. Total:
+  161 testes verdes.
 - [ ] Duplicar planilha inteira para outro arquivo.
 - [ ] Cookbook de receitas prontas (exemplos por caso de uso real).
 - [ ] Agrupamento de linhas (outline/subtotal por grupo).
@@ -234,7 +240,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **156 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **161 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -260,7 +266,7 @@ utils/                 → PosicaoConverter, PositionManager, InsersorDeDados,
                          FormatosDeCelula, FormatacaoCondicionalHelper,
                          ListaSuspensaHelper, ProtecaoHelper,
                          ValidacaoDeEntradaHelper, TotalizadorDeTabela,
-                         ComentarioHelper, ...
+                         ComentarioHelper, ColarComoValoresHelper, ...
 ```
 
 Detalhes em [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
@@ -292,6 +298,10 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
    `realcarSeX`/`listaSuspensa`/`validarXEntre`/`graficoDeX`/`inserirImagem`/
    `comentario` fazem cast interno `(XSSFSheet)` que lançaria
    `ClassCastException` cru sem ela.
+7. **`Cell.setCellValue()` não remove fórmula sozinho**: para converter uma
+   célula `FORMULA` num valor fixo, é preciso chamar `celula.removeFormula()`
+   **antes** de `setCellValue(...)` — sem isso, o tipo da célula continua
+   `FORMULA` (só o valor em cache muda). Ver `ColarComoValoresHelper`.
 
 ## 5. Convenções de código (obrigatórias)
 

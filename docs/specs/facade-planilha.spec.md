@@ -93,6 +93,19 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
 - Tabela sem nenhuma linha de dados → nenhuma linha de totais é criada
   (no-op).
 
+## colarComoValores (congelar fórmulas em valores)
+
+- **Dado** uma célula com fórmula, **Quando** `colarComoValores(intervalo)`,
+  **Então** a célula passa a ter o **valor calculado** (número, texto ou
+  booleano, conforme o resultado) e deixa de ser do tipo `FORMULA`.
+- Células sem fórmula dentro do intervalo não são alteradas.
+- `colarComoValores()` sem argumento aplica a toda a área usada da aba atual;
+  em aba vazia é no-op.
+- Internamente é preciso chamar `Cell.removeFormula()` **antes** de
+  `setCellValue(...)` — sozinho, `setCellValue` numa célula `FORMULA` só
+  atualiza o valor em cache, sem trocar o tipo da célula (comportamento do
+  POI verificado empiricamente, não documentado).
+
 ## Formatação condicional
 
 - **Quando** `realcarSeMaiorQue(intervalo, valor, cor)`, **Então** é criada uma

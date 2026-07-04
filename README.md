@@ -148,6 +148,8 @@ Para CPF, CNPJ, telefone e códigos, prefira **`escreverTexto(...)`**.
 | `procurarValorNaAba("B2", "A2", "Produtos", "A2:C100", 3)` | PROCV buscando em outra aba |
 | `definirNome("Precos", "B2:B100")` | dá nome a um intervalo, para usar em `formula(...)`/`procurarValor(...)` |
 | `adicionarTotais("A1")` | soma sozinho cada coluna numérica da tabela, logo abaixo do último dado |
+| `colarComoValores("A1:D50")` | calcula as fórmulas do intervalo e as substitui pelo valor (útil antes de compartilhar o arquivo) |
+| `colarComoValores()` | igual, mas em toda a área usada da aba |
 
 ### Formatar valores
 | Comando | O que faz |

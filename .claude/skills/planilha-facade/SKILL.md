@@ -50,6 +50,8 @@ public class Gerar {
 - Totais automáticos: `adicionarTotais(celulaCabecalho)` — detecta a tabela e
   soma sozinho cada coluna numérica, sem precisar chamar `somar()` por coluna.
 - Comentários: `comentario(celula, texto)` — nota/balão do Excel.
+- Colar como valores: `colarComoValores(intervalo)` ou `colarComoValores()`
+  (toda a área usada) — remove fórmulas, congela os valores calculados.
 - Gráficos: `graficoDeBarras`/`graficoDePizza`/`graficoDeLinha(titulo,
   intervaloCategorias, intervaloValores, celulaSuperiorEsquerda)`.
 - Imagens: `inserirImagem(celula, caminho)` ou `inserirImagem(celula, caminho,

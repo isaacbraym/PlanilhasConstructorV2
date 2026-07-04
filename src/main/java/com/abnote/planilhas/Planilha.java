@@ -23,6 +23,7 @@ import com.abnote.planilhas.graficos.GraficoHelper;
 import com.abnote.planilhas.imagens.ImagemHelper;
 import com.abnote.planilhas.impl.PlanilhaXlsx;
 import com.abnote.planilhas.interfaces.IPlanilha;
+import com.abnote.planilhas.utils.ColarComoValoresHelper;
 import com.abnote.planilhas.utils.ComentarioHelper;
 import com.abnote.planilhas.utils.CopiadorDeCelulas;
 import com.abnote.planilhas.utils.FiltroDeLinhas;
@@ -478,6 +479,35 @@ public final class Planilha implements AutoCloseable {
 	public Planilha adicionarTotais(final String celulaCabecalho) {
 		final int[] indices = PosicaoConverter.converterPosicao(celulaCabecalho);
 		TotalizadorDeTabela.adicionarTotais(sheetAtual(), indices[1], indices[0]);
+		return this;
+	}
+
+	/**
+	 * Calcula todas as fórmulas de um intervalo e substitui cada uma pelo seu
+	 * valor ("colar como valores" do Excel). Útil antes de compartilhar o
+	 * arquivo, para os números não dependerem mais de fórmulas.
+	 *
+	 * @param intervalo Intervalo a converter (ex.: "A1:D50").
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha colarComoValores(final String intervalo) {
+		ColarComoValoresHelper.aplicar(sheetAtual(), regioesDe(intervalo)[0]);
+		return this;
+	}
+
+	/**
+	 * Igual a {@link #colarComoValores(String)}, mas aplica a toda a área usada
+	 * da aba atual.
+	 *
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha colarComoValores() {
+		final Sheet sheet = sheetAtual();
+		if (sheet.getLastRowNum() < 0) {
+			return this; // Aba vazia: nada a converter.
+		}
+		final CellRangeAddress todaAArea = new CellRangeAddress(0, sheet.getLastRowNum(), 0, ultimaColunaUsada(sheet));
+		ColarComoValoresHelper.aplicar(sheet, todaAArea);
 		return this;
 	}
 
