@@ -44,6 +44,10 @@ certo), documentar tudo neste arquivo para o Codex retomar sem fricção, e mant
 o foco em "chamadas simples e intuitivas" para quem não programa. Ordem de
 trabalho desta sessão (lotes E-I), **marque aqui o que já foi feito**:
 
+- [x] **Refatoração de coesão** — `Planilha.java` (1154→1093 linhas) teve a
+  cópia de célula e o cache de estilos de formato extraídos para
+  `utils/CopiadorDeCelulas` e `utils/FormatosDeCelula` (cada um com testes
+  diretos). Sem mudança de comportamento (99 testes, mesma cobertura +7 novos).
 - [ ] **Lote E** — Formatação condicional (realçar células: maior/menor/igual/
   entre um valor + escala de cores tipo semáforo).
 - [ ] **Lote F** — Listas suspensas / dropdown (validação de dados).
@@ -144,7 +148,9 @@ impl/                  → PlanilhaBase, PlanilhaXlsx, DataManipulator, StyleMan
                          ConversaoManager, SelecaoManager
 interfaces/            → contratos públicos (IPlanilha, ISelecao, IConversao, ...)
 utils/                 → PosicaoConverter, PositionManager, InsersorDeDados,
-                         ManipuladorPlanilha(Helper), LoggerUtil, ...
+                         ManipuladorPlanilha(Helper), LoggerUtil,
+                         FiltroDeLinhas, OrdenadorDeLinhas, CopiadorDeCelulas,
+                         FormatosDeCelula, ...
 ```
 
 Detalhes em [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).

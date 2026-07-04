@@ -7,7 +7,6 @@ import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -16,7 +15,9 @@ import com.abnote.planilhas.estilos.EstiloCelula;
 import com.abnote.planilhas.estilos.estilos.CorEnum;
 import com.abnote.planilhas.impl.PlanilhaXlsx;
 import com.abnote.planilhas.interfaces.IPlanilha;
+import com.abnote.planilhas.utils.CopiadorDeCelulas;
 import com.abnote.planilhas.utils.FiltroDeLinhas;
+import com.abnote.planilhas.utils.FormatosDeCelula;
 import com.abnote.planilhas.utils.OrdenadorDeLinhas;
 import com.abnote.planilhas.utils.PosicaoConverter;
 
@@ -51,14 +52,13 @@ import com.abnote.planilhas.utils.PosicaoConverter;
 public final class Planilha implements AutoCloseable {
 
 	private final IPlanilha planilha;
+	private final FormatosDeCelula formatos;
 	private String abaAtual;
-	private CellStyle estiloDataCache;
-	private CellStyle estiloDataHoraCache;
-	private CellStyle estiloPorcentagemCache;
 
 	private Planilha(final IPlanilha planilhaInterna, final String abaAtiva) {
 		this.planilha = planilhaInterna;
 		this.abaAtual = abaAtiva;
+		this.formatos = new FormatosDeCelula(planilhaInterna.obterWorkbook());
 	}
 
 	/**
@@ -424,7 +424,7 @@ public final class Planilha implements AutoCloseable {
 		final int[] indices = PosicaoConverter.converterPosicao(celula);
 		final Cell alvo = obterOuCriarCelula(indices[1], indices[0]);
 		alvo.setCellValue(data);
-		alvo.setCellStyle(estiloData());
+		alvo.setCellStyle(formatos.data());
 		return this;
 	}
 
@@ -439,7 +439,7 @@ public final class Planilha implements AutoCloseable {
 		final int[] indices = PosicaoConverter.converterPosicao(celula);
 		final Cell alvo = obterOuCriarCelula(indices[1], indices[0]);
 		alvo.setCellValue(dataHora);
-		alvo.setCellStyle(estiloDataHora());
+		alvo.setCellStyle(formatos.dataHora());
 		return this;
 	}
 
@@ -451,51 +451,13 @@ public final class Planilha implements AutoCloseable {
 	 * @return Esta planilha, para encadear comandos.
 	 */
 	public Planilha formatarComoData(final String celulaInicial) {
-		aplicarEstiloNaColuna(celulaInicial, estiloData());
+		aplicarEstiloNaColuna(celulaInicial, formatos.data());
 		return this;
-	}
-
-	private CellStyle estiloData() {
-		if (estiloDataCache == null) {
-			estiloDataCache = criarEstiloDeFormato("dd/MM/yyyy");
-		}
-		return estiloDataCache;
-	}
-
-	private CellStyle estiloDataHora() {
-		if (estiloDataHoraCache == null) {
-			estiloDataHoraCache = criarEstiloDeFormato("dd/MM/yyyy HH:mm");
-		}
-		return estiloDataHoraCache;
-	}
-
-	private CellStyle estiloPorcentagem() {
-		if (estiloPorcentagemCache == null) {
-			estiloPorcentagemCache = criarEstiloDeFormato("0.00%");
-		}
-		return estiloPorcentagemCache;
-	}
-
-	private CellStyle criarEstiloDeFormato(final String formato) {
-		final Workbook workbook = planilha.obterWorkbook();
-		final CellStyle estilo = workbook.createCellStyle();
-		estilo.setDataFormat(workbook.createDataFormat().getFormat(formato));
-		return estilo;
 	}
 
 	private void aplicarEstiloNaColuna(final String celulaInicial, final CellStyle estilo) {
 		final int[] indices = PosicaoConverter.converterPosicao(celulaInicial);
-		final Sheet sheet = sheetAtual();
-		for (int indiceLinha = indices[1]; indiceLinha <= sheet.getLastRowNum(); indiceLinha++) {
-			final Row linha = sheet.getRow(indiceLinha);
-			if (linha == null) {
-				continue;
-			}
-			final Cell celula = linha.getCell(indices[0]);
-			if (celula != null) {
-				celula.setCellStyle(estilo);
-			}
-		}
+		FormatosDeCelula.aplicarNaColuna(sheetAtual(), indices[0], indices[1], estilo);
 	}
 
 	// ==================== FORMATOS ====================
@@ -551,7 +513,7 @@ public final class Planilha implements AutoCloseable {
 	 * @return Esta planilha, para encadear comandos.
 	 */
 	public Planilha formatarComoPorcentagem(final String celulaInicial) {
-		aplicarEstiloNaColuna(celulaInicial, estiloPorcentagem());
+		aplicarEstiloNaColuna(celulaInicial, formatos.porcentagem());
 		return this;
 	}
 
@@ -623,7 +585,7 @@ public final class Planilha implements AutoCloseable {
 			if (celulaOrigem == null) {
 				continue;
 			}
-			copiarCelula(celulaOrigem, obterOuCriarCelula(indiceLinha, colunaDestino));
+			CopiadorDeCelulas.copiar(celulaOrigem, obterOuCriarCelula(indiceLinha, colunaDestino));
 		}
 		return this;
 	}
@@ -648,7 +610,7 @@ public final class Planilha implements AutoCloseable {
 		for (final Cell celulaOrigem : linhaOrigem) {
 			final Cell celulaDestino = linhaDestino.getCell(celulaOrigem.getColumnIndex(),
 					Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
-			copiarCelula(celulaOrigem, celulaDestino);
+			CopiadorDeCelulas.copiar(celulaOrigem, celulaDestino);
 		}
 		return this;
 	}
@@ -1088,7 +1050,7 @@ public final class Planilha implements AutoCloseable {
 			final int proximaLinha = destino.getPhysicalNumberOfRows() == 0 ? 0 : destino.getLastRowNum() + 1;
 			final Row linhaDestino = destino.createRow(proximaLinha);
 			for (final Cell celulaOrigem : linhaOrigem) {
-				copiarCelula(celulaOrigem, linhaDestino.createCell(celulaOrigem.getColumnIndex()));
+				CopiadorDeCelulas.copiar(celulaOrigem, linhaDestino.createCell(celulaOrigem.getColumnIndex()));
 			}
 		}
 	}
@@ -1127,28 +1089,5 @@ public final class Planilha implements AutoCloseable {
 			}
 		}
 		return ultimaColuna;
-	}
-
-	private void copiarCelula(final Cell origem, final Cell destino) {
-		destino.setCellStyle(origem.getCellStyle());
-		switch (origem.getCellType()) {
-		case STRING:
-			destino.setCellValue(origem.getStringCellValue());
-			break;
-		case NUMERIC:
-			destino.setCellValue(origem.getNumericCellValue());
-			break;
-		case BOOLEAN:
-			destino.setCellValue(origem.getBooleanCellValue());
-			break;
-		case FORMULA:
-			destino.setCellFormula(origem.getCellFormula());
-			break;
-		case BLANK:
-			destino.setBlank();
-			break;
-		default:
-			break;
-		}
 	}
 }
