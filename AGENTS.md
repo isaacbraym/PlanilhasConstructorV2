@@ -160,7 +160,16 @@ sugestões e mandar "pode ir pra cima") — em andamento
   célula `FORMULA` (só atualiza o valor em cache, tipo continua `FORMULA`) —
   é preciso `celula.removeFormula()` antes. Ver regra 7 na seção 4. Total:
   161 testes verdes.
-- [ ] Duplicar planilha inteira para outro arquivo.
+- [x] **Duplicar planilha inteira para outro arquivo**:
+  `Planilha.duplicarArquivo(origem, destino)` (método estático, como
+  `nova`/`abrir`) — decidido fazer via **cópia direta do arquivo**
+  (`Files.copy`) em vez de reconstruir o workbook via POI: mais simples, mais
+  robusto (garante byte-a-byte idêntico, sem risco de o POI não
+  round-tripar algum recurso avançado como gráfico/imagem/comentário), e
+  cobre o caso de uso real sem precisar nem abrir a planilha. Nota: isso já
+  era parcialmente possível via `planilha.salvar(a).salvar(b)`
+  (encadeável) — o método novo existe para o caso de já ter um arquivo salvo
+  e querer duplicá-lo sem reabrir. Total: 163 testes verdes.
 - [ ] Cookbook de receitas prontas (exemplos por caso de uso real).
 - [ ] Agrupamento de linhas (outline/subtotal por grupo).
 - [ ] JitPack + CHANGELOG.md.
@@ -240,7 +249,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **161 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **163 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.

@@ -29,7 +29,9 @@ public class Gerar {
 
 ## Comandos disponíveis (use SOMENTE estes na facade)
 
-- Abas: `nova`, `abrir`, `novaAba`, `irParaAba`, `duplicarAba`.
+- Abas: `nova`, `abrir`, `novaAba`, `irParaAba`, `duplicarAba`,
+  `Planilha.duplicarArquivo(origem, destino)` (estático, copia o arquivo
+  inteiro).
 - Escrita: `escrever`, `escreverTexto`, `escreverLinha`, `escreverColuna`,
   `adicionarLinha`, `escreverTabela`, `escreverData`, `escreverDataHora`.
 - Fórmulas: `somar`, `media`, `contar`, `minimo`, `maximo`, `seEntao`,

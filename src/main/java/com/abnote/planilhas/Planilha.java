@@ -1,5 +1,9 @@
 package com.abnote.planilhas;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,6 +22,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import com.abnote.planilhas.estilos.EstiloCelula;
 import com.abnote.planilhas.estilos.estilos.CorEnum;
+import com.abnote.planilhas.exceptions.ArquivoException;
 import com.abnote.planilhas.exceptions.DadosInvalidosException;
 import com.abnote.planilhas.graficos.GraficoHelper;
 import com.abnote.planilhas.imagens.ImagemHelper;
@@ -103,6 +108,33 @@ public final class Planilha implements AutoCloseable {
 		final PlanilhaXlsx interna = new PlanilhaXlsx();
 		interna.abrirPlanilha(caminhoArquivo);
 		return new Planilha(interna, interna.obterWorkbook().getSheetAt(0).getSheetName());
+	}
+
+	/**
+	 * Duplica um arquivo de planilha já salvo para outro caminho — uma cópia
+	 * completa e independente (todas as abas, fórmulas, estilos, gráficos e
+	 * imagens), útil para um backup ou uma versão para editar sem mexer no
+	 * arquivo original.
+	 *
+	 * <p>
+	 * Não precisa abrir a planilha para isso: é uma cópia direta do arquivo.
+	 * Se você já tem uma {@link Planilha} aberta e quer salvá-la em dois lugares,
+	 * também pode simplesmente encadear: {@code planilha.salvar(a).salvar(b)}.
+	 * </p>
+	 *
+	 * @param caminhoOrigem  Caminho do arquivo {@code .xlsx} a copiar.
+	 * @param caminhoDestino Caminho onde a cópia será criada (sobrescreve se já
+	 *                       existir).
+	 * @throws ArquivoException se a origem não existir ou a cópia falhar.
+	 */
+	public static void duplicarArquivo(final String caminhoOrigem, final String caminhoDestino) {
+		try {
+			Files.copy(Paths.get(caminhoOrigem), Paths.get(caminhoDestino), StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+			throw new ArquivoException(
+					"Erro ao duplicar o arquivo. Verifique se a origem existe e o destino é acessível",
+					caminhoOrigem, e);
+		}
 	}
 
 	// ==================== ABAS ====================

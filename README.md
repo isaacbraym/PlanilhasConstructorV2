@@ -119,6 +119,7 @@ Para CPF, CNPJ, telefone e códigos, prefira **`escreverTexto(...)`**.
 | `novaAba("Resumo")` | cria uma aba nova e vai para ela |
 | `irParaAba("Vendas")` | volta para uma aba existente |
 | `duplicarAba("Cópia")` | duplica a aba atual (conteúdo + estilo) |
+| `Planilha.duplicarArquivo("a.xlsx", "b.xlsx")` | copia o arquivo inteiro (todas as abas) para outro caminho |
 
 ### Escrever dados
 | Comando | O que faz |
