@@ -138,11 +138,21 @@ sugestões e mandar "pode ir pra cima") — em andamento
   real gerado via `HSSFWorkbook` em `AbrirFacadeTest`. Total: 156 testes.
 - [x] **CI**: `.github/workflows/ci.yml` roda `mvn clean test` em JDK 8 e 17
   (matrix) a cada push/PR na `main`, com upload dos relatórios de teste como
-  artefato. Badge no topo do README. **Ainda não verificado que passou de
-  verdade no GitHub** — o próximo agente deve conferir com
-  `gh run list --workflow=ci.yml` (ou a aba Actions do repo) após o primeiro
-  push que disparar o workflow.
-- [ ] Cobertura de testes medida com JaCoCo.
+  artefato. Badge no topo do README. **Verificado com `gh run watch`**: os
+  dois jobs passaram (run #28717716179) — confirma de verdade, em JDK 8 real,
+  a promessa de compatibilidade Java 8 do projeto.
+- [x] **JaCoCo**: `jacoco-maven-plugin` 0.8.11 no `pom.xml`, `report` atado à
+  fase `test` — `mvn clean test` já gera
+  `target/site/jacoco/index.html`/`jacoco.csv` sem passo extra. **Baseline
+  medida em 2026-07-04: ~67,5% de linhas / 68,5% de instruções / 45% de
+  branches.** Achado imediato: `utils/RowIteratorUtil` estava em **0%** porque
+  era **código morto de verdade** (nunca referenciado em `src/main`, testes
+  ou docs) — removido, mesmo precedente do `IBuscaDados` (retomada inicial).
+  Pontos ainda fracos (ver `jacoco.csv` para a lista completa): `Calculos`
+  (28%), `CenterStyle` (44%), `Fontes`/`BackGroundColor` (~55-61%),
+  `ManipuladorPlanilhaHelper.CellData` (45%), `LogsDeModificadores` (7%, área
+  de log/auditoria, baixo risco). Candidatos para um próximo lote de
+  cobertura se o Codex quiser continuar essa frente.
 - [ ] "Colar como valores" (remover fórmulas antes de compartilhar).
 - [ ] Duplicar planilha inteira para outro arquivo.
 - [ ] Cookbook de receitas prontas (exemplos por caso de uso real).

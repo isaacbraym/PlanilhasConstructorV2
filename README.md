@@ -340,6 +340,11 @@ Ainda não — essas fórmulas prontas exigem um intervalo de células (ex.:
   ```
 - **CI:** todo push/PR na `main` roda a suíte em JDK 8 e 17
   ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
+- **Cobertura de testes:** `mvn clean test` já gera um relatório JaCoCo em
+  `target/site/jacoco/index.html`. Baseline em 2026-07-04: ~67% de linhas
+  cobertas (156 testes). Pontos mais fracos: `Calculos`, `CenterStyle`,
+  `Fontes`, `ManipuladorPlanilhaHelper` — candidatos ao roadmap de cobertura
+  do `AGENTS.md`.
 - **Skills para agentes de IA** (Claude Code e Codex): veja
   [`.claude/skills/`](.claude/skills/) e [`docs/skills-codex/`](docs/skills-codex/).
 
