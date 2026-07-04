@@ -43,6 +43,8 @@ public class Gerar {
   `realcarSeEntre`, `realcarSeIgual`, `escalaDeCores`.
 - Lista suspensa: `listaSuspensa(intervalo, opcoes...)`,
   `listaSuspensaDoIntervalo(intervaloDestino, intervaloOpcoes)`.
+- Gráficos: `graficoDeBarras`/`graficoDePizza`/`graficoDeLinha(titulo,
+  intervaloCategorias, intervaloValores, celulaSuperiorEsquerda)`.
 - Formatos: `formatarComoMoeda`, `formatarComoContabil`, `formatarComoNumero`,
   `formatarComoTexto`, `formatarComoData`, `formatarComoPorcentagem`.
 - Colunas/linhas: `moverColuna`, `removerColuna`, `limparColuna`,

@@ -17,6 +17,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import com.abnote.planilhas.estilos.EstiloCelula;
 import com.abnote.planilhas.estilos.estilos.CorEnum;
 import com.abnote.planilhas.exceptions.DadosInvalidosException;
+import com.abnote.planilhas.graficos.GraficoHelper;
 import com.abnote.planilhas.impl.PlanilhaXlsx;
 import com.abnote.planilhas.interfaces.IPlanilha;
 import com.abnote.planilhas.utils.CopiadorDeCelulas;
@@ -664,6 +665,70 @@ public final class Planilha implements AutoCloseable {
 		final String colunaParte = celula.replaceAll("\\d", "");
 		final String linhaParte = celula.replaceAll("\\D", "");
 		return "$" + colunaParte + "$" + linhaParte;
+	}
+
+	// ==================== GRÁFICOS ====================
+
+	/**
+	 * Cria um gráfico de barras verticais a partir de um intervalo de categorias
+	 * e um de valores.
+	 *
+	 * <p>Exemplo:</p>
+	 * <pre>{@code
+	 * planilha.graficoDeBarras("Vendas por mês", "A2:A5", "B2:B5", "D2");
+	 * }</pre>
+	 *
+	 * @param titulo               Título do gráfico.
+	 * @param intervaloCategorias  Intervalo com os nomes das categorias (ex.: "A2:A5").
+	 * @param intervaloValores     Intervalo com os valores numéricos (ex.: "B2:B5").
+	 * @param celulaSuperiorEsquerda Célula onde o canto superior esquerdo do
+	 *                               gráfico será posicionado (ex.: "D2").
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha graficoDeBarras(final String titulo, final String intervaloCategorias,
+			final String intervaloValores, final String celulaSuperiorEsquerda) {
+		final int[] ancora = PosicaoConverter.converterPosicao(celulaSuperiorEsquerda);
+		GraficoHelper.criarGraficoDeBarras(xssf(), titulo, regioesDe(intervaloCategorias)[0],
+				regioesDe(intervaloValores)[0], ancora[0], ancora[1]);
+		return this;
+	}
+
+	/**
+	 * Cria um gráfico de pizza a partir de um intervalo de categorias (fatias) e
+	 * um de valores.
+	 *
+	 * @param titulo                 Título do gráfico.
+	 * @param intervaloCategorias    Intervalo com os nomes das fatias.
+	 * @param intervaloValores       Intervalo com os valores numéricos de cada fatia.
+	 * @param celulaSuperiorEsquerda Célula onde o canto superior esquerdo do
+	 *                               gráfico será posicionado.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha graficoDePizza(final String titulo, final String intervaloCategorias,
+			final String intervaloValores, final String celulaSuperiorEsquerda) {
+		final int[] ancora = PosicaoConverter.converterPosicao(celulaSuperiorEsquerda);
+		GraficoHelper.criarGraficoDePizza(xssf(), titulo, regioesDe(intervaloCategorias)[0],
+				regioesDe(intervaloValores)[0], ancora[0], ancora[1]);
+		return this;
+	}
+
+	/**
+	 * Cria um gráfico de linha a partir de um intervalo de categorias e um de
+	 * valores.
+	 *
+	 * @param titulo                 Título do gráfico.
+	 * @param intervaloCategorias    Intervalo com os nomes das categorias.
+	 * @param intervaloValores       Intervalo com os valores numéricos.
+	 * @param celulaSuperiorEsquerda Célula onde o canto superior esquerdo do
+	 *                               gráfico será posicionado.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha graficoDeLinha(final String titulo, final String intervaloCategorias,
+			final String intervaloValores, final String celulaSuperiorEsquerda) {
+		final int[] ancora = PosicaoConverter.converterPosicao(celulaSuperiorEsquerda);
+		GraficoHelper.criarGraficoDeLinha(xssf(), titulo, regioesDe(intervaloCategorias)[0],
+				regioesDe(intervaloValores)[0], ancora[0], ancora[1]);
+		return this;
 	}
 
 	// ==================== COLUNAS ====================

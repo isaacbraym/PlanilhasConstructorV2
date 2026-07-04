@@ -56,7 +56,10 @@ trabalho desta sessão (lotes E-I), **marque aqui o que já foi feito**:
   limite real do Excel de 255 caracteres somados) e `listaSuspensaDoIntervalo`
   (opções vindas de um intervalo, sem esse limite), via novo
   `utils/ListaSuspensaHelper`.
-- [ ] **Lote G** — Gráficos (barras/pizza/linha) via `XDDFChart`.
+- [x] **Lote G** — Gráficos: `graficoDeBarras`/`graficoDePizza`/`graficoDeLinha`
+  via novo `graficos/GraficoHelper` (pacote novo, 1 classe, mesmo padrão de
+  `formulas/`). Verificado com round-trip real (salvar em disco + reabrir com
+  workbook novo) além dos testes de estrutura em memória.
 - [ ] **Lote H** — Inserir imagem/logo na planilha.
 - [ ] **Lote I** — Cobertura de testes diretos para `EstiloCelula` e helpers de
   estilo (`estilos/estilos/*`), hoje só testados indiretamente.
@@ -149,6 +152,7 @@ examples/              → ExemploFacade (facade), ExemploFormulas (API fluente)
 exceptions/            → PlanilhaException + FormulaException, PosicaoInvalidaException,
                          DadosInvalidosException, ArquivoException (todas UNCHECKED)
 formulas/              → FormulaBuilder (11 fórmulas)
+graficos/              → GraficoHelper (barras/pizza/linha via XDDFChart)
 impl/                  → PlanilhaBase, PlanilhaXlsx, DataManipulator, StyleManager,
                          ConversaoManager, SelecaoManager
 interfaces/            → contratos públicos (IPlanilha, ISelecao, IConversao, ...)
@@ -231,3 +235,5 @@ Já entregue:
   `escalaDeCores`, via `utils/FormatacaoCondicionalHelper`.
 - Listas suspensas: `listaSuspensa`/`listaSuspensaDoIntervalo`, via
   `utils/ListaSuspensaHelper`.
+- Gráficos: `graficoDeBarras`/`graficoDePizza`/`graficoDeLinha`, via
+  `graficos/GraficoHelper`.

@@ -196,6 +196,16 @@ Para CPF, CNPJ, telefone e códigos, prefira **`escreverTexto(...)`**.
 | `listaSuspensa("C2:C50", "Pendente", "Pago", "Atrasado")` | menu com opções fixas |
 | `listaSuspensaDoIntervalo("A2:A50", "F2:F5")` | menu com opções vindas de outra coluna (sem limite de 255 caracteres) |
 
+### Gráficos
+| Comando | O que faz |
+|---|---|
+| `graficoDeBarras("Vendas", "A2:A5", "B2:B5", "D2")` | gráfico de barras verticais |
+| `graficoDePizza("Regiões", "A2:A5", "B2:B5", "D2")` | gráfico de pizza |
+| `graficoDeLinha("Progresso", "A2:A5", "B2:B5", "D2")` | gráfico de linha |
+
+Os três recebem: título, intervalo das categorias, intervalo dos valores e a
+célula onde o canto superior esquerdo do gráfico deve ficar.
+
 ### Aparência (estilos)
 | Comando | O que faz |
 |---|---|

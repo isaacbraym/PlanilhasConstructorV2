@@ -94,6 +94,18 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
   absoluta automaticamente); se o intervalo já contiver `!` (ex.:
   `"Opcoes!$A$1:$A$3"`), é usado exatamente como informado, sem conversão.
 
+## Gráficos
+
+- **Quando** `graficoDeBarras(titulo, categorias, valores, celula)`, **Então**
+  um gráfico de barras verticais (`BarDirection.COL`) é desenhado ancorado na
+  célula informada, com uma série cujo título é `titulo`, cujas categorias vêm
+  do intervalo `categorias` e valores do intervalo `valores`.
+- `graficoDeLinha` segue o mesmo contrato com tipo `LINE` (cria eixos de
+  categoria e de valor, como as barras).
+- `graficoDePizza` **não** cria eixos (`chart.getAxes()` vazio) e ativa cores
+  variadas por fatia (`setVaryColors(true)`).
+- Todos sobrevivem a salvar em disco e reabrir (round-trip OOXML verificado).
+
 ## Colunas e linhas
 
 - `moverColuna(de, para)`, `removerColuna(c)`, `limparColuna(c)`,
