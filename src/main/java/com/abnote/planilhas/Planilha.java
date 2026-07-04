@@ -1229,6 +1229,34 @@ public final class Planilha implements AutoCloseable {
 		return this;
 	}
 
+	/**
+	 * Agrupa um intervalo de linhas para poder recolher/expandir no Excel (o
+	 * "+"/"-" que aparece na margem esquerda) — útil para relatórios
+	 * hierárquicos (ex.: detalhes de um mês, agrupados sob o total do mês).
+	 *
+	 * @param linhaInicial Primeira linha do grupo, começando em 1.
+	 * @param linhaFinal   Última linha do grupo, começando em 1.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha agruparLinhas(final int linhaInicial, final int linhaFinal) {
+		sheetAtual().groupRow(linhaInicial - 1, linhaFinal - 1);
+		return this;
+	}
+
+	/**
+	 * Agrupa um intervalo de colunas para poder recolher/expandir no Excel —
+	 * mesma ideia de {@link #agruparLinhas}, na horizontal.
+	 *
+	 * @param colunaInicial Primeira coluna do grupo (ex.: "B").
+	 * @param colunaFinal   Última coluna do grupo (ex.: "D").
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha agruparColunas(final String colunaInicial, final String colunaFinal) {
+		sheetAtual().groupColumn(PosicaoConverter.converterColuna(colunaInicial),
+				PosicaoConverter.converterColuna(colunaFinal));
+		return this;
+	}
+
 	// ==================== ORDENAR ====================
 
 	/**

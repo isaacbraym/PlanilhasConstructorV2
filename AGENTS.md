@@ -171,7 +171,11 @@ sugestões e mandar "pode ir pra cima") — em andamento
   (encadeável) — o método novo existe para o caso de já ter um arquivo salvo
   e querer duplicá-lo sem reabrir. Total: 163 testes verdes.
 - [ ] Cookbook de receitas prontas (exemplos por caso de uso real).
-- [ ] Agrupamento de linhas (outline/subtotal por grupo).
+- [x] **Agrupamento**: `agruparLinhas(inicio, fim)` e `agruparColunas(de,
+  para)` (outline via `groupRow`/`groupColumn`). **Achado de segurança**:
+  `setRowGroupCollapsed` esconde a planilha inteira, não só o grupo — por
+  isso **não** foi exposto um parâmetro de colapso automático. Ver regra 8 na
+  seção 4 para os detalhes completos da investigação. Total: 165 testes.
 - [ ] JitPack + CHANGELOG.md.
 
 **APIs do Apache POI já confirmadas via `javap` nesta sessão** (não precisa
@@ -249,7 +253,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **163 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **165 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -311,6 +315,16 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
    célula `FORMULA` num valor fixo, é preciso chamar `celula.removeFormula()`
    **antes** de `setCellValue(...)` — sem isso, o tipo da célula continua
    `FORMULA` (só o valor em cache muda). Ver `ColarComoValoresHelper`.
+8. **`Sheet.setRowGroupCollapsed(...)` é PERIGOSO — não usar sem investigar
+   mais.** Testado empiricamente (grupo em linhas 2-4, colapso via a linha
+   índice 4 e também via índice 0): o XML resultante marcou **TODAS** as 6
+   linhas da planilha como `hidden="true"` (não só as do grupo). Por isso
+   `agruparLinhas`/`agruparColunas` da facade **não** têm parâmetro de
+   colapso — só criam a estrutura de outline (`outlineLevel`), sem esconder
+   nada. Se algum dia quiser reativar recolhimento automático, reproduza o
+   teste em `AgrupamentoFacadeTest` antes (talvez precise de
+   `sheet.setRowSumsBelow`/`setRowSumsRight` explícitos, ou seja mesmo um bug
+   da versão 5.2.5 do POI — não assumir que corrigir sozinho é trivial).
 
 ## 5. Convenções de código (obrigatórias)
 

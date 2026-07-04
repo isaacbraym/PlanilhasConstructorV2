@@ -69,7 +69,9 @@ public class Gerar {
 - Estilos/layout: `negrito`, `italico`, `corDoTexto`, `corDeFundo`, `centralizar`,
   `fonte`, `tamanhoDaFonte`, `bordas`, `mesclar`, `contornarTudo`,
   `removerLinhasDeGrade`, `ajustarColunas`, `larguraColuna`, `alturaLinha`,
-  `congelarPrimeiraLinha`, `congelar`, `filtrosNoCabecalho`.
+  `congelarPrimeiraLinha`, `congelar`, `filtrosNoCabecalho`,
+  `agruparLinhas(inicio, fim)`, `agruparColunas(de, para)` (outline — sem
+  opção de colapso automático, ver AGENTS.md regra 8 do porquê).
 - Salvar: `salvar`, `salvarNaPasta`.
 - Avançado: `avancado()` → `IPlanilha`; `workbook()` → POI; `estilo(pos)`.
 

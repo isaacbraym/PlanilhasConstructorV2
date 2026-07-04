@@ -245,6 +245,20 @@ Comparação por texto; números casam sem `.0` (ex.: `10` casa com `"10"`).
   mutado — evita destravar acidentalmente outras células que compartilham o
   mesmo `CellStyle` padrão). Cria a célula se ela ainda não existir.
 
+## Agrupamento (outline)
+
+- **Quando** `agruparLinhas(2, 4)`, **Então** as linhas 2-4 (1-based) recebem
+  `outlineLevel == 1` no arquivo salvo; linhas fora do grupo permanecem em
+  `outlineLevel == 0`; **nenhuma linha fica oculta** (`getZeroHeight() ==
+  false` em todas). `agruparColunas("B","D")` é o equivalente para colunas
+  (`Sheet.getColumnOutlineLevel`).
+- **Deliberadamente não há** um parâmetro "recolhido"/"colapsado": um teste
+  empírico mostrou que `Sheet.setRowGroupCollapsed(...)` marca **todas** as
+  linhas da planilha como ocultas (`hidden="true"` no XML), não só as do
+  grupo — um risco real de esconder dados do usuário sem ele perceber. A
+  facade só cria a estrutura de agrupamento; expandir/recolher fica a cargo
+  do próprio usuário clicando no "+"/"-" do Excel.
+
 ## Salvar e recursos
 
 - **Quando** `salvar("caminho.xlsx")`, **Então** um arquivo `.xlsx` válido é

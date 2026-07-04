@@ -246,6 +246,8 @@ Aceita `.png`, `.jpg` e `.jpeg`.
 | `larguraColuna("A", 20)` / `alturaLinha(1, 30)` | largura (≈ caracteres) / altura (pontos) |
 | `congelarPrimeiraLinha()` / `congelar(1, 2)` | fixa cabeçalho / N linhas e colunas |
 | `filtrosNoCabecalho()` | ativa filtros (setinhas) |
+| `agruparLinhas(2, 4)` | agrupa linhas para recolher/expandir (relatórios hierárquicos) |
+| `agruparColunas("B", "D")` | agrupa colunas para recolher/expandir |
 
 ### Impressão
 | Comando | O que faz |
