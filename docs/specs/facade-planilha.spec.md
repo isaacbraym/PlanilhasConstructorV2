@@ -56,6 +56,11 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
   `R$`.
 - **Quando** `formatarComoTexto("B2")`, **Então** os números viram texto (sem
   `.0` para inteiros).
+- **Quando** `formatarComoPorcentagem("B2")`, **Então** a coluna usa formato de
+  porcentagem (`0,15` exibe `15%`).
+- `larguraColuna("A", n)` define a largura (≈ n caracteres, 0–255);
+  `alturaLinha(l, p)` define a altura em pontos; `congelar(linhas, colunas)`
+  fixa linhas/colunas ao rolar.
 
 ## Colunas e linhas
 

@@ -151,6 +151,7 @@ Para CPF, CNPJ, telefone e códigos, prefira **`escreverTexto(...)`**.
 | `formatarComoNumero("B2")` | converte texto em número |
 | `formatarComoTexto("B2")` | converte em texto puro |
 | `formatarComoData("A2")` | formata a coluna como data (dd/MM/aaaa) |
+| `formatarComoPorcentagem("B2")` | formata como % (0,15 → 15%) |
 
 ### Colunas e linhas
 | Comando | O que faz |
@@ -192,7 +193,8 @@ Para CPF, CNPJ, telefone e códigos, prefira **`escreverTexto(...)`**.
 | `contornarTudo()` | bordas em toda a área usada |
 | `removerLinhasDeGrade()` | tira o quadriculado cinza |
 | `ajustarColunas()` | ajusta a largura ao conteúdo |
-| `congelarPrimeiraLinha()` | fixa o cabeçalho ao rolar |
+| `larguraColuna("A", 20)` / `alturaLinha(1, 30)` | largura (≈ caracteres) / altura (pontos) |
+| `congelarPrimeiraLinha()` / `congelar(1, 2)` | fixa cabeçalho / N linhas e colunas |
 | `filtrosNoCabecalho()` | ativa filtros (setinhas) |
 
 ### Salvar

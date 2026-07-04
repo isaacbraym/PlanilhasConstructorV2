@@ -54,6 +54,7 @@ public final class Planilha implements AutoCloseable {
 	private String abaAtual;
 	private CellStyle estiloDataCache;
 	private CellStyle estiloDataHoraCache;
+	private CellStyle estiloPorcentagemCache;
 
 	private Planilha(final IPlanilha planilhaInterna, final String abaAtiva) {
 		this.planilha = planilhaInterna;
@@ -414,18 +415,7 @@ public final class Planilha implements AutoCloseable {
 	 * @return Esta planilha, para encadear comandos.
 	 */
 	public Planilha formatarComoData(final String celulaInicial) {
-		final int[] indices = PosicaoConverter.converterPosicao(celulaInicial);
-		final Sheet sheet = sheetAtual();
-		for (int indiceLinha = indices[1]; indiceLinha <= sheet.getLastRowNum(); indiceLinha++) {
-			final Row linha = sheet.getRow(indiceLinha);
-			if (linha == null) {
-				continue;
-			}
-			final Cell celula = linha.getCell(indices[0]);
-			if (celula != null) {
-				celula.setCellStyle(estiloData());
-			}
-		}
+		aplicarEstiloNaColuna(celulaInicial, estiloData());
 		return this;
 	}
 
@@ -443,11 +433,33 @@ public final class Planilha implements AutoCloseable {
 		return estiloDataHoraCache;
 	}
 
+	private CellStyle estiloPorcentagem() {
+		if (estiloPorcentagemCache == null) {
+			estiloPorcentagemCache = criarEstiloDeFormato("0.00%");
+		}
+		return estiloPorcentagemCache;
+	}
+
 	private CellStyle criarEstiloDeFormato(final String formato) {
 		final Workbook workbook = planilha.obterWorkbook();
 		final CellStyle estilo = workbook.createCellStyle();
 		estilo.setDataFormat(workbook.createDataFormat().getFormat(formato));
 		return estilo;
+	}
+
+	private void aplicarEstiloNaColuna(final String celulaInicial, final CellStyle estilo) {
+		final int[] indices = PosicaoConverter.converterPosicao(celulaInicial);
+		final Sheet sheet = sheetAtual();
+		for (int indiceLinha = indices[1]; indiceLinha <= sheet.getLastRowNum(); indiceLinha++) {
+			final Row linha = sheet.getRow(indiceLinha);
+			if (linha == null) {
+				continue;
+			}
+			final Cell celula = linha.getCell(indices[0]);
+			if (celula != null) {
+				celula.setCellStyle(estilo);
+			}
+		}
 	}
 
 	// ==================== FORMATOS ====================
@@ -493,6 +505,17 @@ public final class Planilha implements AutoCloseable {
 	 */
 	public Planilha formatarComoTexto(final String celulaInicial) {
 		planilha.converter().emTexto(celulaInicial);
+		return this;
+	}
+
+	/**
+	 * Formata a coluna (a partir da célula) como porcentagem (ex.: 0,15 vira 15%).
+	 *
+	 * @param celulaInicial Primeira célula da coluna a formatar.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha formatarComoPorcentagem(final String celulaInicial) {
+		aplicarEstiloNaColuna(celulaInicial, estiloPorcentagem());
 		return this;
 	}
 
@@ -742,6 +765,48 @@ public final class Planilha implements AutoCloseable {
 	 */
 	public Planilha congelarPrimeiraLinha() {
 		sheetAtual().createFreezePane(0, 1);
+		return this;
+	}
+
+	/**
+	 * Congela um número de linhas e colunas (ficam fixas ao rolar).
+	 *
+	 * @param linhas  Quantas linhas de cima manter fixas (ex.: 1).
+	 * @param colunas Quantas colunas da esquerda manter fixas (ex.: 0).
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha congelar(final int linhas, final int colunas) {
+		sheetAtual().createFreezePane(colunas, linhas);
+		return this;
+	}
+
+	/**
+	 * Define a largura de uma coluna (em número aproximado de caracteres, 0 a 255).
+	 *
+	 * @param coluna  Coluna a ajustar (ex.: "A").
+	 * @param largura Largura aproximada em caracteres.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha larguraColuna(final String coluna, final int largura) {
+		final int larguraSegura = Math.max(0, Math.min(largura, 255));
+		sheetAtual().setColumnWidth(PosicaoConverter.converterColuna(coluna), larguraSegura * 256);
+		return this;
+	}
+
+	/**
+	 * Define a altura de uma linha (em pontos).
+	 *
+	 * @param numeroLinha Número da linha, começando em 1.
+	 * @param altura      Altura em pontos (ex.: 30).
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha alturaLinha(final int numeroLinha, final int altura) {
+		final Sheet sheet = sheetAtual();
+		Row linha = sheet.getRow(numeroLinha - 1);
+		if (linha == null) {
+			linha = sheet.createRow(numeroLinha - 1);
+		}
+		linha.setHeightInPoints(altura);
 		return this;
 	}
 
