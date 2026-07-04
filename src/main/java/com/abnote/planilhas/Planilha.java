@@ -278,6 +278,80 @@ public final class Planilha implements AutoCloseable {
 		return this;
 	}
 
+	/**
+	 * Multiplica duas células e coloca o resultado em outra (ex.: total = preço ×
+	 * quantidade).
+	 *
+	 * @param celulaDestino Onde o resultado aparece (ex.: "D2").
+	 * @param celula1       Primeira célula (ex.: "B2").
+	 * @param celula2       Segunda célula (ex.: "C2").
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha multiplicar(final String celulaDestino, final String celula1, final String celula2) {
+		return formula(celulaDestino, celula1 + "*" + celula2);
+	}
+
+	/**
+	 * Subtrai a segunda célula da primeira e coloca o resultado em outra.
+	 *
+	 * @param celulaDestino Onde o resultado aparece.
+	 * @param celula1       Célula do minuendo (ex.: "B2").
+	 * @param celula2       Célula do subtraendo (ex.: "C2").
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha subtrair(final String celulaDestino, final String celula1, final String celula2) {
+		return formula(celulaDestino, celula1 + "-" + celula2);
+	}
+
+	/**
+	 * Divide a primeira célula pela segunda e coloca o resultado em outra.
+	 *
+	 * @param celulaDestino Onde o resultado aparece.
+	 * @param celula1       Célula do dividendo (ex.: "B2").
+	 * @param celula2       Célula do divisor (ex.: "C2").
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha dividir(final String celulaDestino, final String celula1, final String celula2) {
+		return formula(celulaDestino, celula1 + "/" + celula2);
+	}
+
+	/**
+	 * Escreve uma fórmula do Excel em uma célula (para quem já conhece fórmulas).
+	 * O "=" inicial é opcional.
+	 *
+	 * @param celulaDestino Onde a fórmula fica (ex.: "D2").
+	 * @param formulaExcel  A fórmula (ex.: "B2*C2", "=SUM(A1:A9)").
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha formula(final String celulaDestino, final String formulaExcel) {
+		planilha.selecionar().celula(celulaDestino).formula().personalizada(formulaExcel).aplicar();
+		return this;
+	}
+
+	/**
+	 * Preenche uma coluna com a mesma fórmula, linha por linha, trocando
+	 * automaticamente o número da linha onde estiver <code>{}</code>.
+	 *
+	 * <p>Exemplo — coluna "Total" = Preço (B) × Quantidade (C), das linhas 2 a 10:</p>
+	 * <pre>{@code
+	 * planilha.preencherColuna("D", 2, 10, "B{}*C{}");
+	 * // D2 = B2*C2, D3 = B3*C3, ... D10 = B10*C10
+	 * }</pre>
+	 *
+	 * @param coluna        Coluna de destino (ex.: "D").
+	 * @param linhaInicial  Primeira linha (ex.: 2).
+	 * @param linhaFinal    Última linha (ex.: 10).
+	 * @param modeloFormula Fórmula com <code>{}</code> no lugar do número da linha.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha preencherColuna(final String coluna, final int linhaInicial, final int linhaFinal,
+			final String modeloFormula) {
+		for (int linha = linhaInicial; linha <= linhaFinal; linha++) {
+			formula(coluna + linha, modeloFormula.replace("{}", String.valueOf(linha)));
+		}
+		return this;
+	}
+
 	// ==================== FORMATOS ====================
 
 	/**

@@ -105,7 +105,8 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
 
 - `IBuscaDados` está **sem implementação** — decidir implementar busca básica
   (buscar/mover/copiar/remover linhas) ou remover a interface.
-- Fórmula de multiplicação/subtração no `FormulaBuilder` (hoje só há soma e
-  agregações; produto existe só via `multiplicarColunasComTexto`).
 - Abrir/editar planilhas existentes na facade (hoje ela foca em **criar**).
 - Aumentar cobertura de `EstiloCelula`/helpers de estilo.
+
+Já entregue: aritmética por fórmula (`FormulaBuilder.personalizada` + facade
+`multiplicar`/`subtrair`/`dividir`/`formula`/`preencherColuna`).

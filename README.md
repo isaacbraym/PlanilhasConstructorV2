@@ -135,6 +135,10 @@ Para CPF, CNPJ, telefone e códigos, prefira **`escreverTexto(...)`**.
 | `contar("C5", "C2:C4")` | conta valores |
 | `minimo(...)` / `maximo(...)` | menor / maior valor |
 | `seEntao("D2", "C2>100", "Alto", "Baixo")` | condição se/então |
+| `multiplicar("D2", "B2", "C2")` | D2 = B2 × C2 |
+| `subtrair("D2", "B2", "C2")` / `dividir(...)` | subtração / divisão entre células |
+| `formula("D2", "B2*C2")` | qualquer fórmula do Excel (o "=" é opcional) |
+| `preencherColuna("D", 2, 10, "B{}*C{}")` | repete a fórmula por linha (`{}` = nº da linha) |
 
 ### Formatar valores
 | Comando | O que faz |

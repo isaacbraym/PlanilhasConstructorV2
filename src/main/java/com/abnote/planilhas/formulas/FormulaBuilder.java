@@ -150,17 +150,36 @@ public class FormulaBuilder implements IFormulas {
         return this;
     }
     
+    // ========== FÓRMULA PERSONALIZADA ==========
+
+    @Override
+    public IFormulas personalizada(String formulaExcel) {
+        if (formulaExcel == null || formulaExcel.trim().isEmpty()) {
+            throw new FormulaException("Fórmula não pode ser nula ou vazia");
+        }
+        String formulaLimpa = formulaExcel.trim();
+        if (formulaLimpa.startsWith("=")) {
+            formulaLimpa = formulaLimpa.substring(1).trim();
+        }
+        this.formulaAtual = formulaLimpa;
+        return this;
+    }
+
     // ========== APLICAÇÃO ==========
-    
+
     @Override
     public IPlanilha aplicar() {
         if (formulaAtual == null || formulaAtual.trim().isEmpty()) {
             throw new IllegalStateException("Nenhuma fórmula foi definida para aplicar");
         }
-        
+
         Cell celula = obterOuCriarCelula();
-        celula.setCellFormula(formulaAtual);
-        
+        try {
+            celula.setCellFormula(formulaAtual);
+        } catch (org.apache.poi.ss.formula.FormulaParseException e) {
+            throw new FormulaException("Fórmula inválida para o Excel", formulaAtual);
+        }
+
         return planilhaRetorno;
     }
     

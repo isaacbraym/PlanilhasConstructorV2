@@ -162,8 +162,26 @@ public interface IFormulas {
      */
     IFormulas agora();
     
+    // ========== FÓRMULA PERSONALIZADA ==========
+
+    /**
+     * Cria uma fórmula personalizada do Excel, para casos que as fórmulas prontas
+     * não cobrem (ex.: multiplicação, subtração, divisão).
+     *
+     * <p>O "=" inicial é opcional. Exemplos:</p>
+     * <pre>{@code
+     * planilha.selecionar().celula("D2").formula().personalizada("B2*C2").aplicar();
+     * planilha.selecionar().celula("E2").formula().personalizada("B2-C2").aplicar();
+     * }</pre>
+     *
+     * @param formulaExcel A expressão da fórmula (ex.: "B2*C2", "=A1/A2").
+     * @return Esta instância para encadeamento fluente.
+     * @throws com.abnote.planilhas.exceptions.FormulaException se a fórmula for nula ou vazia.
+     */
+    IFormulas personalizada(String formulaExcel);
+
     // ========== APLICAÇÃO ==========
-    
+
     /**
      * Aplica a fórmula construída na célula atual da planilha.
      * 

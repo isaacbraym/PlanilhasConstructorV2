@@ -36,6 +36,12 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
   COUNT, MIN, MAX.
 - **Quando** `seEntao("D2", "C2>100", "Alto", "Baixo")`, **Então** D2 contém
   `IF(C2>100,"Alto","Baixo")`.
+- **Quando** `multiplicar("D2", "B2", "C2")`, **Então** D2 contém `B2*C2`;
+  `subtrair`/`dividir` geram `B2-C2` / `B2/C2`.
+- **Quando** `formula("D2", "=B2*C2")`, **Então** D2 recebe a fórmula `B2*C2`
+  (o "=" inicial é opcional); fórmula inválida lança `FormulaException`.
+- **Dado** `preencherColuna("D", 2, 3, "B{}*C{}")`, **Então** D2 = `B2*C2` e
+  D3 = `B3*C3` (o `{}` vira o número da linha).
 
 ## Formatos
 
