@@ -77,6 +77,14 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
 - **Regra**: estilizar deve ser feito **depois** de escrever — estilos de fonte
   só afetam células que já existem.
 
+## Ordenar
+
+- **Dado** cabeçalho + `Carlos/30`, `Ana/25`, `Bia/40`, **Quando**
+  `ordenarPorCrescente("A")`, **Então** a ordem dos dados vira `Ana`, `Bia`,
+  `Carlos`, com a coluna Idade viajando junto e o cabeçalho intacto.
+- Números ordenam numericamente; `ordenarPorDecrescente` inverte;
+  `ordenarPor(coluna, crescente, linhaInicial)` permite ordenar sem cabeçalho.
+
 ## Buscar e filtrar linhas
 
 Comparação por texto; números casam sem `.0` (ex.: `10` casa com `"10"`).

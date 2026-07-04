@@ -162,6 +162,13 @@ Para CPF, CNPJ, telefone e códigos, prefira **`escreverTexto(...)`**.
 | `duplicarColuna("A", "D")` | copia conteúdo de uma coluna |
 | `duplicarLinha(1, 5)` | copia a linha 1 para a linha 5 |
 
+### Ordenar
+| Comando | O que faz |
+|---|---|
+| `ordenarPorCrescente("B")` | ordena por uma coluna (A→Z, menor→maior), mantendo o cabeçalho |
+| `ordenarPorDecrescente("B")` | ordena ao contrário |
+| `ordenarPor("B", true, 1)` | ordena sem cabeçalho (a partir da linha 1) |
+
 ### Buscar e filtrar linhas
 | Comando | O que faz |
 |---|---|

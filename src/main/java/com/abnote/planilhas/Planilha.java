@@ -17,6 +17,7 @@ import com.abnote.planilhas.estilos.estilos.CorEnum;
 import com.abnote.planilhas.impl.PlanilhaXlsx;
 import com.abnote.planilhas.interfaces.IPlanilha;
 import com.abnote.planilhas.utils.FiltroDeLinhas;
+import com.abnote.planilhas.utils.OrdenadorDeLinhas;
 import com.abnote.planilhas.utils.PosicaoConverter;
 
 /**
@@ -751,6 +752,44 @@ public final class Planilha implements AutoCloseable {
 	 */
 	public Planilha filtrosNoCabecalho() {
 		planilha.inserirFiltros();
+		return this;
+	}
+
+	// ==================== ORDENAR ====================
+
+	/**
+	 * Ordena as linhas em ordem crescente (A→Z, menor→maior) pelo valor de uma
+	 * coluna, mantendo a primeira linha como cabeçalho.
+	 *
+	 * @param coluna Coluna usada como critério (ex.: "B").
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha ordenarPorCrescente(final String coluna) {
+		return ordenarPor(coluna, true, 2);
+	}
+
+	/**
+	 * Ordena as linhas em ordem decrescente (Z→A, maior→menor) pelo valor de uma
+	 * coluna, mantendo a primeira linha como cabeçalho.
+	 *
+	 * @param coluna Coluna usada como critério (ex.: "B").
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha ordenarPorDecrescente(final String coluna) {
+		return ordenarPor(coluna, false, 2);
+	}
+
+	/**
+	 * Ordena as linhas por uma coluna, com controle da primeira linha de dados
+	 * (use 1 se a planilha não tiver cabeçalho).
+	 *
+	 * @param coluna       Coluna usada como critério (ex.: "B").
+	 * @param crescente    {@code true} para A→Z / menor→maior.
+	 * @param linhaInicial Número (começando em 1) da primeira linha de dados.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha ordenarPor(final String coluna, final boolean crescente, final int linhaInicial) {
+		OrdenadorDeLinhas.ordenar(sheetAtual(), PosicaoConverter.converterColuna(coluna), crescente, linhaInicial - 1);
 		return this;
 	}
 
