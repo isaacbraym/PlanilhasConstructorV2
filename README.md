@@ -211,6 +211,11 @@ Para CPF, CNPJ, telefone e códigos, prefira **`escreverTexto(...)`**.
 Os três recebem: título, intervalo das categorias, intervalo dos valores e a
 célula onde o canto superior esquerdo do gráfico deve ficar.
 
+### Comentários
+| Comando | O que faz |
+|---|---|
+| `comentario("B2", "Meta mensal de vendas")` | adiciona uma nota (balãozinho) à célula |
+
 ### Imagens
 | Comando | O que faz |
 |---|---|

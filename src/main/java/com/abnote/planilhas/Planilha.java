@@ -23,6 +23,7 @@ import com.abnote.planilhas.graficos.GraficoHelper;
 import com.abnote.planilhas.imagens.ImagemHelper;
 import com.abnote.planilhas.impl.PlanilhaXlsx;
 import com.abnote.planilhas.interfaces.IPlanilha;
+import com.abnote.planilhas.utils.ComentarioHelper;
 import com.abnote.planilhas.utils.CopiadorDeCelulas;
 import com.abnote.planilhas.utils.FiltroDeLinhas;
 import com.abnote.planilhas.utils.FormatacaoCondicionalHelper;
@@ -1272,6 +1273,23 @@ public final class Planilha implements AutoCloseable {
 		for (int posicao = indices.size() - 1; posicao >= 0; posicao--) {
 			removerLinhaComDeslocamento(sheet, indices.get(posicao));
 		}
+		return this;
+	}
+
+	// ==================== COMENTÁRIOS ====================
+
+	/**
+	 * Adiciona um comentário (nota) a uma célula — o balãozinho que aparece ao
+	 * passar o mouse em cima no Excel. Útil para explicar uma fórmula ou dar uma
+	 * instrução de preenchimento.
+	 *
+	 * @param celula Célula que receberá o comentário (ex.: "B2").
+	 * @param texto  Texto do comentário.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha comentario(final String celula, final String texto) {
+		final int[] indices = PosicaoConverter.converterPosicao(celula);
+		ComentarioHelper.adicionar(xssf(), indices[1], indices[0], texto);
 		return this;
 	}
 

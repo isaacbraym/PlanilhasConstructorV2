@@ -129,6 +129,12 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
   variadas por fatia (`setVaryColors(true)`).
 - Todos sobrevivem a salvar em disco e reabrir (round-trip OOXML verificado).
 
+## Comentários
+
+- **Quando** `comentario(celula, texto)`, **Então** a célula ganha um
+  `Comment` (nota) cujo `getString().getString()` é igual ao texto informado;
+  sobrevive a salvar em disco e reabrir.
+
 ## Imagens
 
 - **Quando** `inserirImagem(celula, caminho)`, **Então** a imagem é inserida

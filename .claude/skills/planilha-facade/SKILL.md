@@ -49,6 +49,7 @@ public class Gerar {
   e `procurarValor`/`procurarValorNaAba` (ainda não com `somar`/`media`/etc).
 - Totais automáticos: `adicionarTotais(celulaCabecalho)` — detecta a tabela e
   soma sozinho cada coluna numérica, sem precisar chamar `somar()` por coluna.
+- Comentários: `comentario(celula, texto)` — nota/balão do Excel.
 - Gráficos: `graficoDeBarras`/`graficoDePizza`/`graficoDeLinha(titulo,
   intervaloCategorias, intervaloValores, celulaSuperiorEsquerda)`.
 - Imagens: `inserirImagem(celula, caminho)` ou `inserirImagem(celula, caminho,

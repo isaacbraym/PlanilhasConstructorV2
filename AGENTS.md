@@ -35,7 +35,9 @@ por valor; formatos (moeda/contábil/número/texto/data/porcentagem); colunas e
 linhas (mover/remover/limpar/inserir/duplicar); estilos (negrito, cores, bordas,
 mesclar, largura/altura, congelar N, filtros, autoajuste); **formatação
 condicional** (realçar/escala de cores); **lista suspensa** (dropdown, fixa ou
-de intervalo); **gráficos** (barras/pizza/linha); **imagens/logo**;
+de intervalo, e validação numérica/de data); **nomes de intervalo**
+(`definirNome`); **`adicionarTotais()`** automático; **gráficos**
+(barras/pizza/linha); **imagens/logo**; **comentários** em células;
 **impressão** (orientação/área/ajustar em N páginas); **proteção** de
 planilha e desbloqueio de células (formulários). Veja a seção 7 para o que
 ainda falta e `docs/specs/facade-planilha.spec.md` para o contrato exato de
@@ -115,6 +117,15 @@ item específico — confira `git log` e `mvn clean test` antes de continuar.
   escreve "Total" na primeira coluna não numérica. Casos de borda testados:
   tabela sem dados (no-op), coluna com texto misturado (ignorada), coluna fora
   do cabeçalho (não tocada). Total: 153 testes verdes.
+- [x] **Lote N** — `comentario(celula, texto)` via novo
+  `utils/ComentarioHelper` (nota/balão do Excel). Verificado com round-trip
+  real (salvar + reabrir). Total: 155 testes verdes.
+
+**Com isso, TODA a lista de "prioridade alta" e "prioridade média" do roadmap
+original desta seção foi entregue** (impressão, proteção, validação de
+entrada, nomes de intervalo, adicionarTotais, comentários). Resta só
+"formatação condicional avançada" (data bars/ícones, prioridade média,
+adiada) e os itens de "prioridade baixa" (ver lista atualizada abaixo).
 
 **APIs do Apache POI já confirmadas via `javap` nesta sessão** (não precisa
 reconferir, os nomes/assinaturas abaixo estão corretos para POI 5.2.5):
@@ -191,7 +202,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **153 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **155 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -216,7 +227,8 @@ utils/                 → PosicaoConverter, PositionManager, InsersorDeDados,
                          FiltroDeLinhas, OrdenadorDeLinhas, CopiadorDeCelulas,
                          FormatosDeCelula, FormatacaoCondicionalHelper,
                          ListaSuspensaHelper, ProtecaoHelper,
-                         ValidacaoDeEntradaHelper, TotalizadorDeTabela, ...
+                         ValidacaoDeEntradaHelper, TotalizadorDeTabela,
+                         ComentarioHelper, ...
 ```
 
 Detalhes em [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
@@ -324,9 +336,8 @@ células sem borda prévia). Ver seção 4 para os detalhes que não podem regre
    e conjuntos de ícones (`IconMultiStateFormatting`), complementando
    `escalaDeCores`. `FormatacaoCondicionalHelper` já tem a estrutura pronta
    para crescer nessa direção.
-6. **Comentários em células** (notas) — `sheet.createDrawingPatriarch()` +
-   `Drawing.createCellComment(anchor)`; útil para explicar uma fórmula ou
-   instrução num formulário.
+6. ~~**Comentários em células**~~ — **ENTREGUE** nesta sessão:
+   `comentario(celula, texto)` via novo `utils/ComentarioHelper`.
 7. ~~**`adicionarTotais()` de alto nível**~~ — **ENTREGUE** nesta sessão: soma
    automaticamente cada coluna numérica de uma tabela via novo
    `utils/TotalizadorDeTabela` (detecta largura pelo cabeçalho, altura pela
