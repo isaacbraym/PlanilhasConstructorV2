@@ -1,5 +1,7 @@
 # ProjetoPlanilha3 — Construtor de Planilhas
 
+[![CI](https://github.com/isaacbraym/PlanilhasConstructorV2/actions/workflows/ci.yml/badge.svg)](https://github.com/isaacbraym/PlanilhasConstructorV2/actions/workflows/ci.yml)
+
 > Uma biblioteca Java que deixa **criar planilhas Excel (`.xlsx`) fácil**, mesmo
 > para quem quase não programa. Você escreve comandos em português — `escrever`,
 > `somar`, `duplicar`, `mover`, `negrito` — e a biblioteca cuida do Apache POI
@@ -336,6 +338,8 @@ Ainda não — essas fórmulas prontas exigem um intervalo de células (ex.:
   ```bash
   mvn clean test
   ```
+- **CI:** todo push/PR na `main` roda a suíte em JDK 8 e 17
+  ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
 - **Skills para agentes de IA** (Claude Code e Codex): veja
   [`.claude/skills/`](.claude/skills/) e [`docs/skills-codex/`](docs/skills-codex/).
 

@@ -136,7 +136,12 @@ sugestões e mandar "pode ir pra cima") — em andamento
   `PlanilhaBase.abrirPlanilha` (checagem `instanceof XSSFWorkbook` +
   `ArquivoException` amigável). Ver regra 6 na seção 4. Testado com um `.xls`
   real gerado via `HSSFWorkbook` em `AbrirFacadeTest`. Total: 156 testes.
-- [ ] CI (GitHub Actions rodando `mvn test` a cada push/PR).
+- [x] **CI**: `.github/workflows/ci.yml` roda `mvn clean test` em JDK 8 e 17
+  (matrix) a cada push/PR na `main`, com upload dos relatórios de teste como
+  artefato. Badge no topo do README. **Ainda não verificado que passou de
+  verdade no GitHub** — o próximo agente deve conferir com
+  `gh run list --workflow=ci.yml` (ou a aba Actions do repo) após o primeiro
+  push que disparar o workflow.
 - [ ] Cobertura de testes medida com JaCoCo.
 - [ ] "Colar como valores" (remover fórmulas antes de compartilhar).
 - [ ] Duplicar planilha inteira para outro arquivo.
