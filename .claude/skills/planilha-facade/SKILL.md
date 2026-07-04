@@ -45,6 +45,8 @@ public class Gerar {
   `listaSuspensaDoIntervalo(intervaloDestino, intervaloOpcoes)`.
 - Gráficos: `graficoDeBarras`/`graficoDePizza`/`graficoDeLinha(titulo,
   intervaloCategorias, intervaloValores, celulaSuperiorEsquerda)`.
+- Imagens: `inserirImagem(celula, caminho)` ou `inserirImagem(celula, caminho,
+  escala)` — aceita `.png`/`.jpg`/`.jpeg`.
 - Formatos: `formatarComoMoeda`, `formatarComoContabil`, `formatarComoNumero`,
   `formatarComoTexto`, `formatarComoData`, `formatarComoPorcentagem`.
 - Colunas/linhas: `moverColuna`, `removerColuna`, `limparColuna`,

@@ -18,6 +18,7 @@ import com.abnote.planilhas.estilos.EstiloCelula;
 import com.abnote.planilhas.estilos.estilos.CorEnum;
 import com.abnote.planilhas.exceptions.DadosInvalidosException;
 import com.abnote.planilhas.graficos.GraficoHelper;
+import com.abnote.planilhas.imagens.ImagemHelper;
 import com.abnote.planilhas.impl.PlanilhaXlsx;
 import com.abnote.planilhas.interfaces.IPlanilha;
 import com.abnote.planilhas.utils.CopiadorDeCelulas;
@@ -728,6 +729,38 @@ public final class Planilha implements AutoCloseable {
 		final int[] ancora = PosicaoConverter.converterPosicao(celulaSuperiorEsquerda);
 		GraficoHelper.criarGraficoDeLinha(xssf(), titulo, regioesDe(intervaloCategorias)[0],
 				regioesDe(intervaloValores)[0], ancora[0], ancora[1]);
+		return this;
+	}
+
+	// ==================== IMAGENS ====================
+
+	/**
+	 * Insere uma imagem (logo, foto, ícone) no tamanho natural do arquivo.
+	 *
+	 * @param celula         Célula onde o canto superior esquerdo da imagem ficará.
+	 * @param caminhoArquivo Caminho do arquivo de imagem ({@code .png} ou
+	 *                       {@code .jpg}/{@code .jpeg}).
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha inserirImagem(final String celula, final String caminhoArquivo) {
+		final int[] ancora = PosicaoConverter.converterPosicao(celula);
+		ImagemHelper.inserir(xssf(), caminhoArquivo, ancora[0], ancora[1]);
+		return this;
+	}
+
+	/**
+	 * Insere uma imagem redimensionada por uma escala.
+	 *
+	 * @param celula         Célula onde o canto superior esquerdo da imagem ficará.
+	 * @param caminhoArquivo Caminho do arquivo de imagem ({@code .png} ou
+	 *                       {@code .jpg}/{@code .jpeg}).
+	 * @param escala         Fator de escala (1.0 = tamanho original, 0.5 = metade,
+	 *                       2.0 = dobro).
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha inserirImagem(final String celula, final String caminhoArquivo, final double escala) {
+		final int[] ancora = PosicaoConverter.converterPosicao(celula);
+		ImagemHelper.inserir(xssf(), caminhoArquivo, ancora[0], ancora[1], escala);
 		return this;
 	}
 

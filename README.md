@@ -206,6 +206,14 @@ Para CPF, CNPJ, telefone e códigos, prefira **`escreverTexto(...)`**.
 Os três recebem: título, intervalo das categorias, intervalo dos valores e a
 célula onde o canto superior esquerdo do gráfico deve ficar.
 
+### Imagens
+| Comando | O que faz |
+|---|---|
+| `inserirImagem("B2", "logo.png")` | insere a imagem no tamanho original |
+| `inserirImagem("B2", "logo.png", 0.5)` | insere reduzida pela metade |
+
+Aceita `.png`, `.jpg` e `.jpeg`.
+
 ### Aparência (estilos)
 | Comando | O que faz |
 |---|---|

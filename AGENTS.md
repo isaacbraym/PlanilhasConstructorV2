@@ -60,7 +60,13 @@ trabalho desta sessão (lotes E-I), **marque aqui o que já foi feito**:
   via novo `graficos/GraficoHelper` (pacote novo, 1 classe, mesmo padrão de
   `formulas/`). Verificado com round-trip real (salvar em disco + reabrir com
   workbook novo) além dos testes de estrutura em memória.
-- [ ] **Lote H** — Inserir imagem/logo na planilha.
+- [x] **Lote H** — Inserir imagem/logo: `inserirImagem(celula, caminho)` e
+  overload com `escala`, via novo `imagens/ImagemHelper`. **Bug real
+  encontrado e corrigido pelos testes**: `XSSFPicture.resize(double escala)`
+  escala o tamanho ATUAL da âncora, não o tamanho natural da imagem — numa
+  âncora recém-criada (tamanho zero), `resize(3.0)` sozinho dava um retângulo
+  zerado. Corrigido chamando `resize()` (fixa o tamanho natural) e **depois**
+  `resize(escala)`. Ver comentário em `ImagemHelper.inserir(...)`.
 - [ ] **Lote I** — Cobertura de testes diretos para `EstiloCelula` e helpers de
   estilo (`estilos/estilos/*`), hoje só testados indiretamente.
 - [ ] **Revisão final** — atualizar roadmap/README/specs com tudo entregue e o
@@ -97,8 +103,12 @@ reconferir, os nomes/assinaturas abaixo estão corretos para POI 5.2.5):
   barras, cast para `XDDFBarChartData` e `setBarDirection(BarDirection.COL)`
   para barras verticais (mais intuitivo para leigos que barras horizontais).
 - Imagens: `workbook.addPicture(bytes, Workbook.PICTURE_TYPE_PNG/JPEG)` →
-  `drawing.createPicture(anchor, indice)` → `picture.resize()` (tamanho natural)
-  ou `picture.resize(escala)`.
+  `drawing.createPicture(anchor, indice)` → `picture.resize()` (tamanho natural).
+  **Cuidado**: `picture.resize(escala)` sozinho **não funciona** numa âncora
+  recém-criada — ele escala o tamanho ATUAL da âncora (que começa zerado), não
+  o tamanho natural da imagem. Sempre chame `resize()` **antes** de
+  `resize(escala)` (confirmado empiricamente com um debug script, não está
+  documentado no javadoc do POI). Bug real pego pelos testes desta sessão.
 - `CellRangeAddress.valueOf("A1:B2")` aceita célula única também (`"A1"`).
 
 ### Se você (próximo agente) ficar sem tokens no meio de um lote
@@ -153,6 +163,7 @@ exceptions/            → PlanilhaException + FormulaException, PosicaoInvalida
                          DadosInvalidosException, ArquivoException (todas UNCHECKED)
 formulas/              → FormulaBuilder (11 fórmulas)
 graficos/              → GraficoHelper (barras/pizza/linha via XDDFChart)
+imagens/               → ImagemHelper (inserir PNG/JPEG ancorado numa célula)
 impl/                  → PlanilhaBase, PlanilhaXlsx, DataManipulator, StyleManager,
                          ConversaoManager, SelecaoManager
 interfaces/            → contratos públicos (IPlanilha, ISelecao, IConversao, ...)
@@ -237,3 +248,4 @@ Já entregue:
   `utils/ListaSuspensaHelper`.
 - Gráficos: `graficoDeBarras`/`graficoDePizza`/`graficoDeLinha`, via
   `graficos/GraficoHelper`.
+- Imagens: `inserirImagem` (com/sem escala), via `imagens/ImagemHelper`.

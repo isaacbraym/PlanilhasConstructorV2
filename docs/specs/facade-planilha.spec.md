@@ -106,6 +106,17 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
   variadas por fatia (`setVaryColors(true)`).
 - Todos sobrevivem a salvar em disco e reabrir (round-trip OOXML verificado).
 
+## Imagens
+
+- **Quando** `inserirImagem(celula, caminho)`, **Então** a imagem é inserida
+  ancorada na célula, no tamanho natural (pixels reais do arquivo convertidos
+  para EMU via DPI padrão).
+- **Quando** `inserirImagem(celula, caminho, escala)`, **Então** a imagem é
+  inserida redimensionada por esse fator em relação ao tamanho natural (ex.:
+  `0.5` = metade, `2.0` = dobro).
+- Aceita apenas `.png`/`.jpg`/`.jpeg` (senão `DadosInvalidosException`);
+  arquivo inexistente/ilegível → `ArquivoException`.
+
 ## Colunas e linhas
 
 - `moverColuna(de, para)`, `removerColuna(c)`, `limparColuna(c)`,
