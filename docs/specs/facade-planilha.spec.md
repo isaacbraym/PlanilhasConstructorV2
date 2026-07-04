@@ -51,6 +51,13 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
 - **Quando** `procurarValor("E1", "D1", "A2:B3", 2)`, **Então** E1 contém
   `VLOOKUP(D1,A2:B3,2,FALSE)`; `procurarValorNaAba(..., "Produtos", ...)`
   qualifica o intervalo como `'Produtos'!...` (PROCV com correspondência exata).
+- **Quando** `definirNome("Precos", "B2:B100")`, **Então** um `Name` é
+  registrado no workbook com `refersToFormula` igual a
+  `'AbaAtual'!$B$2:$B$100` (referência absoluta, qualificada com a aba atual).
+  O nome funciona dentro de `formula(...)` e `procurarValor`/
+  `procurarValorNaAba` (ex.: `formula("D1", "SUM(Precos)")` avalia
+  corretamente); **não** funciona ainda em `somar`/`media`/`contar`/`minimo`/
+  `maximo` (que exigem sintaxe de intervalo de células, não nome).
 
 ## Formatos
 

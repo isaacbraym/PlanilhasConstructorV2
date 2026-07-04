@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -420,6 +421,31 @@ public final class Planilha implements AutoCloseable {
 	public Planilha procurarValorNaAba(final String celulaDestino, final String celulaProcurada,
 			final String abaTabela, final String intervaloTabela, final int colunaResultado) {
 		return procurarValor(celulaDestino, celulaProcurada, "'" + abaTabela + "'!" + intervaloTabela, colunaResultado);
+	}
+
+	/**
+	 * Dá um nome a um intervalo, para usar em fórmulas mais legíveis (ex.:
+	 * {@code formula("D2", "SUM(Precos)")} em vez de {@code "SUM(B2:B100)"}).
+	 *
+	 * <p>
+	 * Funciona com {@link #formula}, {@link #procurarValor} e
+	 * {@link #procurarValorNaAba}. As fórmulas prontas ({@link #somar},
+	 * {@link #media} etc.) ainda exigem um intervalo de células (ex.:
+	 * {@code "B2:B100"}), não um nome — use {@code formula(celula, "SUM(Nome)")}
+	 * nesse caso.
+	 * </p>
+	 *
+	 * @param nome      Nome a definir (ex.: "Precos"). Sem espaços, começando com
+	 *                  letra — mesmas regras do Excel para nomes de intervalo.
+	 * @param intervalo Intervalo que o nome representa (ex.: "B2:B100"), na aba
+	 *                  atual.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha definirNome(final String nome, final String intervalo) {
+		final Name nomeDefinido = planilha.obterWorkbook().createName();
+		nomeDefinido.setNameName(nome);
+		nomeDefinido.setRefersToFormula("'" + abaAtual + "'!" + paraReferenciaAbsoluta(intervalo));
+		return this;
 	}
 
 	// ==================== DATAS ====================

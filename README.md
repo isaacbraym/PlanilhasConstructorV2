@@ -144,6 +144,7 @@ Para CPF, CNPJ, telefone e códigos, prefira **`escreverTexto(...)`**.
 | `preencherColuna("D", 2, 10, "B{}*C{}")` | repete a fórmula por linha (`{}` = nº da linha) |
 | `procurarValor("E2", "A2", "H2:J100", 3)` | PROCV: busca A2 na tabela e traz a coluna 3 |
 | `procurarValorNaAba("B2", "A2", "Produtos", "A2:C100", 3)` | PROCV buscando em outra aba |
+| `definirNome("Precos", "B2:B100")` | dá nome a um intervalo, para usar em `formula(...)`/`procurarValor(...)` |
 
 ### Formatar valores
 | Comando | O que faz |
@@ -310,6 +311,11 @@ apontando para uma coluna com as opções — não tem esse limite.
 
 **Preciso fechar a planilha?**
 Se usar `try (Planilha planilha = ...)`, é automático. Senão, chame `fechar()`.
+
+**Posso usar `definirNome` dentro de `somar`/`media`?**
+Ainda não — essas fórmulas prontas exigem um intervalo de células (ex.:
+`"B2:B100"`). Nomes funcionam com `formula(...)` (ex.:
+`formula("D1", "SUM(Precos)")`) e com `procurarValor`/`procurarValorNaAba`.
 
 ---
 

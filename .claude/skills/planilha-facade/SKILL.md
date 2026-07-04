@@ -45,6 +45,8 @@ public class Gerar {
   `listaSuspensaDoIntervalo(intervaloDestino, intervaloOpcoes)`.
 - Validação de limites (sem menu): `validarNumeroEntre`/`validarInteiroEntre(
   intervalo, min, max)`, `validarDataEntre(intervalo, LocalDate min, max)`.
+- Nomes de intervalo: `definirNome(nome, intervalo)` — use com `formula(...)`
+  e `procurarValor`/`procurarValorNaAba` (ainda não com `somar`/`media`/etc).
 - Gráficos: `graficoDeBarras`/`graficoDePizza`/`graficoDeLinha(titulo,
   intervaloCategorias, intervaloValores, celulaSuperiorEsquerda)`.
 - Imagens: `inserirImagem(celula, caminho)` ou `inserirImagem(celula, caminho,

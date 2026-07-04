@@ -103,6 +103,12 @@ item específico — confira `git log` e `mvn clean test` antes de continuar.
   `ListaSuspensaHelper`). Seção da facade renomeada de "LISTA SUSPENSA
   (DROPDOWN)" para "VALIDAÇÃO DE DADOS (LISTA SUSPENSA / LIMITES)" para
   acomodar os dois conceitos coerentemente. Total: 146 testes verdes.
+- [x] **Lote L** — `definirNome(nome, intervalo)` (named range via
+  `Workbook.createName()`), qualificado com a aba atual e referência absoluta.
+  Testado funcionando dentro de `formula(...)` e `procurarValor` com avaliação
+  real (`SUM(Precos)`, `VLOOKUP(D1,Tabela,2,FALSE)`). **Limitação conhecida e
+  documentada**: não funciona ainda com `somar`/`media`/etc. (regex estrita do
+  `FormulaBuilder`). Total: 149 testes verdes.
 
 **APIs do Apache POI já confirmadas via `javap` nesta sessão** (não precisa
 reconferir, os nomes/assinaturas abaixo estão corretos para POI 5.2.5):
@@ -179,7 +185,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **146 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **149 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -300,10 +306,14 @@ células sem borda prévia). Ver seção 4 para os detalhes que não podem regre
 
 ### Prioridade média
 
-4. **Nomes de intervalo (named ranges)** — `definirNome("Produtos", "A2:A100")`
-   e então usar `"Produtos"` em `procurarValor`/`somar`/`listaSuspensaDoIntervalo`
-   em vez do range cru. Mais legível para quem não programa. API POI:
-   `workbook.createName()` + `Name.setNameName`/`setRefersToFormula`.
+4. ~~**Nomes de intervalo (named ranges)**~~ — **ENTREGUE** nesta sessão:
+   `definirNome(nome, intervalo)`. Funciona com `formula(...)` e
+   `procurarValor`/`procurarValorNaAba` (validado com avaliação real da
+   fórmula). **Ainda não** funciona com `somar`/`media`/`contar`/`minimo`/
+   `maximo` (a validação de range do `FormulaBuilder` é regex estrita para
+   sintaxe de célula — deliberadamente não alterada nesta sessão para não
+   arriscar quebrar validação existente; se for prioridade, avaliar relaxar
+   `FormulaBuilder.validarRange` para aceitar identificadores de nome também).
 5. **Mais tipos de formatação condicional** — barras de dados (`DataBarFormatting`)
    e conjuntos de ícones (`IconMultiStateFormatting`), complementando
    `escalaDeCores`. `FormatacaoCondicionalHelper` já tem a estrutura pronta
