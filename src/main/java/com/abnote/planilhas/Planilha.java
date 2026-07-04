@@ -375,6 +375,42 @@ public final class Planilha implements AutoCloseable {
 		return this;
 	}
 
+	/**
+	 * Procura o valor de uma célula em uma tabela e traz o dado de outra coluna
+	 * (equivale ao PROCV/VLOOKUP do Excel, com correspondência exata).
+	 *
+	 * <p>Exemplo — buscar o preço do produto de A2 na tabela A2:C100:</p>
+	 * <pre>{@code
+	 * planilha.procurarValor("D2", "A2", "A2:C100", 3); // traz a 3ª coluna (preço)
+	 * }</pre>
+	 *
+	 * @param celulaDestino    Onde o resultado aparece (ex.: "D2").
+	 * @param celulaProcurada  Célula com o valor a procurar (ex.: "A2").
+	 * @param intervaloTabela  Intervalo da tabela (ex.: "A2:C100").
+	 * @param colunaResultado  Número da coluna da tabela a retornar (1 = primeira).
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha procurarValor(final String celulaDestino, final String celulaProcurada,
+			final String intervaloTabela, final int colunaResultado) {
+		final String vlookup = "VLOOKUP(" + celulaProcurada + "," + intervaloTabela + "," + colunaResultado + ",FALSE)";
+		return formula(celulaDestino, vlookup);
+	}
+
+	/**
+	 * Igual a {@link #procurarValor}, mas a tabela está em <strong>outra aba</strong>.
+	 *
+	 * @param celulaDestino    Onde o resultado aparece.
+	 * @param celulaProcurada  Célula com o valor a procurar.
+	 * @param abaTabela        Aba onde está a tabela (ex.: "Produtos").
+	 * @param intervaloTabela  Intervalo da tabela na outra aba (ex.: "A2:C100").
+	 * @param colunaResultado  Número da coluna da tabela a retornar (1 = primeira).
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha procurarValorNaAba(final String celulaDestino, final String celulaProcurada,
+			final String abaTabela, final String intervaloTabela, final int colunaResultado) {
+		return procurarValor(celulaDestino, celulaProcurada, "'" + abaTabela + "'!" + intervaloTabela, colunaResultado);
+	}
+
 	// ==================== DATAS ====================
 
 	/**

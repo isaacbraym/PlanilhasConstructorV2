@@ -104,14 +104,19 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
 ## 7. Roadmap aberto (candidatos, não obrigatórios)
 
 - Aumentar cobertura de `EstiloCelula`/helpers de estilo.
-- Fórmulas nomeadas extras (ex.: `PROCV`/VLOOKUP amigável) se houver demanda.
+- Validação de dados (listas suspensas/dropdowns) e gráficos, se houver demanda.
 
 Já entregue:
 - Aritmética por fórmula (`FormulaBuilder.personalizada` + facade
   `multiplicar`/`subtrair`/`dividir`/`formula`/`preencherColuna`).
+- PROCV amigável: `procurarValor` / `procurarValorNaAba` (VLOOKUP).
 - Busca/filtro de linhas na facade (`buscarLinhas`, `contarLinhasOnde`,
   `copiarLinhasParaAba`, `moverLinhasParaAba`, `removerLinhasOnde`) via
   `utils/FiltroDeLinhas`. A interface órfã `IBuscaDados` foi **removida**
   (design POI-leaking incompatível com o objetivo amigável).
+- Ordenar linhas (`ordenarPorCrescente`/`Decrescente`/`ordenarPor`) via
+  `utils/OrdenadorDeLinhas`.
+- Datas (`escreverData`/`escreverDataHora`/`formatarComoData`), porcentagem e
+  dimensões (`larguraColuna`/`alturaLinha`/`congelar`).
 - Abrir/editar arquivos existentes: `Planilha.abrir(caminho)` +
   `IPlanilhaBasica.abrirPlanilha` (via `WorkbookFactory`).

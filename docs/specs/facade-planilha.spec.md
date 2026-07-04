@@ -48,6 +48,9 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
   (o "=" inicial é opcional); fórmula inválida lança `FormulaException`.
 - **Dado** `preencherColuna("D", 2, 3, "B{}*C{}")`, **Então** D2 = `B2*C2` e
   D3 = `B3*C3` (o `{}` vira o número da linha).
+- **Quando** `procurarValor("E1", "D1", "A2:B3", 2)`, **Então** E1 contém
+  `VLOOKUP(D1,A2:B3,2,FALSE)`; `procurarValorNaAba(..., "Produtos", ...)`
+  qualifica o intervalo como `'Produtos'!...` (PROCV com correspondência exata).
 
 ## Formatos
 

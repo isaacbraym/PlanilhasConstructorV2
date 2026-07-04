@@ -29,22 +29,24 @@ public class Gerar {
 
 ## Comandos disponíveis (use SOMENTE estes na facade)
 
-- Abas: `nova`, `novaAba`, `irParaAba`, `duplicarAba`.
+- Abas: `nova`, `abrir`, `novaAba`, `irParaAba`, `duplicarAba`.
 - Escrita: `escrever`, `escreverTexto`, `escreverLinha`, `escreverColuna`,
-  `adicionarLinha`, `escreverTabela`.
+  `adicionarLinha`, `escreverTabela`, `escreverData`, `escreverDataHora`.
 - Fórmulas: `somar`, `media`, `contar`, `minimo`, `maximo`, `seEntao`,
   `multiplicar`, `subtrair`, `dividir`, `formula(celula, expr)`,
-  `preencherColuna(coluna, ini, fim, "B{}*C{}")`.
+  `preencherColuna(coluna, ini, fim, "B{}*C{}")`, `procurarValor`,
+  `procurarValorNaAba` (PROCV/VLOOKUP).
+- Ordenar: `ordenarPorCrescente`, `ordenarPorDecrescente`, `ordenarPor`.
 - Busca/filtro: `buscarLinhas`, `contarLinhasOnde`, `copiarLinhasParaAba`,
   `moverLinhasParaAba`, `removerLinhasOnde`.
 - Formatos: `formatarComoMoeda`, `formatarComoContabil`, `formatarComoNumero`,
-  `formatarComoTexto`.
+  `formatarComoTexto`, `formatarComoData`, `formatarComoPorcentagem`.
 - Colunas/linhas: `moverColuna`, `removerColuna`, `limparColuna`,
   `inserirColunaEntre`, `duplicarColuna`, `duplicarLinha`.
-- Estilos: `negrito`, `italico`, `corDoTexto`, `corDeFundo`, `centralizar`,
+- Estilos/layout: `negrito`, `italico`, `corDoTexto`, `corDeFundo`, `centralizar`,
   `fonte`, `tamanhoDaFonte`, `bordas`, `mesclar`, `contornarTudo`,
-  `removerLinhasDeGrade`, `ajustarColunas`, `congelarPrimeiraLinha`,
-  `filtrosNoCabecalho`.
+  `removerLinhasDeGrade`, `ajustarColunas`, `larguraColuna`, `alturaLinha`,
+  `congelarPrimeiraLinha`, `congelar`, `filtrosNoCabecalho`.
 - Salvar: `salvar`, `salvarNaPasta`.
 - Avançado: `avancado()` → `IPlanilha`; `workbook()` → POI; `estilo(pos)`.
 

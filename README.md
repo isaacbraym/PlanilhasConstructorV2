@@ -142,6 +142,8 @@ Para CPF, CNPJ, telefone e códigos, prefira **`escreverTexto(...)`**.
 | `subtrair("D2", "B2", "C2")` / `dividir(...)` | subtração / divisão entre células |
 | `formula("D2", "B2*C2")` | qualquer fórmula do Excel (o "=" é opcional) |
 | `preencherColuna("D", 2, 10, "B{}*C{}")` | repete a fórmula por linha (`{}` = nº da linha) |
+| `procurarValor("E2", "A2", "H2:J100", 3)` | PROCV: busca A2 na tabela e traz a coluna 3 |
+| `procurarValorNaAba("B2", "A2", "Produtos", "A2:C100", 3)` | PROCV buscando em outra aba |
 
 ### Formatar valores
 | Comando | O que faz |
