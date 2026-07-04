@@ -10,6 +10,8 @@ import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import com.abnote.planilhas.estilos.EstiloCelula;
 import com.abnote.planilhas.estilos.estilos.CorEnum;
@@ -17,6 +19,7 @@ import com.abnote.planilhas.impl.PlanilhaXlsx;
 import com.abnote.planilhas.interfaces.IPlanilha;
 import com.abnote.planilhas.utils.CopiadorDeCelulas;
 import com.abnote.planilhas.utils.FiltroDeLinhas;
+import com.abnote.planilhas.utils.FormatacaoCondicionalHelper;
 import com.abnote.planilhas.utils.FormatosDeCelula;
 import com.abnote.planilhas.utils.OrdenadorDeLinhas;
 import com.abnote.planilhas.utils.PosicaoConverter;
@@ -514,6 +517,82 @@ public final class Planilha implements AutoCloseable {
 	 */
 	public Planilha formatarComoPorcentagem(final String celulaInicial) {
 		aplicarEstiloNaColuna(celulaInicial, formatos.porcentagem());
+		return this;
+	}
+
+	// ==================== FORMATAÇÃO CONDICIONAL ====================
+
+	/**
+	 * Pinta de fundo as células de um intervalo cujo valor é maior que o
+	 * informado (ex.: destacar vendas acima de uma meta).
+	 *
+	 * @param intervalo Intervalo a observar (ex.: "B2:B20").
+	 * @param valor     Valor de referência.
+	 * @param cor       Cor de fundo aplicada quando a condição é verdadeira.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha realcarSeMaiorQue(final String intervalo, final double valor, final CorEnum cor) {
+		FormatacaoCondicionalHelper.realcarSeMaiorQue(xssf(), regioesDe(intervalo), valor, cor.getRed(), cor.getGreen(),
+				cor.getBlue());
+		return this;
+	}
+
+	/**
+	 * Pinta de fundo as células de um intervalo cujo valor é menor que o
+	 * informado.
+	 *
+	 * @param intervalo Intervalo a observar (ex.: "B2:B20").
+	 * @param valor     Valor de referência.
+	 * @param cor       Cor de fundo aplicada quando a condição é verdadeira.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha realcarSeMenorQue(final String intervalo, final double valor, final CorEnum cor) {
+		FormatacaoCondicionalHelper.realcarSeMenorQue(xssf(), regioesDe(intervalo), valor, cor.getRed(), cor.getGreen(),
+				cor.getBlue());
+		return this;
+	}
+
+	/**
+	 * Pinta de fundo as células de um intervalo cujo valor está entre dois
+	 * limites (inclusive).
+	 *
+	 * @param intervalo Intervalo a observar (ex.: "B2:B20").
+	 * @param minimo    Limite inferior.
+	 * @param maximo    Limite superior.
+	 * @param cor       Cor de fundo aplicada quando a condição é verdadeira.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha realcarSeEntre(final String intervalo, final double minimo, final double maximo,
+			final CorEnum cor) {
+		FormatacaoCondicionalHelper.realcarSeEntre(xssf(), regioesDe(intervalo), minimo, maximo, cor.getRed(),
+				cor.getGreen(), cor.getBlue());
+		return this;
+	}
+
+	/**
+	 * Pinta de fundo as células de um intervalo cujo valor é igual ao informado
+	 * (aceita número ou texto).
+	 *
+	 * @param intervalo Intervalo a observar (ex.: "B2:B20").
+	 * @param valor     Valor de referência (número ou texto, ex.: "Atrasado").
+	 * @param cor       Cor de fundo aplicada quando a condição é verdadeira.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha realcarSeIgual(final String intervalo, final Object valor, final CorEnum cor) {
+		FormatacaoCondicionalHelper.realcarSeIgual(xssf(), regioesDe(intervalo), valor, cor.getRed(), cor.getGreen(),
+				cor.getBlue());
+		return this;
+	}
+
+	/**
+	 * Aplica uma escala de 3 cores no estilo "semáforo" (vermelho para os
+	 * menores valores, amarelo para os medianos, verde para os maiores).
+	 *
+	 * @param intervalo Intervalo a colorir (ex.: "B2:B20").
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha escalaDeCores(final String intervalo) {
+		FormatacaoCondicionalHelper.aplicarEscalaDeCores(xssf(), regioesDe(intervalo));
 		return this;
 	}
 
@@ -1038,6 +1117,17 @@ public final class Planilha implements AutoCloseable {
 
 	private Sheet sheetAtual() {
 		return planilha.obterWorkbook().getSheet(abaAtual);
+	}
+
+	private XSSFSheet xssf() {
+		return (XSSFSheet) sheetAtual();
+	}
+
+	private CellRangeAddress[] regioesDe(final String intervalo) {
+		final String[] partes = separarIntervalo(intervalo);
+		final int[] inicio = PosicaoConverter.converterPosicao(partes[0]);
+		final int[] fim = PosicaoConverter.converterPosicao(partes[1]);
+		return new CellRangeAddress[] { new CellRangeAddress(inicio[1], fim[1], inicio[0], fim[0]) };
 	}
 
 	private void copiarLinhasEncontradas(final String coluna, final String valor, final String abaDestino) {

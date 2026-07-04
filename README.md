@@ -181,6 +181,15 @@ Para CPF, CNPJ, telefone e códigos, prefira **`escreverTexto(...)`**.
 | `moverLinhasParaAba("B", "SP", "Arquivo")` | copia e remove da origem |
 | `removerLinhasOnde("B", "SP")` | apaga as linhas correspondentes |
 
+### Formatação condicional (realçar células)
+| Comando | O que faz |
+|---|---|
+| `realcarSeMaiorQue("B2:B20", 100, CorEnum.VERDE)` | pinta o fundo se o valor for maior que 100 |
+| `realcarSeMenorQue("B2:B20", 0, CorEnum.VERMELHO_ESCURO)` | pinta se for menor |
+| `realcarSeEntre("B2:B20", 10, 20, CorEnum.AMARELO)` | pinta se estiver no intervalo |
+| `realcarSeIgual("B2:B20", "Atrasado", CorEnum.VERMELHO_ESCURO)` | pinta se for igual (texto ou número) |
+| `escalaDeCores("B2:B20")` | escala vermelho→amarelo→verde (semáforo) |
+
 ### Aparência (estilos)
 | Comando | O que faz |
 |---|---|

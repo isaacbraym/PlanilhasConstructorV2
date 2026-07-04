@@ -48,8 +48,10 @@ trabalho desta sessão (lotes E-I), **marque aqui o que já foi feito**:
   cópia de célula e o cache de estilos de formato extraídos para
   `utils/CopiadorDeCelulas` e `utils/FormatosDeCelula` (cada um com testes
   diretos). Sem mudança de comportamento (99 testes, mesma cobertura +7 novos).
-- [ ] **Lote E** — Formatação condicional (realçar células: maior/menor/igual/
-  entre um valor + escala de cores tipo semáforo).
+- [x] **Lote E** — Formatação condicional: `realcarSeMaiorQue`/`MenorQue`/
+  `Entre`/`Igual` + `escalaDeCores` (semáforo), via novo
+  `utils/FormatacaoCondicionalHelper`. Testes validam a estrutura POI real
+  (operador, fórmula, cor, thresholds), não só "não lança exceção".
 - [ ] **Lote F** — Listas suspensas / dropdown (validação de dados).
 - [ ] **Lote G** — Gráficos (barras/pizza/linha) via `XDDFChart`.
 - [ ] **Lote H** — Inserir imagem/logo na planilha.
@@ -221,3 +223,5 @@ Já entregue:
   dimensões (`larguraColuna`/`alturaLinha`/`congelar`).
 - Abrir/editar arquivos existentes: `Planilha.abrir(caminho)` +
   `IPlanilhaBasica.abrirPlanilha` (via `WorkbookFactory`).
+- Formatação condicional: `realcarSeMaiorQue`/`MenorQue`/`Entre`/`Igual` +
+  `escalaDeCores`, via `utils/FormatacaoCondicionalHelper`.

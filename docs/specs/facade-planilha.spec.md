@@ -65,6 +65,21 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
   `alturaLinha(l, p)` define a altura em pontos; `congelar(linhas, colunas)`
   fixa linhas/colunas ao rolar.
 
+## Formatação condicional
+
+- **Quando** `realcarSeMaiorQue(intervalo, valor, cor)`, **Então** é criada uma
+  regra de formatação condicional `GT` (maior que) sobre o intervalo, com cor de
+  fundo igual à informada; `realcarSeMenorQue`/`realcarSeEntre` seguem o mesmo
+  padrão com `LT`/`BETWEEN`.
+- **Quando** `realcarSeIgual(intervalo, valor, cor)`, **Então** a regra usa
+  `EQUAL`; se `valor` for `Number`, a fórmula usa o número puro; se for outro
+  tipo (texto), a fórmula envolve o valor em aspas duplas (sintaxe de fórmula
+  do Excel).
+- **Quando** `escalaDeCores(intervalo)`, **Então** é criada uma regra de escala
+  de 3 cores (vermelho/amarelo/verde) com limiares MIN / PERCENTIL 50 / MAX.
+- Todas essas regras assumem planilha `.xlsx` (XSSF) — coerente com o resto da
+  biblioteca, que só cria/edita workbooks XSSF.
+
 ## Colunas e linhas
 
 - `moverColuna(de, para)`, `removerColuna(c)`, `limparColuna(c)`,
