@@ -67,8 +67,13 @@ trabalho desta sessão (lotes E-I), **marque aqui o que já foi feito**:
   âncora recém-criada (tamanho zero), `resize(3.0)` sozinho dava um retângulo
   zerado. Corrigido chamando `resize()` (fixa o tamanho natural) e **depois**
   `resize(escala)`. Ver comentário em `ImagemHelper.inserir(...)`.
-- [ ] **Lote I** — Cobertura de testes diretos para `EstiloCelula` e helpers de
-  estilo (`estilos/estilos/*`), hoje só testados indiretamente.
+- [x] **Lote I** — `EstiloCelulaTest` (19 testes): alvo único/intervalo/
+  planilha inteira, fontes, alinhamento, cores, bordas, centralização.
+  **Bug real encontrado e corrigido**: `BorderStyleHelper.verificarBordaEspessa`
+  tinha a lógica invertida — `bordas(intervalo)`/`aplicarTodasAsBordas()` nunca
+  aplicava borda fina em células sem borda prévia (o caso comum). Corrigido
+  para pular apenas células que já têm borda **espessa** (preservando-a). Ver
+  regra 5 na seção 4 acima.
 - [ ] **Revisão final** — atualizar roadmap/README/specs com tudo entregue e o
   que ainda falta para "o construtor de planilhas perfeito".
 
@@ -147,7 +152,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **66 testes, todos verdes** |
+| Estado dos testes | **135 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -192,6 +197,11 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
    coluna `XFD` (16.384), lançando `PosicaoInvalidaException`.
 4. **Formatos**: `emContabil`/`emMoeda` produzem formato com `R$`; `emTexto`
    preserva a representação (sem `.0` para inteiros).
+5. **`bordas(intervalo)` aplica borda fina mesmo sem borda prévia**
+   (`BorderStyleHelper.verificarBordaEspessa`): só pula células que **já têm**
+   uma borda **espessa** (para não rebaixá-la); antes desta sessão a checagem
+   estava invertida (pulava células **sem nenhuma** borda, ou seja, o caso
+   comum) e `bordas(...)` silenciosamente não fazia nada na maioria dos casos.
 
 ## 5. Convenções de código (obrigatórias)
 

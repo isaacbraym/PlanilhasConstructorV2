@@ -96,7 +96,7 @@ public class BorderStyleHelper {
 
 		boolean possuiBordaEspessa = verificarBordaEspessa(estiloAtual);
 		if (possuiBordaEspessa) {
-			return; // Ignorar células com bordas espessas
+			return; // Ignorar células com bordas espessas (não sobrescrever com finas)
 		}
 
 		String chaveCache = "borders_" + estiloAtual.hashCode();
@@ -109,10 +109,10 @@ public class BorderStyleHelper {
 		cell.setCellStyle(estiloComBordas);
 	}
 
-	// Método privado para verificar se o estilo atual possui bordas espessas
+	// Método privado para verificar se o estilo atual já possui alguma borda espessa
 	private boolean verificarBordaEspessa(CellStyle estilo) {
-		return estilo.getBorderTop() == BorderStyle.NONE && estilo.getBorderBottom() == BorderStyle.NONE &&
-				estilo.getBorderLeft() == BorderStyle.NONE && estilo.getBorderRight() == BorderStyle.NONE;
+		return estilo.getBorderTop() == BorderStyle.THICK || estilo.getBorderBottom() == BorderStyle.THICK
+				|| estilo.getBorderLeft() == BorderStyle.THICK || estilo.getBorderRight() == BorderStyle.THICK;
 	}
 
 	// Método privado para criar um novo estilo com bordas finas
