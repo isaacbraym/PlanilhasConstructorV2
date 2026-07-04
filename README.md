@@ -158,6 +158,15 @@ Para CPF, CNPJ, telefone e códigos, prefira **`escreverTexto(...)`**.
 | `duplicarColuna("A", "D")` | copia conteúdo de uma coluna |
 | `duplicarLinha(1, 5)` | copia a linha 1 para a linha 5 |
 
+### Buscar e filtrar linhas
+| Comando | O que faz |
+|---|---|
+| `buscarLinhas("B", "SP")` | números das linhas onde a coluna B é "SP" |
+| `contarLinhasOnde("B", "SP")` | quantas linhas têm B = "SP" |
+| `copiarLinhasParaAba("B", "SP", "SoSP")` | copia essas linhas para outra aba |
+| `moverLinhasParaAba("B", "SP", "Arquivo")` | copia e remove da origem |
+| `removerLinhasOnde("B", "SP")` | apaga as linhas correspondentes |
+
 ### Aparência (estilos)
 | Comando | O que faz |
 |---|---|

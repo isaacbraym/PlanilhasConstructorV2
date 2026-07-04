@@ -32,7 +32,11 @@ public class Gerar {
 - Abas: `nova`, `novaAba`, `irParaAba`, `duplicarAba`.
 - Escrita: `escrever`, `escreverTexto`, `escreverLinha`, `escreverColuna`,
   `adicionarLinha`, `escreverTabela`.
-- Fórmulas: `somar`, `media`, `contar`, `minimo`, `maximo`, `seEntao`.
+- Fórmulas: `somar`, `media`, `contar`, `minimo`, `maximo`, `seEntao`,
+  `multiplicar`, `subtrair`, `dividir`, `formula(celula, expr)`,
+  `preencherColuna(coluna, ini, fim, "B{}*C{}")`.
+- Busca/filtro: `buscarLinhas`, `contarLinhasOnde`, `copiarLinhasParaAba`,
+  `moverLinhasParaAba`, `removerLinhasOnde`.
 - Formatos: `formatarComoMoeda`, `formatarComoContabil`, `formatarComoNumero`,
   `formatarComoTexto`.
 - Colunas/linhas: `moverColuna`, `removerColuna`, `limparColuna`,
@@ -54,9 +58,9 @@ Detalhes/contrato: `docs/specs/facade-planilha.spec.md`.
    para não perder zeros à esquerda.
 3. **Posições** são Excel: coluna(letra)+linha(número), ex.: `A1`; intervalo com
    `:`, ex.: `A1:C1`.
-4. Só existe fórmula de **soma/agregação e IF**. Não invente `multiplicar`/
-   `subtrair` na facade — se precisar, use `avancado().manipularPlanilha()` /
-   `multiplicarColunasComTexto`, ou explique a limitação.
+4. Para cálculo por linha (ex.: Total = Preço × Qtd) use `multiplicar`,
+   `subtrair`, `dividir` ou `preencherColuna("D", 2, 10, "B{}*C{}")`. Para
+   fórmulas do Excel arbitrárias, `formula("D2", "B2*C2")` (o "=" é opcional).
 5. Não adicione dependências nem use Spring/Lombok.
 
 ## Exemplo de referência

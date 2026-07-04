@@ -1,5 +1,6 @@
 package com.abnote.planilhas;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -12,6 +13,7 @@ import com.abnote.planilhas.estilos.EstiloCelula;
 import com.abnote.planilhas.estilos.estilos.CorEnum;
 import com.abnote.planilhas.impl.PlanilhaXlsx;
 import com.abnote.planilhas.interfaces.IPlanilha;
+import com.abnote.planilhas.utils.FiltroDeLinhas;
 import com.abnote.planilhas.utils.PosicaoConverter;
 
 /**
@@ -657,6 +659,81 @@ public final class Planilha implements AutoCloseable {
 		return this;
 	}
 
+	// ==================== BUSCA / FILTRO DE LINHAS ====================
+
+	/**
+	 * Procura as linhas em que uma coluna tem determinado valor.
+	 *
+	 * @param coluna Coluna a pesquisar (ex.: "B").
+	 * @param valor  Valor procurado (ex.: "SP").
+	 * @return Números das linhas encontradas (começando em 1).
+	 */
+	public List<Integer> buscarLinhas(final String coluna, final String valor) {
+		final int indiceColuna = PosicaoConverter.converterColuna(coluna);
+		final List<Integer> numerosDeLinha = new ArrayList<>();
+		for (final int indice : FiltroDeLinhas.encontrar(sheetAtual(), indiceColuna, valor)) {
+			numerosDeLinha.add(indice + 1);
+		}
+		return numerosDeLinha;
+	}
+
+	/**
+	 * Conta quantas linhas têm determinado valor em uma coluna.
+	 *
+	 * @param coluna Coluna a pesquisar (ex.: "B").
+	 * @param valor  Valor procurado.
+	 * @return Quantidade de linhas encontradas.
+	 */
+	public int contarLinhasOnde(final String coluna, final String valor) {
+		return buscarLinhas(coluna, valor).size();
+	}
+
+	/**
+	 * Copia para outra aba todas as linhas em que a coluna tem o valor informado.
+	 * A aba de destino é criada se não existir.
+	 *
+	 * @param coluna      Coluna a pesquisar (ex.: "B").
+	 * @param valor       Valor procurado (ex.: "SP").
+	 * @param abaDestino  Aba onde as linhas serão copiadas.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha copiarLinhasParaAba(final String coluna, final String valor, final String abaDestino) {
+		copiarLinhasEncontradas(coluna, valor, abaDestino);
+		return this;
+	}
+
+	/**
+	 * Move para outra aba (copia e depois remove) todas as linhas em que a coluna
+	 * tem o valor informado.
+	 *
+	 * @param coluna      Coluna a pesquisar.
+	 * @param valor       Valor procurado.
+	 * @param abaDestino  Aba de destino.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha moverLinhasParaAba(final String coluna, final String valor, final String abaDestino) {
+		copiarLinhasEncontradas(coluna, valor, abaDestino);
+		return removerLinhasOnde(coluna, valor);
+	}
+
+	/**
+	 * Remove todas as linhas em que a coluna tem o valor informado, subindo as
+	 * linhas de baixo.
+	 *
+	 * @param coluna Coluna a pesquisar.
+	 * @param valor  Valor procurado.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha removerLinhasOnde(final String coluna, final String valor) {
+		final int indiceColuna = PosicaoConverter.converterColuna(coluna);
+		final Sheet sheet = sheetAtual();
+		final List<Integer> indices = FiltroDeLinhas.encontrar(sheet, indiceColuna, valor);
+		for (int posicao = indices.size() - 1; posicao >= 0; posicao--) {
+			removerLinhaComDeslocamento(sheet, indices.get(posicao));
+		}
+		return this;
+	}
+
 	// ==================== SALVAR / FECHAR ====================
 
 	/**
@@ -764,6 +841,37 @@ public final class Planilha implements AutoCloseable {
 
 	private Sheet sheetAtual() {
 		return planilha.obterWorkbook().getSheet(abaAtual);
+	}
+
+	private void copiarLinhasEncontradas(final String coluna, final String valor, final String abaDestino) {
+		final int indiceColuna = PosicaoConverter.converterColuna(coluna);
+		final Sheet origem = sheetAtual();
+		final List<Integer> indices = FiltroDeLinhas.encontrar(origem, indiceColuna, valor);
+		final Sheet destino = obterOuCriarAba(abaDestino);
+		for (final int indiceOrigem : indices) {
+			final Row linhaOrigem = origem.getRow(indiceOrigem);
+			final int proximaLinha = destino.getPhysicalNumberOfRows() == 0 ? 0 : destino.getLastRowNum() + 1;
+			final Row linhaDestino = destino.createRow(proximaLinha);
+			for (final Cell celulaOrigem : linhaOrigem) {
+				copiarCelula(celulaOrigem, linhaDestino.createCell(celulaOrigem.getColumnIndex()));
+			}
+		}
+	}
+
+	private Sheet obterOuCriarAba(final String nome) {
+		final Workbook workbook = planilha.obterWorkbook();
+		final Sheet existente = workbook.getSheet(nome);
+		return existente != null ? existente : workbook.createSheet(nome);
+	}
+
+	private void removerLinhaComDeslocamento(final Sheet sheet, final int indiceLinha) {
+		final Row linha = sheet.getRow(indiceLinha);
+		if (linha != null) {
+			sheet.removeRow(linha);
+		}
+		if (indiceLinha < sheet.getLastRowNum()) {
+			sheet.shiftRows(indiceLinha + 1, sheet.getLastRowNum(), -1);
+		}
 	}
 
 	private Cell obterOuCriarCelula(final int indiceLinha, final int indiceColuna) {

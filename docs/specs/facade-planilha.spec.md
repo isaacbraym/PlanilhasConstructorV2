@@ -71,6 +71,20 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
 - **Regra**: estilizar deve ser feito **depois** de escrever — estilos de fonte
   só afetam células que já existem.
 
+## Buscar e filtrar linhas
+
+Comparação por texto; números casam sem `.0` (ex.: `10` casa com `"10"`).
+
+- **Dado** cabeçalho + `Ana/SP`, `Bia/RJ`, `Cid/SP`, **Quando**
+  `buscarLinhas("B", "SP")`, **Então** retorna `[2, 4]` (números 1-based).
+- **Quando** `contarLinhasOnde("B", "SP")`, **Então** retorna `2`.
+- **Quando** `copiarLinhasParaAba("B", "SP", "SoSP")`, **Então** a aba "SoSP" é
+  criada (se preciso) com as linhas correspondentes; a origem **não** muda.
+- **Quando** `removerLinhasOnde("B", "SP")`, **Então** as linhas somem e as de
+  baixo sobem.
+- **Quando** `moverLinhasParaAba("B", "SP", "Arquivo")`, **Então** copia para a
+  aba e remove da origem.
+
 ## Salvar e recursos
 
 - **Quando** `salvar("caminho.xlsx")`, **Então** um arquivo `.xlsx` válido é
