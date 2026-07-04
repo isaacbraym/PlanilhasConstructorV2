@@ -1467,6 +1467,110 @@ public final class Planilha implements AutoCloseable {
 		return this;
 	}
 
+	// ==================== OCULTAR / EXIBIR ====================
+
+	/**
+	 * Oculta uma linha (fica com altura zero, some da visualização).
+	 *
+	 * @param numeroLinha Número da linha, começando em 1.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha ocultarLinha(final int numeroLinha) {
+		final Sheet sheet = sheetAtual();
+		Row linha = sheet.getRow(numeroLinha - 1);
+		if (linha == null) {
+			linha = sheet.createRow(numeroLinha - 1);
+		}
+		linha.setZeroHeight(true);
+		return this;
+	}
+
+	/**
+	 * Reexibe uma linha previamente ocultada com {@link #ocultarLinha}.
+	 *
+	 * @param numeroLinha Número da linha, começando em 1.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha exibirLinha(final int numeroLinha) {
+		final Row linha = sheetAtual().getRow(numeroLinha - 1);
+		if (linha != null) {
+			linha.setZeroHeight(false);
+		}
+		return this;
+	}
+
+	/**
+	 * Oculta uma coluna inteira.
+	 *
+	 * @param coluna Coluna a ocultar (ex.: "C").
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha ocultarColuna(final String coluna) {
+		sheetAtual().setColumnHidden(PosicaoConverter.converterColuna(coluna), true);
+		return this;
+	}
+
+	/**
+	 * Reexibe uma coluna previamente ocultada com {@link #ocultarColuna}.
+	 *
+	 * @param coluna Coluna a reexibir (ex.: "C").
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha exibirColuna(final String coluna) {
+		sheetAtual().setColumnHidden(PosicaoConverter.converterColuna(coluna), false);
+		return this;
+	}
+
+	/**
+	 * Oculta uma aba inteira (ex.: uma aba de cálculos auxiliares que não deve
+	 * aparecer para quem abrir o arquivo).
+	 *
+	 * @param nomeDaAba Nome da aba a ocultar.
+	 * @return Esta planilha, para encadear comandos.
+	 * @throws DadosInvalidosException se essa for a única aba visível do
+	 *                                  arquivo — o Excel exige pelo menos uma.
+	 */
+	public Planilha ocultarAba(final String nomeDaAba) {
+		final Workbook workbook = planilha.obterWorkbook();
+		final int indice = indiceDaAba(nomeDaAba);
+		if (!workbook.isSheetHidden(indice) && contarAbasVisiveis(workbook) <= 1) {
+			throw new DadosInvalidosException(
+					"Não é possível ocultar a única aba visível — o Excel não abre um arquivo sem nenhuma aba visível",
+					nomeDaAba);
+		}
+		workbook.setSheetHidden(indice, true);
+		return this;
+	}
+
+	/**
+	 * Reexibe uma aba previamente ocultada com {@link #ocultarAba}.
+	 *
+	 * @param nomeDaAba Nome da aba a reexibir.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha exibirAba(final String nomeDaAba) {
+		planilha.obterWorkbook().setSheetHidden(indiceDaAba(nomeDaAba), false);
+		return this;
+	}
+
+	private int indiceDaAba(final String nomeDaAba) {
+		final int indice = planilha.obterWorkbook().getSheetIndex(nomeDaAba);
+		if (indice == -1) {
+			throw new IllegalArgumentException("A aba '" + nomeDaAba + "' não foi encontrada.");
+		}
+		return indice;
+	}
+
+	private int contarAbasVisiveis(final Workbook workbook) {
+		int visiveis = 0;
+		for (int i = 0; i < workbook.getNumberOfSheets(); i++) {
+			if (!workbook.isSheetHidden(i)) {
+				visiveis++;
+			}
+		}
+		return visiveis;
+	}
+
 	// ==================== IMPRESSÃO ====================
 
 	/**

@@ -61,7 +61,14 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   para devolver o valor **como aparece no Excel** (moeda, data etc.), `ler`
   devolve o tipo Java natural. Nenhum método de leitura cria célula (ao
   contrário dos de escrita). Total: 176 testes verdes.
-- [ ] Ocultar/exibir linha, coluna e aba.
+- [x] **Ocultar/exibir linha, coluna e aba**: `ocultarLinha`/`exibirLinha`,
+  `ocultarColuna`/`exibirColuna`, `ocultarAba`/`exibirAba`. **Achado de
+  segurança**: testei empiricamente e o POI permite ocultar a única aba
+  visível de um workbook sem erro — produzindo um arquivo que o Excel não
+  consegue abrir. `ocultarAba` agora recusa isso com `DadosInvalidosException`
+  amigável (contando abas visíveis antes de ocultar). Aba inexistente lança
+  `IllegalArgumentException` (mesma convenção de `selecionarSheet`, não a
+  hierarquia `PlanilhaException`). Total: 181 testes verdes.
 - [ ] Desmesclar células.
 - [ ] Cor da aba.
 - [ ] Formato numérico personalizado (escape hatch para os 6 formatos fixos).
@@ -301,7 +308,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **176 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **181 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -374,6 +381,10 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
    teste em `AgrupamentoFacadeTest` antes (talvez precise de
    `sheet.setRowSumsBelow`/`setRowSumsRight` explícitos, ou seja mesmo um bug
    da versão 5.2.5 do POI — não assumir que corrigir sozinho é trivial).
+9. **`Workbook.setSheetHidden` não impede ocultar a única aba visível** — o
+   POI deixa criar um arquivo sem nenhuma aba visível (Excel não abre). A
+   facade valida isso em `ocultarAba` (conta abas visíveis antes de ocultar);
+   se implementar outro caminho para ocultar aba, replicar a checagem.
 
 ## 5. Convenções de código (obrigatórias)
 

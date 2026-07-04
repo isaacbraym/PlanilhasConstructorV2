@@ -244,6 +244,19 @@ Comparação por texto; números casam sem `.0` (ex.: `10` casa com `"10"`).
 - Todas mostram uma caixa de erro amigável para valores fora do limite e
   sobrevivem a salvar em disco e reabrir.
 
+## Ocultar / exibir
+
+- `ocultarLinha(n)`/`exibirLinha(n)` alternam `Row.getZeroHeight()`.
+- `ocultarColuna(c)`/`exibirColuna(c)` alternam `Sheet.isColumnHidden(indice)`.
+- `ocultarAba(nome)`/`exibirAba(nome)` alternam `Workbook.isSheetHidden(indice)`.
+- **Regra de segurança**: `ocultarAba` recusa (lança `DadosInvalidosException`)
+  ocultar a **única aba visível** do arquivo — verificado empiricamente que o
+  POI permite silenciosamente criar um arquivo sem nenhuma aba visível, que o
+  Excel não consegue abrir.
+- Aba inexistente em `ocultarAba`/`exibirAba` → `IllegalArgumentException`
+  (mesma convenção já usada por `selecionarSheet`, não a hierarquia de
+  `PlanilhaException` — consistência com o comportamento pré-existente).
+
 ## Impressão
 
 - `orientacaoPaisagem()`/`orientacaoRetrato()` alternam

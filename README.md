@@ -285,6 +285,9 @@ Aceita `.png`, `.jpg` e `.jpeg`.
 | `filtrosNoCabecalho()` | ativa filtros (setinhas) |
 | `agruparLinhas(2, 4)` | agrupa linhas para recolher/expandir (relatórios hierárquicos) |
 | `agruparColunas("B", "D")` | agrupa colunas para recolher/expandir |
+| `ocultarLinha(3)` / `exibirLinha(3)` | esconde/reexibe uma linha |
+| `ocultarColuna("C")` / `exibirColuna("C")` | esconde/reexibe uma coluna |
+| `ocultarAba("Auxiliar")` / `exibirAba("Auxiliar")` | esconde/reexibe uma aba inteira |
 
 ### Impressão
 | Comando | O que faz |

@@ -75,6 +75,9 @@ public class Gerar {
   `congelarPrimeiraLinha`, `congelar`, `filtrosNoCabecalho`,
   `agruparLinhas(inicio, fim)`, `agruparColunas(de, para)` (outline — sem
   opção de colapso automático, ver AGENTS.md regra 8 do porquê).
+- Ocultar/exibir: `ocultarLinha`/`exibirLinha`, `ocultarColuna`/
+  `exibirColuna`, `ocultarAba`/`exibirAba` (recusa ocultar a única aba
+  visível).
 - Salvar: `salvar`, `salvarNaPasta`.
 - Avançado: `avancado()` → `IPlanilha`; `workbook()` → POI; `estilo(pos)`.
 
