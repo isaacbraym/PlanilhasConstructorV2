@@ -1,5 +1,6 @@
 package com.abnote.planilhas.impl;
 
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -9,6 +10,7 @@ import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
 
 import com.abnote.planilhas.estilos.EstiloCelula;
@@ -58,6 +60,23 @@ public abstract class PlanilhaBase implements IPlanilha {
 		} catch (Exception e) {
 			logger.severe("Erro ao criar a planilha '" + nomeSheet + "': " + e.getMessage());
 			throw e;
+		}
+	}
+
+	@Override
+	public void abrirPlanilha(String caminhoArquivo) {
+		if (caminhoArquivo == null || caminhoArquivo.trim().isEmpty()) {
+			throw new ArquivoException("Caminho do arquivo não pode ser nulo ou vazio", caminhoArquivo);
+		}
+		try (FileInputStream arquivoEntrada = new FileInputStream(caminhoArquivo)) {
+			workbook = WorkbookFactory.create(arquivoEntrada);
+			sheet = workbook.getNumberOfSheets() > 0 ? workbook.getSheetAt(0) : workbook.createSheet("Planilha1");
+			initManipulators();
+			logger.info("Planilha aberta com sucesso: " + caminhoArquivo);
+		} catch (IOException e) {
+			logger.severe("Erro ao abrir a planilha '" + caminhoArquivo + "': " + e.getMessage());
+			throw new ArquivoException("Erro ao abrir planilha. Verifique se o caminho existe e é um arquivo válido",
+					caminhoArquivo, e);
 		}
 	}
 

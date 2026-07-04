@@ -14,6 +14,14 @@ public interface IPlanilhaBasica extends AutoCloseable {
 
     void criarPlanilha(String nomeSheet);
 
+    /**
+     * Abre uma planilha existente (.xlsx/.xls) a partir do caminho informado,
+     * selecionando a primeira aba.
+     *
+     * @param caminhoArquivo Caminho do arquivo a abrir.
+     */
+    void abrirPlanilha(String caminhoArquivo);
+
     void criarSheet(String nomeSheet);
 
     void selecionarSheet(String nomeSheet);

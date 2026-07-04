@@ -103,8 +103,8 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
 
 ## 7. Roadmap aberto (candidatos, não obrigatórios)
 
-- Abrir/editar planilhas existentes na facade (hoje ela foca em **criar**).
 - Aumentar cobertura de `EstiloCelula`/helpers de estilo.
+- Fórmulas nomeadas extras (ex.: `PROCV`/VLOOKUP amigável) se houver demanda.
 
 Já entregue:
 - Aritmética por fórmula (`FormulaBuilder.personalizada` + facade
@@ -113,3 +113,5 @@ Já entregue:
   `copiarLinhasParaAba`, `moverLinhasParaAba`, `removerLinhasOnde`) via
   `utils/FiltroDeLinhas`. A interface órfã `IBuscaDados` foi **removida**
   (design POI-leaking incompatível com o objetivo amigável).
+- Abrir/editar arquivos existentes: `Planilha.abrir(caminho)` +
+  `IPlanilhaBasica.abrirPlanilha` (via `WorkbookFactory`).

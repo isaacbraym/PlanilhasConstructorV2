@@ -113,6 +113,7 @@ Para CPF, CNPJ, telefone e códigos, prefira **`escreverTexto(...)`**.
 | Comando | O que faz |
 |---|---|
 | `Planilha.nova("Vendas")` | cria a planilha com a primeira aba |
+| `Planilha.abrir("dados.xlsx")` | abre um arquivo existente para editar |
 | `novaAba("Resumo")` | cria uma aba nova e vai para ela |
 | `irParaAba("Vendas")` | volta para uma aba existente |
 | `duplicarAba("Cópia")` | duplica a aba atual (conteúdo + estilo) |
@@ -230,8 +231,7 @@ Use `escreverTexto(...)` em vez de `escrever(...)`, ou
 No caminho que você passar em `salvar(...)`. Use uma pasta que exista.
 
 **Dá pra abrir uma planilha existente e editar?**
-A facade foca em **criar** planilhas. Para abrir arquivos, use a API do Apache
-POI diretamente (`new XSSFWorkbook(arquivo)`).
+Sim! Use `Planilha.abrir("caminho.xlsx")` e edite com os mesmos comandos.
 
 **Preciso fechar a planilha?**
 Se usar `try (Planilha planilha = ...)`, é automático. Senão, chame `fechar()`.

@@ -49,10 +49,9 @@ public final class Planilha implements AutoCloseable {
 	private final IPlanilha planilha;
 	private String abaAtual;
 
-	private Planilha(final String nomePrimeiraAba) {
-		this.planilha = new PlanilhaXlsx();
-		this.planilha.criarPlanilha(nomePrimeiraAba);
-		this.abaAtual = nomePrimeiraAba;
+	private Planilha(final IPlanilha planilhaInterna, final String abaAtiva) {
+		this.planilha = planilhaInterna;
+		this.abaAtual = abaAtiva;
 	}
 
 	/**
@@ -62,7 +61,22 @@ public final class Planilha implements AutoCloseable {
 	 * @return A planilha criada.
 	 */
 	public static Planilha nova(final String nomeDaAba) {
-		return new Planilha(nomeDaAba);
+		final PlanilhaXlsx interna = new PlanilhaXlsx();
+		interna.criarPlanilha(nomeDaAba);
+		return new Planilha(interna, nomeDaAba);
+	}
+
+	/**
+	 * Abre uma planilha existente (.xlsx/.xls) para continuar editando com os
+	 * mesmos comandos, posicionando-se na primeira aba.
+	 *
+	 * @param caminhoArquivo Caminho do arquivo a abrir (ex.: "C:/tmp/dados.xlsx").
+	 * @return A planilha carregada do arquivo.
+	 */
+	public static Planilha abrir(final String caminhoArquivo) {
+		final PlanilhaXlsx interna = new PlanilhaXlsx();
+		interna.abrirPlanilha(caminhoArquivo);
+		return new Planilha(interna, interna.obterWorkbook().getSheetAt(0).getSheetName());
 	}
 
 	// ==================== ABAS ====================
