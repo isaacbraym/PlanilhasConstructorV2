@@ -1,9 +1,12 @@
 package com.abnote.planilhas;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -48,6 +51,8 @@ public final class Planilha implements AutoCloseable {
 
 	private final IPlanilha planilha;
 	private String abaAtual;
+	private CellStyle estiloDataCache;
+	private CellStyle estiloDataHoraCache;
 
 	private Planilha(final IPlanilha planilhaInterna, final String abaAtiva) {
 		this.planilha = planilhaInterna;
@@ -366,6 +371,82 @@ public final class Planilha implements AutoCloseable {
 			formula(coluna + linha, modeloFormula.replace("{}", String.valueOf(linha)));
 		}
 		return this;
+	}
+
+	// ==================== DATAS ====================
+
+	/**
+	 * Escreve uma data em uma célula, já formatada como dd/MM/aaaa.
+	 *
+	 * @param celula Posição da célula (ex.: "A1").
+	 * @param data   A data a escrever.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha escreverData(final String celula, final LocalDate data) {
+		final int[] indices = PosicaoConverter.converterPosicao(celula);
+		final Cell alvo = obterOuCriarCelula(indices[1], indices[0]);
+		alvo.setCellValue(data);
+		alvo.setCellStyle(estiloData());
+		return this;
+	}
+
+	/**
+	 * Escreve uma data com hora em uma célula, formatada como dd/MM/aaaa HH:mm.
+	 *
+	 * @param celula   Posição da célula (ex.: "A1").
+	 * @param dataHora A data e hora a escrever.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha escreverDataHora(final String celula, final LocalDateTime dataHora) {
+		final int[] indices = PosicaoConverter.converterPosicao(celula);
+		final Cell alvo = obterOuCriarCelula(indices[1], indices[0]);
+		alvo.setCellValue(dataHora);
+		alvo.setCellStyle(estiloDataHora());
+		return this;
+	}
+
+	/**
+	 * Aplica o formato de data (dd/MM/aaaa) às células da coluna, a partir da
+	 * célula informada (útil quando a coluna já tem datas em formato de número).
+	 *
+	 * @param celulaInicial Primeira célula da coluna (ex.: "A2").
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha formatarComoData(final String celulaInicial) {
+		final int[] indices = PosicaoConverter.converterPosicao(celulaInicial);
+		final Sheet sheet = sheetAtual();
+		for (int indiceLinha = indices[1]; indiceLinha <= sheet.getLastRowNum(); indiceLinha++) {
+			final Row linha = sheet.getRow(indiceLinha);
+			if (linha == null) {
+				continue;
+			}
+			final Cell celula = linha.getCell(indices[0]);
+			if (celula != null) {
+				celula.setCellStyle(estiloData());
+			}
+		}
+		return this;
+	}
+
+	private CellStyle estiloData() {
+		if (estiloDataCache == null) {
+			estiloDataCache = criarEstiloDeFormato("dd/MM/yyyy");
+		}
+		return estiloDataCache;
+	}
+
+	private CellStyle estiloDataHora() {
+		if (estiloDataHoraCache == null) {
+			estiloDataHoraCache = criarEstiloDeFormato("dd/MM/yyyy HH:mm");
+		}
+		return estiloDataHoraCache;
+	}
+
+	private CellStyle criarEstiloDeFormato(final String formato) {
+		final Workbook workbook = planilha.obterWorkbook();
+		final CellStyle estilo = workbook.createCellStyle();
+		estilo.setDataFormat(workbook.createDataFormat().getFormat(formato));
+		return estilo;
 	}
 
 	// ==================== FORMATOS ====================

@@ -30,6 +30,9 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
   **Então** os valores vão para a **próxima** linha vazia, a partir da coluna A.
 - **Quando** `escreverTabela("A1", [[a,b],[1,2]])`, **Então** a matriz é escrita
   a partir de A1.
+- **Quando** `escreverData("A1", data)`, **Então** A1 é uma data formatada
+  `dd/MM/aaaa` (`DateUtil.isCellDateFormatted` verdadeiro); `escreverDataHora`
+  usa `dd/MM/aaaa HH:mm`.
 
 ## Fórmulas
 

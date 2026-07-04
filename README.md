@@ -127,6 +127,8 @@ Para CPF, CNPJ, telefone e códigos, prefira **`escreverTexto(...)`**.
 | `escreverColuna("A1", v1, v2, ...)` | escreve valores um embaixo do outro |
 | `adicionarLinha(v1, v2, ...)` | acrescenta uma linha após a última preenchida |
 | `escreverTabela("A1", listaDeLinhas)` | escreve uma tabela inteira |
+| `escreverData("A1", LocalDate.of(2024,1,15))` | escreve uma data (dd/MM/aaaa) |
+| `escreverDataHora("A1", LocalDateTime.now())` | escreve data e hora |
 
 ### Cálculos (fórmulas do Excel)
 | Comando | O que faz |
@@ -148,6 +150,7 @@ Para CPF, CNPJ, telefone e códigos, prefira **`escreverTexto(...)`**.
 | `formatarComoContabil("B2")` | padrão contábil (R$ alinhado) |
 | `formatarComoNumero("B2")` | converte texto em número |
 | `formatarComoTexto("B2")` | converte em texto puro |
+| `formatarComoData("A2")` | formata a coluna como data (dd/MM/aaaa) |
 
 ### Colunas e linhas
 | Comando | O que faz |
