@@ -12,6 +12,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import com.abnote.planilhas.estilos.EstiloCelula;
 import com.abnote.planilhas.exceptions.ArquivoException;
@@ -69,7 +70,15 @@ public abstract class PlanilhaBase implements IPlanilha {
 			throw new ArquivoException("Caminho do arquivo não pode ser nulo ou vazio", caminhoArquivo);
 		}
 		try (FileInputStream arquivoEntrada = new FileInputStream(caminhoArquivo)) {
-			workbook = WorkbookFactory.create(arquivoEntrada);
+			Workbook workbookAberto = WorkbookFactory.create(arquivoEntrada);
+			if (!(workbookAberto instanceof XSSFWorkbook)) {
+				fecharSilenciosamente(workbookAberto);
+				throw new ArquivoException(
+						"Esta biblioteca só edita planilhas '.xlsx'. Arquivos '.xls' (formato antigo) não são "
+								+ "suportados — abra o arquivo no Excel e salve novamente como '.xlsx' antes",
+						caminhoArquivo);
+			}
+			workbook = workbookAberto;
 			sheet = workbook.getNumberOfSheets() > 0 ? workbook.getSheetAt(0) : workbook.createSheet("Planilha1");
 			initManipulators();
 			logger.info("Planilha aberta com sucesso: " + caminhoArquivo);
@@ -77,6 +86,14 @@ public abstract class PlanilhaBase implements IPlanilha {
 			logger.severe("Erro ao abrir a planilha '" + caminhoArquivo + "': " + e.getMessage());
 			throw new ArquivoException("Erro ao abrir planilha. Verifique se o caminho existe e é um arquivo válido",
 					caminhoArquivo, e);
+		}
+	}
+
+	private void fecharSilenciosamente(Workbook workbookParaFechar) {
+		try {
+			workbookParaFechar.close();
+		} catch (IOException e) {
+			logger.warning("Erro ao fechar workbook em formato não suportado: " + e.getMessage());
 		}
 	}
 

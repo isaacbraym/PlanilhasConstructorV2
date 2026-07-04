@@ -11,6 +11,11 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
 - **Dado** um arquivo `.xlsx` existente, **Quando** `Planilha.abrir(caminho)`,
   **Então** o conteúdo é carregado, a primeira aba fica ativa e pode ser editado
   com os mesmos comandos; arquivo inexistente/ inválido lança `ArquivoException`.
+- **Dado** um arquivo `.xls` (formato antigo, HSSF), **Quando**
+  `Planilha.abrir(caminho)`, **Então** lança `ArquivoException` com mensagem
+  orientando a converter para `.xlsx` — **nunca** `ClassCastException` (vários
+  métodos da facade fazem cast interno para `XSSFSheet`, que quebraria sem
+  essa checagem prévia em `PlanilhaBase.abrirPlanilha`).
 - **Quando** `novaAba("Resumo")`, **Então** uma nova aba "Resumo" é criada e
   passa a ser a ativa.
 - **Quando** `duplicarAba("Cópia")`, **Então** a aba ativa é copiada (conteúdo e

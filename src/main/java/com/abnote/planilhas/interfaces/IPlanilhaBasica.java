@@ -15,10 +15,13 @@ public interface IPlanilhaBasica extends AutoCloseable {
     void criarPlanilha(String nomeSheet);
 
     /**
-     * Abre uma planilha existente (.xlsx/.xls) a partir do caminho informado,
+     * Abre uma planilha {@code .xlsx} existente a partir do caminho informado,
      * selecionando a primeira aba.
      *
      * @param caminhoArquivo Caminho do arquivo a abrir.
+     * @throws com.abnote.planilhas.exceptions.ArquivoException se o arquivo não
+     *         existir, não puder ser lido, ou não for um {@code .xlsx} (o
+     *         formato antigo {@code .xls} não é suportado).
      */
     void abrirPlanilha(String caminhoArquivo);
 

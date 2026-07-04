@@ -88,11 +88,15 @@ public final class Planilha implements AutoCloseable {
 	}
 
 	/**
-	 * Abre uma planilha existente (.xlsx/.xls) para continuar editando com os
+	 * Abre uma planilha {@code .xlsx} existente para continuar editando com os
 	 * mesmos comandos, posicionando-se na primeira aba.
 	 *
 	 * @param caminhoArquivo Caminho do arquivo a abrir (ex.: "C:/tmp/dados.xlsx").
 	 * @return A planilha carregada do arquivo.
+	 * @throws com.abnote.planilhas.exceptions.ArquivoException se o arquivo não
+	 *         existir, não puder ser lido, ou não for um {@code .xlsx} (o
+	 *         formato antigo {@code .xls} não é suportado — abra no Excel e
+	 *         salve novamente como {@code .xlsx}).
 	 */
 	public static Planilha abrir(final String caminhoArquivo) {
 		final PlanilhaXlsx interna = new PlanilhaXlsx();

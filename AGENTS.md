@@ -127,6 +127,23 @@ entrada, nomes de intervalo, adicionarTotais, comentários). Resta só
 "formatação condicional avançada" (data bars/ícones, prioridade média,
 adiada) e os itens de "prioridade baixa" (ver lista atualizada abaixo).
 
+### Sessão de melhorias pós-review (após o usuário pedir uma lista de
+sugestões e mandar "pode ir pra cima") — em andamento
+
+- [x] **Bug crítico corrigido**: `Planilha.abrir()` prometia suporte a `.xls`
+  mas 6 métodos da facade fazem cast `(XSSFSheet)` internamente — abrir um
+  `.xls` de verdade gerava `ClassCastException` cru. Corrigido em
+  `PlanilhaBase.abrirPlanilha` (checagem `instanceof XSSFWorkbook` +
+  `ArquivoException` amigável). Ver regra 6 na seção 4. Testado com um `.xls`
+  real gerado via `HSSFWorkbook` em `AbrirFacadeTest`. Total: 156 testes.
+- [ ] CI (GitHub Actions rodando `mvn test` a cada push/PR).
+- [ ] Cobertura de testes medida com JaCoCo.
+- [ ] "Colar como valores" (remover fórmulas antes de compartilhar).
+- [ ] Duplicar planilha inteira para outro arquivo.
+- [ ] Cookbook de receitas prontas (exemplos por caso de uso real).
+- [ ] Agrupamento de linhas (outline/subtotal por grupo).
+- [ ] JitPack + CHANGELOG.md.
+
 **APIs do Apache POI já confirmadas via `javap` nesta sessão** (não precisa
 reconferir, os nomes/assinaturas abaixo estão corretos para POI 5.2.5):
 - Formatação condicional: `sheet.getSheetConditionalFormatting()` →
@@ -202,7 +219,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **155 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **156 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -254,6 +271,12 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
    uma borda **espessa** (para não rebaixá-la); antes desta sessão a checagem
    estava invertida (pulava células **sem nenhuma** borda, ou seja, o caso
    comum) e `bordas(...)` silenciosamente não fazia nada na maioria dos casos.
+6. **`Planilha.abrir()` só aceita `.xlsx`**: `PlanilhaBase.abrirPlanilha` checa
+   `instanceof XSSFWorkbook` logo após `WorkbookFactory.create(...)` e lança
+   `ArquivoException` amigável para `.xls`. **Não remover essa checagem** —
+   `realcarSeX`/`listaSuspensa`/`validarXEntre`/`graficoDeX`/`inserirImagem`/
+   `comentario` fazem cast interno `(XSSFSheet)` que lançaria
+   `ClassCastException` cru sem ela.
 
 ## 5. Convenções de código (obrigatórias)
 

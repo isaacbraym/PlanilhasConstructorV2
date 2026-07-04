@@ -309,6 +309,8 @@ No caminho que você passar em `salvar(...)`. Use uma pasta que exista.
 
 **Dá pra abrir uma planilha existente e editar?**
 Sim! Use `Planilha.abrir("caminho.xlsx")` e edite com os mesmos comandos.
+Só funciona com arquivos `.xlsx` — se o seu arquivo for `.xls` (formato
+antigo), abra no Excel e salve novamente como `.xlsx` antes.
 
 **Minha lista suspensa não aceita todas as opções que eu passei.**
 O Excel tem um limite de 255 caracteres somados para listas com opções fixas
