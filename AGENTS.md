@@ -184,7 +184,17 @@ sugestões e mandar "pode ir pra cima") — em andamento
   `setRowGroupCollapsed` esconde a planilha inteira, não só o grupo — por
   isso **não** foi exposto um parâmetro de colapso automático. Ver regra 8 na
   seção 4 para os detalhes completos da investigação. Total: 165 testes.
-- [ ] JitPack + CHANGELOG.md.
+- [x] **JitPack + CHANGELOG.md**: `CHANGELOG.md` criado (Keep a Changelog);
+  `pom.xml` bump `2.0.0-SNAPSHOT` → `2.1.0` (minor, sem breaking changes);
+  tag `v2.1.0` criada e enviada; README com instruções de instalação via
+  JitPack (+ badge) como opção 1. **Build do JitPack verificado de verdade**
+  via `curl` (a ferramenta `WebFetch` do agente leva 403 do JitPack — usar
+  `curl -A "Mozilla/5.0" ...` do Bash funciona): `status: "ok"`, `isTag:
+  true`, `private: false`, e o `.jar` foi baixado com sucesso (137KB, HTTP
+  200) em
+  `https://jitpack.io/com/github/isaacbraym/PlanilhasConstructorV2/v2.1.0/PlanilhasConstructorV2-v2.1.0.jar`.
+  **Com isso, TODOS os itens da lista de sugestões pós-review foram
+  entregues.**
 
 **APIs do Apache POI já confirmadas via `javap` nesta sessão** (não precisa
 reconferir, os nomes/assinaturas abaixo estão corretos para POI 5.2.5):
