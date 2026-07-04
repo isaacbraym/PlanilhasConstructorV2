@@ -1,0 +1,35 @@
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# Eclipse
+.metadata/
+.settings/
+.classpath
+.project
+.recommenders/
+*.launch
+*.class
+
+# IntelliJ
+.idea/
+*.iml
+*.iws
+out/
+
+# Arquivos temporários
+*.log
+*.tmp
+*.bak
+*~
+.DS_Store
+
+# Arquivos de teste
+*.xlsx
+*.xls
+!src/test/resources/*.xlsx
+!src/test/resources/*.xls

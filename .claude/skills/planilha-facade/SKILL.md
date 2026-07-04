@@ -1,0 +1,66 @@
+---
+name: planilha-facade
+description: Gerar código Java que cria planilhas Excel (.xlsx) com a facade amigável com.abnote.planilhas.Planilha deste projeto. Use quando o usuário pedir para "criar/montar/gerar uma planilha", "fazer um relatório em Excel", uma tabela, lista, controle financeiro ou similar usando esta biblioteca.
+---
+
+# Skill: usar a facade `Planilha`
+
+Quando o usuário pedir para criar uma planilha usando este projeto, gere código
+com a facade `com.abnote.planilhas.Planilha` (não com Apache POI cru nem com a
+API fluente interna, a menos que peçam algo avançado).
+
+## Molde base (sempre comece por aqui)
+
+```java
+import com.abnote.planilhas.Planilha;
+import com.abnote.planilhas.estilos.estilos.CorEnum;
+
+public class Gerar {
+    public static void main(String[] args) {
+        try (Planilha planilha = Planilha.nova("NomeDaAba")) {
+            // ... comandos ...
+            planilha.salvar("C:/tmp/arquivo.xlsx");
+        }
+    }
+}
+```
+
+`try (Planilha ...)` não obriga `throws` — a facade fecha sozinha.
+
+## Comandos disponíveis (use SOMENTE estes na facade)
+
+- Abas: `nova`, `novaAba`, `irParaAba`, `duplicarAba`.
+- Escrita: `escrever`, `escreverTexto`, `escreverLinha`, `escreverColuna`,
+  `adicionarLinha`, `escreverTabela`.
+- Fórmulas: `somar`, `media`, `contar`, `minimo`, `maximo`, `seEntao`.
+- Formatos: `formatarComoMoeda`, `formatarComoContabil`, `formatarComoNumero`,
+  `formatarComoTexto`.
+- Colunas/linhas: `moverColuna`, `removerColuna`, `limparColuna`,
+  `inserirColunaEntre`, `duplicarColuna`, `duplicarLinha`.
+- Estilos: `negrito`, `italico`, `corDoTexto`, `corDeFundo`, `centralizar`,
+  `fonte`, `tamanhoDaFonte`, `bordas`, `mesclar`, `contornarTudo`,
+  `removerLinhasDeGrade`, `ajustarColunas`, `congelarPrimeiraLinha`,
+  `filtrosNoCabecalho`.
+- Salvar: `salvar`, `salvarNaPasta`.
+- Avançado: `avancado()` → `IPlanilha`; `workbook()` → POI; `estilo(pos)`.
+
+Detalhes/contrato: `docs/specs/facade-planilha.spec.md`.
+
+## Regras que evitam erros comuns
+
+1. **Estilize DEPOIS de escrever.** Estilos de fonte só afetam células que já
+   existem. Ordem: escrever → formatar → estilizar → salvar.
+2. **CEP/CPF/CNPJ/telefone/código:** use `escreverTexto(...)`, nunca `escrever`,
+   para não perder zeros à esquerda.
+3. **Posições** são Excel: coluna(letra)+linha(número), ex.: `A1`; intervalo com
+   `:`, ex.: `A1:C1`.
+4. Só existe fórmula de **soma/agregação e IF**. Não invente `multiplicar`/
+   `subtrair` na facade — se precisar, use `avancado().manipularPlanilha()` /
+   `multiplicarColunasComTexto`, ou explique a limitação.
+5. Não adicione dependências nem use Spring/Lombok.
+
+## Exemplo de referência
+
+Veja `src/main/java/com/abnote/planilhas/examples/ExemploFacade.java`.
+Se o usuário pedir algo novo e recorrente, considere a skill
+`planilha-nova-feature` para adicionar o comando à facade.
