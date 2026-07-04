@@ -72,6 +72,22 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
   `alturaLinha(l, p)` define a altura em pontos; `congelar(linhas, colunas)`
   fixa linhas/colunas ao rolar.
 
+## adicionarTotais (linha de totais automática)
+
+- **Dado** um cabeçalho em `A1` e dados nas linhas 2-3, **Quando**
+  `adicionarTotais("A1")`, **Então** a linha 4 recebe, para cada coluna cujos
+  valores existentes são **todos numéricos**, uma fórmula `SUM(...)` cobrindo
+  exatamente as linhas de dados detectadas; a **primeira** coluna não numérica
+  encontrada recebe o texto `"Total"` (as demais colunas não numéricas ficam
+  em branco).
+- A largura da tabela é detectada pelo cabeçalho (para de contar colunas no
+  primeiro cabeçalho vazio); a altura é detectada pela primeira coluna (para
+  na primeira linha em branco nessa coluna, a partir do início dos dados).
+- Uma coluna com qualquer célula não numérica (mesmo que as outras sejam
+  números) **não** recebe soma.
+- Tabela sem nenhuma linha de dados → nenhuma linha de totais é criada
+  (no-op).
+
 ## Formatação condicional
 
 - **Quando** `realcarSeMaiorQue(intervalo, valor, cor)`, **Então** é criada uma

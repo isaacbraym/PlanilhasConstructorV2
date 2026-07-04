@@ -109,6 +109,12 @@ item específico — confira `git log` e `mvn clean test` antes de continuar.
   real (`SUM(Precos)`, `VLOOKUP(D1,Tabela,2,FALSE)`). **Limitação conhecida e
   documentada**: não funciona ainda com `somar`/`media`/etc. (regex estrita do
   `FormulaBuilder`). Total: 149 testes verdes.
+- [x] **Lote M** — `adicionarTotais(celulaCabecalho)` via novo
+  `utils/TotalizadorDeTabela`: detecta a tabela (largura pelo cabeçalho, altura
+  pela primeira coluna), soma via fórmula `SUM` cada coluna 100% numérica, e
+  escreve "Total" na primeira coluna não numérica. Casos de borda testados:
+  tabela sem dados (no-op), coluna com texto misturado (ignorada), coluna fora
+  do cabeçalho (não tocada). Total: 153 testes verdes.
 
 **APIs do Apache POI já confirmadas via `javap` nesta sessão** (não precisa
 reconferir, os nomes/assinaturas abaixo estão corretos para POI 5.2.5):
@@ -185,7 +191,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **149 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **153 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -210,7 +216,7 @@ utils/                 → PosicaoConverter, PositionManager, InsersorDeDados,
                          FiltroDeLinhas, OrdenadorDeLinhas, CopiadorDeCelulas,
                          FormatosDeCelula, FormatacaoCondicionalHelper,
                          ListaSuspensaHelper, ProtecaoHelper,
-                         ValidacaoDeEntradaHelper, ...
+                         ValidacaoDeEntradaHelper, TotalizadorDeTabela, ...
 ```
 
 Detalhes em [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
@@ -321,9 +327,10 @@ células sem borda prévia). Ver seção 4 para os detalhes que não podem regre
 6. **Comentários em células** (notas) — `sheet.createDrawingPatriarch()` +
    `Drawing.createCellComment(anchor)`; útil para explicar uma fórmula ou
    instrução num formulário.
-7. **`adicionarTotais()` de alto nível** — método que soma automaticamente
-   todas as colunas numéricas de uma tabela e insere uma linha "Total"
-   formatada, sem o usuário precisar chamar `somar()` coluna por coluna.
+7. ~~**`adicionarTotais()` de alto nível**~~ — **ENTREGUE** nesta sessão: soma
+   automaticamente cada coluna numérica de uma tabela via novo
+   `utils/TotalizadorDeTabela` (detecta largura pelo cabeçalho, altura pela
+   primeira coluna, ignora colunas com qualquer célula não numérica).
 
 ### Prioridade baixa / nice-to-have
 

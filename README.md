@@ -145,6 +145,7 @@ Para CPF, CNPJ, telefone e códigos, prefira **`escreverTexto(...)`**.
 | `procurarValor("E2", "A2", "H2:J100", 3)` | PROCV: busca A2 na tabela e traz a coluna 3 |
 | `procurarValorNaAba("B2", "A2", "Produtos", "A2:C100", 3)` | PROCV buscando em outra aba |
 | `definirNome("Precos", "B2:B100")` | dá nome a um intervalo, para usar em `formula(...)`/`procurarValor(...)` |
+| `adicionarTotais("A1")` | soma sozinho cada coluna numérica da tabela, logo abaixo do último dado |
 
 ### Formatar valores
 | Comando | O que faz |

@@ -31,6 +31,7 @@ import com.abnote.planilhas.utils.ListaSuspensaHelper;
 import com.abnote.planilhas.utils.OrdenadorDeLinhas;
 import com.abnote.planilhas.utils.PosicaoConverter;
 import com.abnote.planilhas.utils.ProtecaoHelper;
+import com.abnote.planilhas.utils.TotalizadorDeTabela;
 import com.abnote.planilhas.utils.ValidacaoDeEntradaHelper;
 
 /**
@@ -445,6 +446,33 @@ public final class Planilha implements AutoCloseable {
 		final Name nomeDefinido = planilha.obterWorkbook().createName();
 		nomeDefinido.setNameName(nome);
 		nomeDefinido.setRefersToFormula("'" + abaAtual + "'!" + paraReferenciaAbsoluta(intervalo));
+		return this;
+	}
+
+	/**
+	 * Soma automaticamente cada coluna numérica de uma tabela, inserindo uma
+	 * linha de totais logo abaixo da última linha de dados (fórmula
+	 * {@code SUM}, não um valor fixo — atualiza sozinha se os dados mudarem).
+	 * A primeira coluna não numérica (normalmente o rótulo) recebe o texto
+	 * "Total".
+	 *
+	 * <p>Exemplo — tabela com cabeçalho em A1 e dados até a última linha
+	 * preenchida na coluna A:</p>
+	 * <pre>{@code
+	 * planilha.escreverLinha("A1", "Produto", "Preço", "Qtd")
+	 *         .adicionarLinha("Caneta", 2.5, 100)
+	 *         .adicionarLinha("Caderno", 15.9, 30)
+	 *         .adicionarTotais("A1");
+	 * // Insere na linha seguinte: "Total", =SUM(B2:B3), =SUM(C2:C3)
+	 * }</pre>
+	 *
+	 * @param celulaCabecalho Célula do canto superior esquerdo do cabeçalho da
+	 *                        tabela (ex.: "A1").
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha adicionarTotais(final String celulaCabecalho) {
+		final int[] indices = PosicaoConverter.converterPosicao(celulaCabecalho);
+		TotalizadorDeTabela.adicionarTotais(sheetAtual(), indices[1], indices[0]);
 		return this;
 	}
 
