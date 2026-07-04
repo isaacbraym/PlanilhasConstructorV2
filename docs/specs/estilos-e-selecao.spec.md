@@ -21,6 +21,19 @@ Após aplicar, o estado de seleção é resetado.
   **Quando** `celula("A1").aplicarEstilos().aplicarNegrito()`, **Então** **A1**
   fica em negrito e **A5 não** (a seleção nova reseta o "último índice inserido").
 
+## `aplicarTodasAsBordas()` / `bordas(intervalo)`
+
+- **Dado** um intervalo com células **sem nenhuma borda**, **Quando**
+  `aplicarTodasAsBordas()` (facade: `bordas(intervalo)`), **Então** todas as
+  células não vazias do intervalo recebem borda `THIN` em todos os lados.
+- **Dado** uma célula que já tem uma borda `THICK` em algum lado, **Quando**
+  a mesma operação é aplicada, **Então** essa célula é **ignorada** (a borda
+  espessa não é rebaixada para fina).
+- Regressão: antes desta sessão, a checagem de "já tem borda espessa" estava
+  invertida e testava "não tem borda nenhuma" — por isso a operação
+  silenciosamente não fazia nada no caso comum (célula sem borda prévia). Ver
+  `EstiloCelulaTest.deveAplicarBordasFinasEmCelulasSemBorda`.
+
 ## `todasAsBordasEmTudo()` / `contornarTudo()`
 
 - **Dado** dados em `A1:B2`, **Quando** `todasAsBordasEmTudo()`, **Então** a área

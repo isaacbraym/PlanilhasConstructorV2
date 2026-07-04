@@ -3,25 +3,49 @@
 ## Visão em camadas
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│  Planilha (facade)          ← API amigável p/ quem não programa│
-│  escrever / somar / negrito / duplicar / salvar ...           │
-└───────────────┬─────────────────────────────────────────────┘
-                │ delega
-┌───────────────▼─────────────────────────────────────────────┐
-│  IPlanilha (PlanilhaBase → PlanilhaXlsx)   ← API fluente      │
-│   ├─ selecionar()  → SelecaoManager                          │
-│   ├─ converter()   → ConversaoManager → Conversores          │
-│   ├─ formula()     → FormulaBuilder                          │
-│   ├─ aplicarEstilos() → StyleManager → EstiloCelula          │
-│   ├─ manipularPlanilha() → ManipuladorPlanilha(Helper)       │
-│   └─ dados          → DataManipulator → InsersorDeDados      │
-└───────────────┬─────────────────────────────────────────────┘
-                │ usa
-┌───────────────▼─────────────────────────────────────────────┐
-│  Apache POI (XSSFWorkbook, Sheet, Row, Cell, CellStyle)      │
-└─────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────────┐
+│  Planilha (facade)        ← API amigável p/ quem não programa      │
+│  escrever / somar / negrito / duplicar / ordenar / gráfico / ...   │
+│   ├─ delega parte para IPlanilha (API fluente, abaixo)             │
+│   └─ delega parte direto para utils/graficos/imagens (sem passar   │
+│      pela API fluente — ver "Duas rotas de delegação" abaixo)      │
+└───────────────┬─────────────────────────────────────────────────┘
+                │
+        ┌───────┴────────────────────────────┐
+        │                                     │
+┌───────▼─────────────────────────┐  ┌────────▼──────────────────────┐
+│ IPlanilha (PlanilhaBase/Xlsx)    │  │ utils / graficos / imagens     │
+│  ← API fluente, seleciona-e-age  │  │  ← utilitários "sheet-level"   │
+│  ├─ selecionar() → SelecaoManager│  │  FiltroDeLinhas, OrdenadorDeLinhas│
+│  ├─ converter()  → ConversaoManager│ CopiadorDeCelulas, FormatosDeCelula│
+│  ├─ formula()    → FormulaBuilder│  │  FormatacaoCondicionalHelper,   │
+│  ├─ aplicarEstilos() → StyleManager│ ListaSuspensaHelper, GraficoHelper,│
+│  ├─ manipularPlanilha() → ...    │  │  ImagemHelper                   │
+│  └─ dados → DataManipulator      │  └────────┬────────────────────────┘
+└───────┬──────────────────────────┘           │
+        │                                      │
+        └──────────────┬───────────────────────┘
+                        │ usa
+        ┌───────────────▼─────────────────────────────────────┐
+        │  Apache POI (XSSFWorkbook, Sheet, Row, Cell, ...)    │
+        └───────────────────────────────────────────────────────┘
 ```
+
+### Duas rotas de delegação (por que a facade não usa só `IPlanilha`)
+
+A API fluente (`IPlanilha`) foi desenhada em torno da máquina de estados de
+seleção (`selecionar().celula(X)` → age). Isso funciona bem para dados/estilo
+de célula, mas várias features adicionadas depois (ordenar, buscar/filtrar,
+formatação condicional, dropdown, gráfico, imagem) são operações de **sheet
+inteira** ou **intervalo explícito**, sem fazer sentido nessa máquina de
+estados. Por isso a facade `Planilha` tem uma segunda rota: para essas
+features, ela chama um utilitário estático em `utils/`, `graficos/` ou
+`imagens/` **diretamente**, passando `XSSFSheet` + índices já convertidos via
+`PosicaoConverter`. Isso mantém `IPlanilha` coeso (não vira um "todo-poderoso")
+e mantém a facade fina (a lógica pesada mora no utilitário, testável isolado).
+
+Regra prática: **nem toda feature da facade passa por `IPlanilha`** — isso é
+intencional, não uma inconsistência a "corrigir".
 
 ## A máquina de estados de seleção
 
@@ -73,6 +97,67 @@ Convenção dos helpers para o alvo:
 - `isRange == true` → itera o intervalo `[start..end]`.
 - `rowIndex != -1, columnIndex == -1` → a linha inteira.
 - `rowIndex != -1, columnIndex != -1` → a célula específica.
+
+Coberta por testes diretos em `EstiloCelulaTest` (não só via integração).
+
+**Pegadinha corrigida**: `BorderStyleHelper.verificarBordaEspessa` checa se a
+célula **já tem** uma borda `THICK` (para não rebaixá-la ao aplicar bordas
+finas). Antes desta sessão a checagem estava invertida (`NONE` em vez de
+`THICK`), então `bordas(intervalo)` nunca aplicava borda no caso comum (célula
+sem nenhuma borda). Se mexer em `aplicarTodasAsBordas`, rode
+`EstiloCelulaTest.deveAplicarBordasFinasEmCelulasSemBorda` primeiro.
+
+## Ordenação (`utils/OrdenadorDeLinhas`)
+
+Captura cada linha do intervalo (célula a célula: tipo, valor e `CellStyle`),
+ordena a lista capturada por uma chave (número antes de texto; alfabético
+ignorando caixa; vazio por último) e reescreve as linhas na nova ordem — a
+formatação "viaja" junto com o conteúdo porque é capturada e reaplicada, não
+porque a célula em si se move.
+
+## Formatação condicional (`utils/FormatacaoCondicionalHelper`)
+
+Usa `XSSFSheet.getSheetConditionalFormatting()` +
+`XSSFConditionalFormattingRule` + `XSSFPatternFormatting`. Para cor de fundo em
+XSSF (diferente do quirk clássico do HSSF), o caminho certo é
+`setFillForegroundColor(Color)` + `setFillPattern(SOLID_FOREGROUND)` — **não**
+`setFillBackgroundColor` (isso é para HSSF). Escala de cores usa
+`createConditionalFormattingColorScaleRule()` + `ColorScaleFormatting` com 3
+`Color` e 3 `ConditionalFormattingThreshold` (MIN/PERCENTILE 50/MAX).
+
+## Lista suspensa (`utils/ListaSuspensaHelper`)
+
+Usa `XSSFDataValidationHelper` (`createExplicitListConstraint` ou
+`createFormulaListConstraint`) + `sheet.addValidationData(...)`.
+
+**Pegadinha do POI (não é bug nosso)**: em XSSF,
+`validation.setSuppressDropDownArrow(true)` é o que **exibe** a seta do menu —
+o nome sugere o oposto. Não trocar para `false`.
+
+O limite de 255 caracteres somados nas opções (Excel) é validado na facade
+antes de chegar ao POI (`Planilha.validarOpcoesDaLista`), com mensagem
+sugerindo `listaSuspensaDoIntervalo` como alternativa sem esse limite.
+
+## Gráficos (`graficos/GraficoHelper`)
+
+Usa a API `XDDFChart` (não a antiga `HSSFChart`/JFreeChart). Fluxo:
+`sheet.createDrawingPatriarch()` → `drawing.createAnchor(...)` →
+`drawing.createChart(anchor)` → `chart.createCategoryAxis`/`createValueAxis`
+(pizza usa `null, null` — não tem eixos) → `XDDFDataSourcesFactory.fromString/
+NumericCellRange` → `chart.createData(ChartTypes.X, ...)` →
+`data.addSeries(...)` → `chart.plot(data)`. Barras usam `BarDirection.COL`
+(verticais). Verificado com round-trip real (salvar em disco + reabrir).
+
+## Imagens (`imagens/ImagemHelper`)
+
+Usa `workbook.addPicture(bytes, tipo)` + `drawing.createPicture(anchor, idx)`.
+
+**Pegadinha do POI (verificada empiricamente, não documentada)**:
+`XSSFPicture.resize(double escala)` escala o tamanho **atual** da âncora, não
+o tamanho natural da imagem. Numa âncora recém-criada (tamanho zero),
+`resize(escala)` sozinho resulta em um retângulo zerado. É preciso chamar
+`resize()` (sem argumento, fixa o tamanho natural) **antes** de
+`resize(escala)`. Ver `ImagemHelper.inserir(..., escala)`.
 
 ## Exceções (todas unchecked)
 

@@ -7,9 +7,9 @@ teste correspondente em `src/test/`.
 
 | Spec | Assunto | Testes relacionados |
 |---|---|---|
-| [facade-planilha.spec.md](facade-planilha.spec.md) | API amigável `Planilha` | `PlanilhaFacadeTest` |
+| [facade-planilha.spec.md](facade-planilha.spec.md) | API amigável `Planilha` (todos os comandos) | `PlanilhaFacadeTest`, `AritmeticaFacadeTest`, `BuscaFacadeTest`, `AbrirFacadeTest`, `DataFacadeTest`, `OrdenarFacadeTest`, `DimensoesFacadeTest`, `FormatacaoCondicionalFacadeTest`, `ListaSuspensaFacadeTest`, `GraficoFacadeTest`, `ImagemFacadeTest` |
 | [coercao-de-tipos.spec.md](coercao-de-tipos.spec.md) | Texto x número ao escrever | `CoercaoNumericaTest` |
-| [estilos-e-selecao.spec.md](estilos-e-selecao.spec.md) | Alvo de `aplicarEstilos()` e posições | `EstiloSelecaoTest`, `PosicaoConverterTest` |
+| [estilos-e-selecao.spec.md](estilos-e-selecao.spec.md) | Alvo de `aplicarEstilos()`, posições e estilos diretos | `EstiloSelecaoTest`, `EstiloCelulaTest`, `PosicaoConverterTest` |
 
 ## Convenção
 

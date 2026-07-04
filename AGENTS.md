@@ -33,16 +33,24 @@ Facade `com.abnote.planilhas.Planilha` já cobre: criar/abrir/salvar; escrever
 livre/preencherColuna/PROCV); ordenar linhas; buscar/copiar/mover/remover linhas
 por valor; formatos (moeda/contábil/número/texto/data/porcentagem); colunas e
 linhas (mover/remover/limpar/inserir/duplicar); estilos (negrito, cores, bordas,
-mesclar, largura/altura, congelar N, filtros, autoajuste). Veja a seção 7 para
-a lista completa e `docs/specs/facade-planilha.spec.md` para o contrato exato.
+mesclar, largura/altura, congelar N, filtros, autoajuste); **formatação
+condicional** (realçar/escala de cores); **lista suspensa** (dropdown, fixa ou
+de intervalo); **gráficos** (barras/pizza/linha); **imagens/logo**. Veja a
+seção 7 para o que ainda falta e `docs/specs/facade-planilha.spec.md` para o
+contrato exato de cada comando.
 
-### Sessão em andamento (autônoma, iniciada por pedido do usuário em 2026-07-04)
+### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
 O usuário pediu para continuar **de forma autônoma**, com atenção especial a:
 testes unitários para tudo, coesão de classes/interfaces (cada método no lugar
 certo), documentar tudo neste arquivo para o Codex retomar sem fricção, e manter
-o foco em "chamadas simples e intuitivas" para quem não programa. Ordem de
-trabalho desta sessão (lotes E-I), **marque aqui o que já foi feito**:
+o foco em "chamadas simples e intuitivas" para quem não programa. Os lotes
+E-I abaixo foram todos concluídos, testados e commitados/enviados ao GitHub
+(repo `isaacbraym/PlanilhasConstructorV2`, branch `main`). **Se você está
+retomando depois disso**: a lista abaixo é só histórico desta sessão — o que
+fazer a seguir está na seção 7 (roadmap priorizado). Se encontrar um `[ ]`
+(não marcado) abaixo, é sinal de que a sessão foi interrompida no meio desse
+item específico — confira `git log` e `mvn clean test` antes de continuar.
 
 - [x] **Refatoração de coesão** — `Planilha.java` (1154→1093 linhas) teve a
   cópia de célula e o cache de estilos de formato extraídos para
@@ -74,8 +82,12 @@ trabalho desta sessão (lotes E-I), **marque aqui o que já foi feito**:
   aplicava borda fina em células sem borda prévia (o caso comum). Corrigido
   para pular apenas células que já têm borda **espessa** (preservando-a). Ver
   regra 5 na seção 4 acima.
-- [ ] **Revisão final** — atualizar roadmap/README/specs com tudo entregue e o
-  que ainda falta para "o construtor de planilhas perfeito".
+- [x] **Revisão final** — `docs/ARCHITECTURE.md` ganhou seções para cada
+  feature nova (ordenação, formatação condicional, dropdown, gráficos,
+  imagens) + diagrama atualizado explicando a "segunda rota" de delegação da
+  facade (direto para `utils/`/`graficos/`/`imagens`, sem passar por
+  `IPlanilha`). Roadmap da seção 7 reescrito com prioridades claras para quem
+  continuar (impressão e proteção de planilha no topo).
 
 **APIs do Apache POI já confirmadas via `javap` nesta sessão** (não precisa
 reconferir, os nomes/assinaturas abaixo estão corretos para POI 5.2.5):
@@ -233,29 +245,77 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
 4. `mvn clean test` deve ficar **verde** antes de concluir.
 5. Atualize `README.md` e as specs quando o comportamento público mudar.
 
-## 7. Roadmap aberto (candidatos, não obrigatórios)
+## 7. Roadmap — o que falta para "o construtor de planilhas perfeito"
 
-- Aumentar cobertura de `EstiloCelula`/helpers de estilo.
-- Validação de dados (listas suspensas/dropdowns) e gráficos, se houver demanda.
+### Já entregue (não re-implementar; ver README.md para a lista completa de comandos)
 
-Já entregue:
-- Aritmética por fórmula (`FormulaBuilder.personalizada` + facade
-  `multiplicar`/`subtrair`/`dividir`/`formula`/`preencherColuna`).
-- PROCV amigável: `procurarValor` / `procurarValorNaAba` (VLOOKUP).
-- Busca/filtro de linhas na facade (`buscarLinhas`, `contarLinhasOnde`,
-  `copiarLinhasParaAba`, `moverLinhasParaAba`, `removerLinhasOnde`) via
-  `utils/FiltroDeLinhas`. A interface órfã `IBuscaDados` foi **removida**
-  (design POI-leaking incompatível com o objetivo amigável).
-- Ordenar linhas (`ordenarPorCrescente`/`Decrescente`/`ordenarPor`) via
-  `utils/OrdenadorDeLinhas`.
-- Datas (`escreverData`/`escreverDataHora`/`formatarComoData`), porcentagem e
-  dimensões (`larguraColuna`/`alturaLinha`/`congelar`).
-- Abrir/editar arquivos existentes: `Planilha.abrir(caminho)` +
-  `IPlanilhaBasica.abrirPlanilha` (via `WorkbookFactory`).
-- Formatação condicional: `realcarSeMaiorQue`/`MenorQue`/`Entre`/`Igual` +
-  `escalaDeCores`, via `utils/FormatacaoCondicionalHelper`.
-- Listas suspensas: `listaSuspensa`/`listaSuspensaDoIntervalo`, via
-  `utils/ListaSuspensaHelper`.
-- Gráficos: `graficoDeBarras`/`graficoDePizza`/`graficoDeLinha`, via
-  `graficos/GraficoHelper`.
-- Imagens: `inserirImagem` (com/sem escala), via `imagens/ImagemHelper`.
+Criar/abrir/salvar planilhas; escrever (célula/linha/coluna/tabela/append/
+texto-forçado/data/data-hora); fórmulas (agregação/aritmética/fórmula livre/
+preencherColuna/PROCV); ordenar linhas; buscar/copiar/mover/remover linhas por
+valor; formatos (moeda/contábil/número/texto/data/porcentagem); colunas e
+linhas (mover/remover/limpar/inserir/duplicar); estilos (fonte, cor, borda,
+mesclar, largura/altura, congelar N, filtros, autoajuste); formatação
+condicional (realçar/escala de cores); lista suspensa (opções fixas ou de
+intervalo); gráficos (barras/pizza/linha); imagens/logo.
+
+Dois bugs reais foram encontrados e corrigidos por testes nesta sessão:
+direcionamento de `aplicarEstilos()` em célula única, e
+`BorderStyleHelper.verificarBordaEspessa` (bordas finas nunca eram aplicadas em
+células sem borda prévia). Ver seção 4 para os detalhes que não podem regredir.
+
+### Prioridade alta (maior valor prático, ainda não coberto)
+
+1. **Configuração de impressão** — orientação retrato/paisagem, área de
+   impressão, ajustar para caber em N páginas, margens, cabeçalho/rodapé de
+   impressão. API POI: `sheet.getPrintSetup()` (`setLandscape`, `setFitToPage`,
+   `setFitWidth`/`setFitHeight`), `sheet.setPrintArea(...)` (ou
+   `workbook.setPrintArea(sheetIndex, ...)`), `sheet.getMargin`/`setMargin`.
+   Zero cobertura hoje — quem monta uma planilha para **imprimir** (relatório,
+   nota, orçamento) não tem nenhum comando amigável para isso.
+2. **Proteção de planilha/células** — travar células de fórmula/estrutura e
+   deixar só as de entrada editáveis (par natural de `listaSuspensa`, para
+   formulários). API POI: `CellStyle.setLocked(boolean)` (todas as células são
+   `locked=true` por padrão, mesmo sem proteção ativa) +
+   `sheet.protectSheet(senha)` (senha pode ser vazia/null para só travar sem
+   pedir senha — checar comportamento exato do POI antes de assumir).
+3. **Validação numérica/de data na lista suspensa** — hoje
+   `utils/ListaSuspensaHelper` só cobre `createExplicitListConstraint`/
+   `createFormulaListConstraint`; `XSSFDataValidationHelper` também tem
+   `createIntegerConstraint`/`createDecimalConstraint`/`createDateConstraint`
+   prontos para uso (só faltou expor). Ex.: `validarNumeroEntre(intervalo, min,
+   max)`, `validarDataEntre(intervalo, min, max)`.
+
+### Prioridade média
+
+4. **Nomes de intervalo (named ranges)** — `definirNome("Produtos", "A2:A100")`
+   e então usar `"Produtos"` em `procurarValor`/`somar`/`listaSuspensaDoIntervalo`
+   em vez do range cru. Mais legível para quem não programa. API POI:
+   `workbook.createName()` + `Name.setNameName`/`setRefersToFormula`.
+5. **Mais tipos de formatação condicional** — barras de dados (`DataBarFormatting`)
+   e conjuntos de ícones (`IconMultiStateFormatting`), complementando
+   `escalaDeCores`. `FormatacaoCondicionalHelper` já tem a estrutura pronta
+   para crescer nessa direção.
+6. **Comentários em células** (notas) — `sheet.createDrawingPatriarch()` +
+   `Drawing.createCellComment(anchor)`; útil para explicar uma fórmula ou
+   instrução num formulário.
+7. **`adicionarTotais()` de alto nível** — método que soma automaticamente
+   todas as colunas numéricas de uma tabela e insere uma linha "Total"
+   formatada, sem o usuário precisar chamar `somar()` coluna por coluna.
+
+### Prioridade baixa / nice-to-have
+
+- Duplicar planilha inteira para outro arquivo (hoje só duplica aba dentro do
+  mesmo workbook).
+- Testes de performance/carga com planilhas de milhares de linhas (confiança,
+  não funcionalidade nova).
+- Exportar para CSV (fora do escopo original — esta lib foca em `.xlsx`;
+  avaliar com o usuário antes de assumir que é desejado).
+
+### Convenção para continuar
+
+Cada item novo deve seguir o padrão já estabelecido: lógica pesada num
+utilitário estático (`utils/`, ou pacote novo de 1 classe como `graficos/`/
+`imagens/` se for um subsistema distinto), facade só delega e documenta,
+teste dedicado validando a **estrutura real do POI** (não só "não lança
+exceção" — ver `docs/skills-codex/README.md` ou a skill `planilha-testes`),
+e atualização de README + spec + este arquivo (seção 0 e 7) a cada lote.
