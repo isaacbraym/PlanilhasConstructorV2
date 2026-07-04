@@ -1,6 +1,7 @@
 # ProjetoPlanilha3 — Construtor de Planilhas
 
 [![CI](https://github.com/isaacbraym/PlanilhasConstructorV2/actions/workflows/ci.yml/badge.svg)](https://github.com/isaacbraym/PlanilhasConstructorV2/actions/workflows/ci.yml)
+[![](https://jitpack.io/v/isaacbraym/PlanilhasConstructorV2.svg)](https://jitpack.io/#isaacbraym/PlanilhasConstructorV2)
 
 > Uma biblioteca Java que deixa **criar planilhas Excel (`.xlsx`) fácil**, mesmo
 > para quem quase não programa. Você escreve comandos em português — `escrever`,
@@ -42,17 +43,39 @@ R$, total somado e colunas ajustadas.
 Requer **Java 8+** e **Maven**. O projeto usa Apache POI 5.2.5 (já declarado no
 `pom.xml`).
 
-```bash
-mvn clean install
+### Opção 1 — via JitPack (mais fácil, sem clonar o repositório)
+
+Adicione o repositório do JitPack e a dependência (troque `2.1.0` pela tag mais
+recente, se houver uma mais nova):
+
+```xml
+<repositories>
+    <repository>
+        <id>jitpack.io</id>
+        <url>https://jitpack.io</url>
+    </repository>
+</repositories>
+
+<dependency>
+    <groupId>com.github.isaacbraym</groupId>
+    <artifactId>PlanilhasConstructorV2</artifactId>
+    <version>2.1.0</version>
+</dependency>
 ```
 
-Para usar em outro projeto Maven, adicione a dependência:
+### Opção 2 — clonando e instalando localmente
+
+```bash
+git clone https://github.com/isaacbraym/PlanilhasConstructorV2.git
+cd PlanilhasConstructorV2/ProjetoPlanilha3
+mvn clean install
+```
 
 ```xml
 <dependency>
     <groupId>com.projetoplanilha</groupId>
     <artifactId>ProjetoPlanilha3</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>2.1.0</version>
 </dependency>
 ```
 
@@ -355,6 +378,8 @@ Ainda não — essas fórmulas prontas exigem um intervalo de células (ex.:
   ```
 - **CI:** todo push/PR na `main` roda a suíte em JDK 8 e 17
   ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
+- **Changelog:** veja [`CHANGELOG.md`](CHANGELOG.md) para o histórico de
+  versões.
 - **Cobertura de testes:** `mvn clean test` já gera um relatório JaCoCo em
   `target/site/jacoco/index.html`. Baseline em 2026-07-04: ~67% de linhas
   cobertas (156 testes). Pontos mais fracos: `Calculos`, `CenterStyle`,
