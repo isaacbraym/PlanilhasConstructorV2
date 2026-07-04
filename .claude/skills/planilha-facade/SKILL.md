@@ -47,6 +47,10 @@ public class Gerar {
   intervaloCategorias, intervaloValores, celulaSuperiorEsquerda)`.
 - Imagens: `inserirImagem(celula, caminho)` ou `inserirImagem(celula, caminho,
   escala)` — aceita `.png`/`.jpg`/`.jpeg`.
+- Impressão: `orientacaoPaisagem`/`orientacaoRetrato`, `areaDeImpressao`,
+  `ajustarImpressaoEmPaginas(larguraPaginas, alturaPaginas)`.
+- Proteção: `desbloquearCelulas(intervalo)` (chame antes) +
+  `protegerPlanilha(senha)` — para formulários com campos editáveis.
 - Formatos: `formatarComoMoeda`, `formatarComoContabil`, `formatarComoNumero`,
   `formatarComoTexto`, `formatarComoData`, `formatarComoPorcentagem`.
 - Colunas/linhas: `moverColuna`, `removerColuna`, `limparColuna`,

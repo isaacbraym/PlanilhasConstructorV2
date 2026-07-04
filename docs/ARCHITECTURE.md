@@ -172,6 +172,17 @@ PlanilhaException (RuntimeException)
 Motivo de serem unchecked: manter a API fluente limpa, sem `throws` em toda
 assinatura. O usuário pode capturá-las opcionalmente.
 
+## Proteção (`utils/ProtecaoHelper`)
+
+Toda célula do Excel nasce com `CellStyle.getLocked() == true` — a trava só
+tem efeito quando a planilha é protegida (`sheet.protectSheet(senha)`).
+`ProtecaoHelper.desbloquearIntervalo` clona o `CellStyle` de cada célula antes
+de destravar. **Nunca mutar o estilo original diretamente**: células sem
+formatação própria compartilham o mesmo `CellStyle` padrão do workbook (índice
+0) — mutar esse estilo destravaria (ou alteraria) **todas** as células que o
+usam, não só as do intervalo. Mesmo cuidado de sempre `workbook.createCellStyle()`
++ `cloneStyleFrom(...)` já seguido pelos helpers de `estilos/estilos/`.
+
 ## Logging
 
 `LoggerUtil` configura `java.util.logging` com um `ColorFormatter` custom

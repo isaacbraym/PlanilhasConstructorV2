@@ -159,6 +159,29 @@ Comparação por texto; números casam sem `.0` (ex.: `10` casa com `"10"`).
 - **Quando** `moverLinhasParaAba("B", "SP", "Arquivo")`, **Então** copia para a
   aba e remove da origem.
 
+## Impressão
+
+- `orientacaoPaisagem()`/`orientacaoRetrato()` alternam
+  `PrintSetup.getLandscape()`.
+- `areaDeImpressao(intervalo)` registra a área em `workbook.getPrintArea(indiceAba)`,
+  convertendo para referência absoluta automaticamente.
+- `ajustarImpressaoEmPaginas(larguraPaginas, alturaPaginas)` ativa
+  `sheet.getFitToPage()` e define `PrintSetup.getFitWidth()`/`getFitHeight()`.
+- Todos sobrevivem a salvar em disco e reabrir (round-trip verificado).
+
+## Proteção
+
+- **Dado** nada, **Então** `sheet.getProtect()` é falso por padrão.
+- **Quando** `protegerPlanilha(senha)`, **Então** `sheet.getProtect()` vira
+  verdadeiro; toda célula sem tratamento prévio continua **travada** (padrão
+  do Excel).
+- **Quando** `desbloquearCelulas(intervalo)` **antes** de `protegerPlanilha`,
+  **Então** as células do intervalo ficam com `CellStyle.getLocked() == false`
+  e continuam editáveis mesmo com a planilha protegida; células fora do
+  intervalo **não são afetadas** (o estilo é clonado antes de destravar, nunca
+  mutado — evita destravar acidentalmente outras células que compartilham o
+  mesmo `CellStyle` padrão). Cria a célula se ela ainda não existir.
+
 ## Salvar e recursos
 
 - **Quando** `salvar("caminho.xlsx")`, **Então** um arquivo `.xlsx` válido é

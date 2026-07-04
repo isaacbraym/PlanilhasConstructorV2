@@ -232,6 +232,26 @@ Aceita `.png`, `.jpg` e `.jpeg`.
 | `congelarPrimeiraLinha()` / `congelar(1, 2)` | fixa cabeçalho / N linhas e colunas |
 | `filtrosNoCabecalho()` | ativa filtros (setinhas) |
 
+### Impressão
+| Comando | O que faz |
+|---|---|
+| `orientacaoPaisagem()` / `orientacaoRetrato()` | deitada / em pé |
+| `areaDeImpressao("A1:F30")` | só essa área sai na impressão |
+| `ajustarImpressaoEmPaginas(1, 1)` | encolhe para caber em N páginas (largura, altura) |
+
+### Proteção (formulários)
+| Comando | O que faz |
+|---|---|
+| `desbloquearCelulas("B2:B10")` | mantém essas células editáveis mesmo protegida |
+| `protegerPlanilha("senha")` | trava o resto (chame **depois** de desbloquear os campos) |
+
+```java
+// Formulário simples: rótulo travado, campo de entrada editável.
+planilha.escreverLinha("A1", "Nome:", "")
+        .desbloquearCelulas("B1:B1")
+        .protegerPlanilha(""); // senha vazia: protege sem exigir senha
+```
+
 ### Salvar
 | Comando | O que faz |
 |---|---|

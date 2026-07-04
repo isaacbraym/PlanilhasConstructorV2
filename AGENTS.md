@@ -35,9 +35,11 @@ por valor; formatos (moeda/contábil/número/texto/data/porcentagem); colunas e
 linhas (mover/remover/limpar/inserir/duplicar); estilos (negrito, cores, bordas,
 mesclar, largura/altura, congelar N, filtros, autoajuste); **formatação
 condicional** (realçar/escala de cores); **lista suspensa** (dropdown, fixa ou
-de intervalo); **gráficos** (barras/pizza/linha); **imagens/logo**. Veja a
-seção 7 para o que ainda falta e `docs/specs/facade-planilha.spec.md` para o
-contrato exato de cada comando.
+de intervalo); **gráficos** (barras/pizza/linha); **imagens/logo**;
+**impressão** (orientação/área/ajustar em N páginas); **proteção** de
+planilha e desbloqueio de células (formulários). Veja a seção 7 para o que
+ainda falta e `docs/specs/facade-planilha.spec.md` para o contrato exato de
+cada comando.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -88,6 +90,13 @@ item específico — confira `git log` e `mvn clean test` antes de continuar.
   facade (direto para `utils/`/`graficos/`/`imagens`, sem passar por
   `IPlanilha`). Roadmap da seção 7 reescrito com prioridades claras para quem
   continuar (impressão e proteção de planilha no topo).
+- [x] **Lote J** (fora do plano original E-I, feito na sequência por ser o
+  topo do roadmap) — Impressão: `orientacaoPaisagem`/`Retrato`,
+  `areaDeImpressao`, `ajustarImpressaoEmPaginas`. Proteção:
+  `protegerPlanilha(senha)` + `desbloquearCelulas(intervalo)` via novo
+  `utils/ProtecaoHelper` (clona `CellStyle` antes de destravar — testado que
+  destravar uma célula não afeta outras que compartilham o estilo padrão).
+  Verificado com round-trip real (salvar + reabrir). Total: 142 testes verdes.
 
 **APIs do Apache POI já confirmadas via `javap` nesta sessão** (não precisa
 reconferir, os nomes/assinaturas abaixo estão corretos para POI 5.2.5):
@@ -164,7 +173,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **135 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **142 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -188,7 +197,7 @@ utils/                 → PosicaoConverter, PositionManager, InsersorDeDados,
                          ManipuladorPlanilha(Helper), LoggerUtil,
                          FiltroDeLinhas, OrdenadorDeLinhas, CopiadorDeCelulas,
                          FormatosDeCelula, FormatacaoCondicionalHelper,
-                         ListaSuspensaHelper, ...
+                         ListaSuspensaHelper, ProtecaoHelper, ...
 ```
 
 Detalhes em [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
@@ -256,7 +265,9 @@ valor; formatos (moeda/contábil/número/texto/data/porcentagem); colunas e
 linhas (mover/remover/limpar/inserir/duplicar); estilos (fonte, cor, borda,
 mesclar, largura/altura, congelar N, filtros, autoajuste); formatação
 condicional (realçar/escala de cores); lista suspensa (opções fixas ou de
-intervalo); gráficos (barras/pizza/linha); imagens/logo.
+intervalo); gráficos (barras/pizza/linha); imagens/logo; configuração de
+impressão (orientação/área/ajustar em N páginas); proteção de planilha e
+desbloqueio de células para formulários.
 
 Dois bugs reais foram encontrados e corrigidos por testes nesta sessão:
 direcionamento de `aplicarEstilos()` em célula única, e
@@ -265,19 +276,15 @@ células sem borda prévia). Ver seção 4 para os detalhes que não podem regre
 
 ### Prioridade alta (maior valor prático, ainda não coberto)
 
-1. **Configuração de impressão** — orientação retrato/paisagem, área de
-   impressão, ajustar para caber em N páginas, margens, cabeçalho/rodapé de
-   impressão. API POI: `sheet.getPrintSetup()` (`setLandscape`, `setFitToPage`,
-   `setFitWidth`/`setFitHeight`), `sheet.setPrintArea(...)` (ou
-   `workbook.setPrintArea(sheetIndex, ...)`), `sheet.getMargin`/`setMargin`.
-   Zero cobertura hoje — quem monta uma planilha para **imprimir** (relatório,
-   nota, orçamento) não tem nenhum comando amigável para isso.
-2. **Proteção de planilha/células** — travar células de fórmula/estrutura e
-   deixar só as de entrada editáveis (par natural de `listaSuspensa`, para
-   formulários). API POI: `CellStyle.setLocked(boolean)` (todas as células são
-   `locked=true` por padrão, mesmo sem proteção ativa) +
-   `sheet.protectSheet(senha)` (senha pode ser vazia/null para só travar sem
-   pedir senha — checar comportamento exato do POI antes de assumir).
+1. ~~**Configuração de impressão**~~ — **ENTREGUE** nesta sessão:
+   `orientacaoPaisagem`/`orientacaoRetrato`, `areaDeImpressao`,
+   `ajustarImpressaoEmPaginas`. Margens (`sheet.getMargin`/`setMargin`) e
+   cabeçalho/rodapé de impressão (`sheet.getHeader()`/`getFooter()`) ainda não
+   cobertos, se houver demanda.
+2. ~~**Proteção de planilha/células**~~ — **ENTREGUE** nesta sessão:
+   `protegerPlanilha(senha)` + `desbloquearCelulas(intervalo)`, via novo
+   `utils/ProtecaoHelper` (clona `CellStyle` antes de destravar — nunca muta o
+   estilo compartilhado). Ver `docs/ARCHITECTURE.md`.
 3. **Validação numérica/de data na lista suspensa** — hoje
    `utils/ListaSuspensaHelper` só cobre `createExplicitListConstraint`/
    `createFormulaListConstraint`; `XSSFDataValidationHelper` também tem

@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
@@ -28,6 +29,7 @@ import com.abnote.planilhas.utils.FormatosDeCelula;
 import com.abnote.planilhas.utils.ListaSuspensaHelper;
 import com.abnote.planilhas.utils.OrdenadorDeLinhas;
 import com.abnote.planilhas.utils.PosicaoConverter;
+import com.abnote.planilhas.utils.ProtecaoHelper;
 
 /**
  * Ponto de entrada <strong>amigável</strong> para criar planilhas Excel sem
@@ -1175,6 +1177,88 @@ public final class Planilha implements AutoCloseable {
 		for (int posicao = indices.size() - 1; posicao >= 0; posicao--) {
 			removerLinhaComDeslocamento(sheet, indices.get(posicao));
 		}
+		return this;
+	}
+
+	// ==================== IMPRESSÃO ====================
+
+	/**
+	 * Define a orientação de impressão como paisagem (deitada).
+	 *
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha orientacaoPaisagem() {
+		sheetAtual().getPrintSetup().setLandscape(true);
+		return this;
+	}
+
+	/**
+	 * Define a orientação de impressão como retrato (em pé) — padrão do Excel.
+	 *
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha orientacaoRetrato() {
+		sheetAtual().getPrintSetup().setLandscape(false);
+		return this;
+	}
+
+	/**
+	 * Define a área que será impressa (o resto da planilha não sai na impressão).
+	 *
+	 * @param intervalo Intervalo a imprimir (ex.: "A1:F30").
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha areaDeImpressao(final String intervalo) {
+		final Workbook workbook = planilha.obterWorkbook();
+		workbook.setPrintArea(workbook.getSheetIndex(abaAtual), paraReferenciaAbsoluta(intervalo));
+		return this;
+	}
+
+	/**
+	 * Ajusta a impressão para caber em um número máximo de páginas de largura e
+	 * altura (reduz a escala automaticamente, como o "Ajustar planilha em 1
+	 * página" do Excel).
+	 *
+	 * @param larguraPaginas Número máximo de páginas na largura (ex.: 1).
+	 * @param alturaPaginas  Número máximo de páginas na altura (ex.: 1).
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha ajustarImpressaoEmPaginas(final int larguraPaginas, final int alturaPaginas) {
+		final Sheet sheet = sheetAtual();
+		sheet.setFitToPage(true);
+		final PrintSetup configuracao = sheet.getPrintSetup();
+		configuracao.setFitWidth((short) larguraPaginas);
+		configuracao.setFitHeight((short) alturaPaginas);
+		return this;
+	}
+
+	// ==================== PROTEÇÃO ====================
+
+	/**
+	 * Protege a aba atual: impede editar células travadas (todas, por padrão).
+	 * Use {@link #desbloquearCelulas(String)} <strong>antes</strong> desta
+	 * chamada para manter algumas células editáveis (ex.: campos de um
+	 * formulário).
+	 *
+	 * @param senha Senha para desproteger depois (pode ser {@code null} ou vazia
+	 *              — a planilha fica protegida sem exigir senha para editar via
+	 *              código, apenas a interface do Excel respeita a proteção).
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha protegerPlanilha(final String senha) {
+		sheetAtual().protectSheet(senha);
+		return this;
+	}
+
+	/**
+	 * Destrava um intervalo de células para que continue editável mesmo depois
+	 * de {@link #protegerPlanilha(String)}. Chame antes de proteger.
+	 *
+	 * @param intervalo Intervalo a destravar (ex.: "B2:B10").
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha desbloquearCelulas(final String intervalo) {
+		ProtecaoHelper.desbloquearIntervalo(sheetAtual(), regioesDe(intervalo)[0]);
 		return this;
 	}
 
