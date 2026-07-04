@@ -34,6 +34,9 @@ public class Gerar {
   inteiro).
 - Escrita: `escrever`, `escreverTexto`, `escreverLinha`, `escreverColuna`,
   `adicionarLinha`, `escreverTabela`, `escreverData`, `escreverDataHora`.
+- Leitura (o inverso da escrita — **use isto em vez de `workbook()` cru para
+  ler valores de volta**): `ler`, `lerTexto`, `lerNumero`, `lerData`,
+  `lerTabela`, `contarLinhasPreenchidas`.
 - Fórmulas: `somar`, `media`, `contar`, `minimo`, `maximo`, `seEntao`,
   `multiplicar`, `subtrair`, `dividir`, `formula(celula, expr)`,
   `preencherColuna(coluna, ini, fim, "B{}*C{}")`, `procurarValor`,

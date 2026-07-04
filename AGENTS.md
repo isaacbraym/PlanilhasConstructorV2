@@ -39,9 +39,39 @@ de intervalo, e validação numérica/de data); **nomes de intervalo**
 (`definirNome`); **`adicionarTotais()`** automático; **gráficos**
 (barras/pizza/linha); **imagens/logo**; **comentários** em células;
 **impressão** (orientação/área/ajustar em N páginas); **proteção** de
-planilha e desbloqueio de células (formulários). Veja a seção 7 para o que
-ainda falta e `docs/specs/facade-planilha.spec.md` para o contrato exato de
-cada comando.
+planilha e desbloqueio de células (formulários); **leitura** (`ler`/
+`lerTexto`/`lerNumero`/`lerData`/`lerTabela`/`contarLinhasPreenchidas` — o
+"inverso" de escrever, sem precisar de `workbook()`). Veja a seção 7 para o
+que ainda falta e `docs/specs/facade-planilha.spec.md` para o contrato exato
+de cada comando.
+
+### Sessão de "fechar vazamentos de POI" (2026-07-04, após reanálise crítica) — EM ANDAMENTO
+
+O usuário pediu uma reanálise crítica sob a lente "o objetivo é o usuário
+**nunca** precisar tocar em Apache POI para criações avançadas". Achado
+principal: a facade tinha **zero API de leitura** — para ler qualquer valor
+de volta era preciso `planilha.workbook().getSheetAt(0).getRow(...)...` (POI
+puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
+
+- [x] **API de leitura**: `ler`/`lerTexto`/`lerNumero`/`lerData`/`lerTabela`/
+  `contarLinhasPreenchidas`, via novos `utils/LeitorDeCelulas` (célula única,
+  reaproveitado por tudo) e `utils/LeitorDeTabela` (reaproveita a detecção de
+  largura/altura de `TotalizadorDeTabela`, que teve 2 métodos promovidos de
+  `private` para pacote-privado para isso). `lerTexto` usa `DataFormatter`
+  para devolver o valor **como aparece no Excel** (moeda, data etc.), `ler`
+  devolve o tipo Java natural. Nenhum método de leitura cria célula (ao
+  contrário dos de escrita). Total: 176 testes verdes.
+- [ ] Ocultar/exibir linha, coluna e aba.
+- [ ] Desmesclar células.
+- [ ] Cor da aba.
+- [ ] Formato numérico personalizado (escape hatch para os 6 formatos fixos).
+- [ ] Cabeçalho/rodapé de impressão com texto.
+- [ ] `definirNome` vaza `IllegalArgumentException` crua do POI para nome
+  inválido (começa com dígito, tem espaço, parece referência de célula) —
+  precisa envolver em `DadosInvalidosException`.
+- [ ] `graficoDeX` com categorias/valores em **abas diferentes** monta o
+  gráfico silenciosamente com dado errado (sem erro nenhum) — precisa validar
+  e lançar exceção amigável, ou dar suporte de verdade a cross-sheet.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -271,7 +301,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **165 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **176 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -297,7 +327,8 @@ utils/                 → PosicaoConverter, PositionManager, InsersorDeDados,
                          FormatosDeCelula, FormatacaoCondicionalHelper,
                          ListaSuspensaHelper, ProtecaoHelper,
                          ValidacaoDeEntradaHelper, TotalizadorDeTabela,
-                         ComentarioHelper, ColarComoValoresHelper, ...
+                         ComentarioHelper, ColarComoValoresHelper,
+                         LeitorDeCelulas, LeitorDeTabela, ...
 ```
 
 Detalhes em [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).

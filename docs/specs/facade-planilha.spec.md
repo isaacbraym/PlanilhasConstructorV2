@@ -45,6 +45,28 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
   `dd/MM/aaaa` (`DateUtil.isCellDateFormatted` verdadeiro); `escreverDataHora`
   usa `dd/MM/aaaa HH:mm`.
 
+## Leitura (o "inverso" de escrever)
+
+- **Quando** `ler(celula)`, **Então** devolve `String` para célula de texto,
+  `Double` para numérica, `Boolean` para booleana, `LocalDateTime` para
+  célula formatada como data/hora (via `DateUtil.isCellDateFormatted`), ou
+  `null` para célula vazia/inexistente. Fórmulas são avaliadas antes: o
+  resultado segue a mesma regra de tipos.
+- **Quando** `lerTexto(celula)`, **Então** devolve o texto **formatado como
+  aparece no Excel** (via `DataFormatter`, respeitando o formato numérico da
+  célula — ex.: moeda vira `"R$ 1.234,56"`); `""` se a célula não existir.
+- `lerNumero`/`lerData` são atalhos sobre `ler(...)`: devolvem `null` se o
+  valor lido não for do tipo esperado (não lançam exceção).
+- **Quando** `lerTabela(celulaCabecalho)`, **Então** devolve as linhas de
+  dados (sem o cabeçalho) como `List<List<Object>>`, usando a mesma detecção
+  de largura (pelo cabeçalho) e altura (pela primeira coluna) de
+  `adicionarTotais`; tabela sem dados → lista vazia.
+- **Quando** `contarLinhasPreenchidas(coluna)`, **Então** devolve quantas
+  linhas têm célula não vazia nessa coluna (delega para
+  `IPlanilha.getNumeroDeLinhas`, já existente na API fluente).
+- Nenhum método de leitura cria linha/célula na planilha (ao contrário de
+  `escrever`, que cria a célula se faltar).
+
 ## Fórmulas
 
 - **Dado** `A1..A3 = 10,20,30`, **Quando** `somar("A4", "A1:A3")`, **Então**

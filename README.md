@@ -156,6 +156,20 @@ Para CPF, CNPJ, telefone e códigos, prefira **`escreverTexto(...)`**.
 | `escreverData("A1", LocalDate.of(2024,1,15))` | escreve uma data (dd/MM/aaaa) |
 | `escreverDataHora("A1", LocalDateTime.now())` | escreve data e hora |
 
+### Ler dados (o "inverso" de escrever)
+| Comando | O que faz |
+|---|---|
+| `ler("A1")` | lê o valor como tipo Java natural (Double/String/Boolean/LocalDateTime/null) |
+| `lerTexto("A1")` | lê formatado como aparece no Excel (ex.: "R$ 1.234,56") |
+| `lerNumero("A1")` | lê como `Double` (`null` se não for número) |
+| `lerData("A1")` | lê como `LocalDate` (`null` se não for data) |
+| `lerTabela("A1")` | lê as linhas de dados de uma tabela (sem o cabeçalho), como `List<List<Object>>` |
+| `contarLinhasPreenchidas("A")` | conta quantas linhas têm dado numa coluna |
+
+Todos leem sem criar nada na planilha (diferente de `escrever`, que cria a
+célula se ela não existir) — se a célula não existir, o retorno é `null`
+(ou `""` em `lerTexto`, ou lista vazia em `lerTabela`).
+
 ### Cálculos (fórmulas do Excel)
 | Comando | O que faz |
 |---|---|

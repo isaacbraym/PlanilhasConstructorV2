@@ -51,7 +51,11 @@ public final class TotalizadorDeTabela {
 		linhaTotais.createCell(coluna).setCellFormula(formula);
 	}
 
-	private static int ultimaColunaDoCabecalho(final Sheet sheet, final int linhaCabecalho, final int colunaInicial) {
+	/**
+	 * Visibilidade de pacote de propósito: reaproveitada por {@link LeitorDeTabela}
+	 * para detectar a mesma largura de tabela na leitura.
+	 */
+	static int ultimaColunaDoCabecalho(final Sheet sheet, final int linhaCabecalho, final int colunaInicial) {
 		final Row cabecalho = sheet.getRow(linhaCabecalho);
 		if (cabecalho == null) {
 			return colunaInicial;
@@ -63,7 +67,11 @@ public final class TotalizadorDeTabela {
 		return coluna - 1;
 	}
 
-	private static int ultimaLinhaComDados(final Sheet sheet, final int primeiraLinhaDeDados,
+	/**
+	 * Visibilidade de pacote de propósito: reaproveitada por {@link LeitorDeTabela}
+	 * para detectar a mesma altura de tabela na leitura.
+	 */
+	static int ultimaLinhaComDados(final Sheet sheet, final int primeiraLinhaDeDados,
 			final int colunaReferencia) {
 		int ultimaLinha = primeiraLinhaDeDados - 1;
 		for (int indiceLinha = primeiraLinhaDeDados; indiceLinha <= sheet.getLastRowNum(); indiceLinha++) {

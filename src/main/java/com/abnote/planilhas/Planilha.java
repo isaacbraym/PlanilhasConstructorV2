@@ -11,6 +11,7 @@ import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.usermodel.Row;
@@ -34,6 +35,8 @@ import com.abnote.planilhas.utils.CopiadorDeCelulas;
 import com.abnote.planilhas.utils.FiltroDeLinhas;
 import com.abnote.planilhas.utils.FormatacaoCondicionalHelper;
 import com.abnote.planilhas.utils.FormatosDeCelula;
+import com.abnote.planilhas.utils.LeitorDeCelulas;
+import com.abnote.planilhas.utils.LeitorDeTabela;
 import com.abnote.planilhas.utils.ListaSuspensaHelper;
 import com.abnote.planilhas.utils.OrdenadorDeLinhas;
 import com.abnote.planilhas.utils.PosicaoConverter;
@@ -272,6 +275,83 @@ public final class Planilha implements AutoCloseable {
 			escreverLinha(posicao, linhas.get(numeroLinha).toArray());
 		}
 		return this;
+	}
+
+	// ==================== LEITURA ====================
+
+	/**
+	 * Lê o valor de uma célula como um tipo Java natural — o "inverso" de
+	 * {@link #escrever}. Fórmulas são avaliadas antes de ler.
+	 *
+	 * @param celula Posição da célula a ler (ex.: "A1").
+	 * @return {@link Double}, {@link String}, {@link Boolean},
+	 *         {@link LocalDateTime}, ou {@code null} se a célula estiver vazia
+	 *         ou não existir.
+	 */
+	public Object ler(final String celula) {
+		return LeitorDeCelulas.ler(obterCelulaExistente(celula), avaliadorDeFormulas());
+	}
+
+	/**
+	 * Lê o valor de uma célula formatado exatamente como aparece no Excel (ex.:
+	 * uma célula de moeda vira {@code "R$ 1.234,56"}, uma data vira
+	 * {@code "04/07/2026"}).
+	 *
+	 * @param celula Posição da célula a ler (ex.: "A1").
+	 * @return O texto formatado, ou {@code ""} se a célula estiver vazia ou não
+	 *         existir.
+	 */
+	public String lerTexto(final String celula) {
+		return LeitorDeCelulas.comoTexto(obterCelulaExistente(celula), avaliadorDeFormulas());
+	}
+
+	/**
+	 * Lê o valor numérico de uma célula.
+	 *
+	 * @param celula Posição da célula a ler (ex.: "A1").
+	 * @return O número, ou {@code null} se a célula não contiver um número.
+	 */
+	public Double lerNumero(final String celula) {
+		final Object valor = ler(celula);
+		return valor instanceof Number ? ((Number) valor).doubleValue() : null;
+	}
+
+	/**
+	 * Lê o valor de data de uma célula (escrita com {@link #escreverData} ou
+	 * {@link #escreverDataHora}).
+	 *
+	 * @param celula Posição da célula a ler (ex.: "A1").
+	 * @return A data, ou {@code null} se a célula não contiver uma data.
+	 */
+	public LocalDate lerData(final String celula) {
+		final Object valor = ler(celula);
+		return valor instanceof LocalDateTime ? ((LocalDateTime) valor).toLocalDate() : null;
+	}
+
+	/**
+	 * Lê os dados de uma tabela (sem o cabeçalho) — o "inverso" de
+	 * {@link #escreverTabela}. A largura é detectada pelo cabeçalho e a altura
+	 * pela primeira coluna, como em {@link #adicionarTotais}.
+	 *
+	 * @param celulaCabecalho Célula do canto superior esquerdo do cabeçalho da
+	 *                        tabela (ex.: "A1").
+	 * @return Lista de linhas; cada linha é uma lista de valores (ver
+	 *         {@link #ler}). Lista vazia se não houver dados.
+	 */
+	public List<List<Object>> lerTabela(final String celulaCabecalho) {
+		final int[] indices = PosicaoConverter.converterPosicao(celulaCabecalho);
+		return LeitorDeTabela.ler(sheetAtual(), indices[1], indices[0]);
+	}
+
+	/**
+	 * Conta quantas linhas têm dado preenchido numa coluna — útil para saber até
+	 * onde uma lista vai antes de ler ou percorrer.
+	 *
+	 * @param coluna Coluna a contar (ex.: "A").
+	 * @return O número de linhas preenchidas.
+	 */
+	public int contarLinhasPreenchidas(final String coluna) {
+		return planilha.getNumeroDeLinhas(coluna);
 	}
 
 	// ==================== FÓRMULAS ====================
@@ -1634,6 +1714,20 @@ public final class Planilha implements AutoCloseable {
 			linha = sheet.createRow(indiceLinha);
 		}
 		return linha.getCell(indiceColuna, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK);
+	}
+
+	/**
+	 * Busca uma célula sem criar nada — ao contrário de
+	 * {@link #obterOuCriarCelula}, usado exclusivamente pelos métodos de leitura.
+	 */
+	private Cell obterCelulaExistente(final String celula) {
+		final int[] indices = PosicaoConverter.converterPosicao(celula);
+		final Row linha = sheetAtual().getRow(indices[1]);
+		return linha == null ? null : linha.getCell(indices[0]);
+	}
+
+	private FormulaEvaluator avaliadorDeFormulas() {
+		return planilha.obterWorkbook().getCreationHelper().createFormulaEvaluator();
 	}
 
 	private int ultimaColunaUsada(final Sheet sheet) {
