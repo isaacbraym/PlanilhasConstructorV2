@@ -170,7 +170,15 @@ sugestões e mandar "pode ir pra cima") — em andamento
   era parcialmente possível via `planilha.salvar(a).salvar(b)`
   (encadeável) — o método novo existe para o caso de já ter um arquivo salvo
   e querer duplicá-lo sem reabrir. Total: 163 testes verdes.
-- [ ] Cookbook de receitas prontas (exemplos por caso de uso real).
+- [x] **Cookbook de receitas prontas**: 3 novos exemplos executáveis em
+  `examples/` — `ExemploControleFinanceiro` (totais automáticos + destaque
+  condicional + gráfico), `ExemploFormularioProtegido` (dropdown + validação
+  de data/número + proteção), `ExemploRelatorioParaImpressao` (impressão em 1
+  página + `colarComoValores` antes de compartilhar). **Todos rodados de
+  verdade** (não só compilados) e o `.xlsx` gerado por cada um foi reaberto e
+  verificado (gráfico presente, proteção/validação corretas, área de
+  impressão e conversão de fórmula em valor). README ganhou uma seção
+  "Receitas prontas" com tabela indexando os 5 exemplos.
 - [x] **Agrupamento**: `agruparLinhas(inicio, fim)` e `agruparColunas(de,
   para)` (outline via `groupRow`/`groupColumn`). **Achado de segurança**:
   `setRowGroupCollapsed` esconde a planilha inteira, não só o grupo — por

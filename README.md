@@ -275,8 +275,18 @@ planilha.escreverLinha("A1", "Nome:", "")
 | `salvar("C:/tmp/arquivo.xlsx")` | salva no caminho |
 | `salvarNaPasta("C:/tmp", "arquivo.xlsx")` | salva em uma pasta |
 
-Veja um exemplo completo em
-[`ExemploFacade.java`](src/main/java/com/abnote/planilhas/examples/ExemploFacade.java).
+### Receitas prontas (cookbook)
+
+Exemplos completos e executáveis (`main()`) para os casos de uso mais comuns
+— rode qualquer um deles e abra o arquivo gerado:
+
+| Exemplo | O que mostra |
+|---|---|
+| [`ExemploFacade.java`](src/main/java/com/abnote/planilhas/examples/ExemploFacade.java) | tour geral: tabela, fórmula, moeda, estilo, filtros |
+| [`ExemploControleFinanceiro.java`](src/main/java/com/abnote/planilhas/examples/ExemploControleFinanceiro.java) | orçamento mensal com totais automáticos, destaque de categorias estouradas e gráfico |
+| [`ExemploFormularioProtegido.java`](src/main/java/com/abnote/planilhas/examples/ExemploFormularioProtegido.java) | cadastro com lista suspensa, validação de data/número e proteção (só os campos de entrada ficam editáveis) |
+| [`ExemploRelatorioParaImpressao.java`](src/main/java/com/abnote/planilhas/examples/ExemploRelatorioParaImpressao.java) | relatório pronto para imprimir em 1 página (paisagem, área de impressão) e com valores congelados antes de compartilhar |
+| [`ExemploFormulas.java`](src/main/java/com/abnote/planilhas/examples/ExemploFormulas.java) | as 11 fórmulas da API fluente avançada |
 
 ---
 

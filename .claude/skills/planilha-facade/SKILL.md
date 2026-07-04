@@ -90,8 +90,12 @@ Detalhes/contrato: `docs/specs/facade-planilha.spec.md`.
    fórmulas do Excel arbitrárias, `formula("D2", "B2*C2")` (o "=" é opcional).
 5. Não adicione dependências nem use Spring/Lombok.
 
-## Exemplo de referência
+## Exemplos de referência (cookbook)
 
-Veja `src/main/java/com/abnote/planilhas/examples/ExemploFacade.java`.
+Veja `src/main/java/com/abnote/planilhas/examples/`: `ExemploFacade` (tour
+geral), `ExemploControleFinanceiro` (totais + destaque + gráfico),
+`ExemploFormularioProtegido` (dropdown + validação + proteção),
+`ExemploRelatorioParaImpressao` (impressão + colar como valores). Prefira
+adaptar um desses ao pedido do usuário em vez de começar do zero.
 Se o usuário pedir algo novo e recorrente, considere a skill
 `planilha-nova-feature` para adicionar o comando à facade.
