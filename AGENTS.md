@@ -97,6 +97,12 @@ item específico — confira `git log` e `mvn clean test` antes de continuar.
   `utils/ProtecaoHelper` (clona `CellStyle` antes de destravar — testado que
   destravar uma célula não afeta outras que compartilham o estilo padrão).
   Verificado com round-trip real (salvar + reabrir). Total: 142 testes verdes.
+- [x] **Lote K** — `validarNumeroEntre`/`validarInteiroEntre`/`validarDataEntre`
+  via novo `utils/ValidacaoDeEntradaHelper` (`DataValidation` do tipo
+  DECIMAL/INTEGER/DATE, sem menu de opções — por isso não entrou em
+  `ListaSuspensaHelper`). Seção da facade renomeada de "LISTA SUSPENSA
+  (DROPDOWN)" para "VALIDAÇÃO DE DADOS (LISTA SUSPENSA / LIMITES)" para
+  acomodar os dois conceitos coerentemente. Total: 146 testes verdes.
 
 **APIs do Apache POI já confirmadas via `javap` nesta sessão** (não precisa
 reconferir, os nomes/assinaturas abaixo estão corretos para POI 5.2.5):
@@ -173,7 +179,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **142 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **146 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -197,7 +203,8 @@ utils/                 → PosicaoConverter, PositionManager, InsersorDeDados,
                          ManipuladorPlanilha(Helper), LoggerUtil,
                          FiltroDeLinhas, OrdenadorDeLinhas, CopiadorDeCelulas,
                          FormatosDeCelula, FormatacaoCondicionalHelper,
-                         ListaSuspensaHelper, ProtecaoHelper, ...
+                         ListaSuspensaHelper, ProtecaoHelper,
+                         ValidacaoDeEntradaHelper, ...
 ```
 
 Detalhes em [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
@@ -285,12 +292,11 @@ células sem borda prévia). Ver seção 4 para os detalhes que não podem regre
    `protegerPlanilha(senha)` + `desbloquearCelulas(intervalo)`, via novo
    `utils/ProtecaoHelper` (clona `CellStyle` antes de destravar — nunca muta o
    estilo compartilhado). Ver `docs/ARCHITECTURE.md`.
-3. **Validação numérica/de data na lista suspensa** — hoje
-   `utils/ListaSuspensaHelper` só cobre `createExplicitListConstraint`/
-   `createFormulaListConstraint`; `XSSFDataValidationHelper` também tem
-   `createIntegerConstraint`/`createDecimalConstraint`/`createDateConstraint`
-   prontos para uso (só faltou expor). Ex.: `validarNumeroEntre(intervalo, min,
-   max)`, `validarDataEntre(intervalo, min, max)`.
+3. ~~**Validação numérica/de data**~~ — **ENTREGUE** nesta sessão:
+   `validarNumeroEntre`/`validarInteiroEntre`/`validarDataEntre`, via novo
+   `utils/ValidacaoDeEntradaHelper` (classe separada de `ListaSuspensaHelper`
+   — mesmo padrão de `DataValidation`, mas sem menu de opções, então não fazia
+   sentido morar na mesma classe).
 
 ### Prioridade média
 

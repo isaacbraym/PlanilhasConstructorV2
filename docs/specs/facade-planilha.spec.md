@@ -159,6 +159,16 @@ Comparação por texto; números casam sem `.0` (ex.: `10` casa com `"10"`).
 - **Quando** `moverLinhasParaAba("B", "SP", "Arquivo")`, **Então** copia para a
   aba e remove da origem.
 
+## Validação de entrada (número/data com limites)
+
+- **Quando** `validarNumeroEntre(intervalo, min, max)`, **Então** a restrição
+  criada é do tipo `DECIMAL`, operador `BETWEEN`, com `formula1`/`formula2`
+  iguais aos limites; `validarInteiroEntre` é igual mas tipo `INTEGER`.
+- **Quando** `validarDataEntre(intervalo, minimo, maximo)` (com `LocalDate`),
+  **Então** a restrição é do tipo `DATE` (formato interno `yyyy-MM-dd`).
+- Todas mostram uma caixa de erro amigável para valores fora do limite e
+  sobrevivem a salvar em disco e reabrir.
+
 ## Impressão
 
 - `orientacaoPaisagem()`/`orientacaoRetrato()` alternam

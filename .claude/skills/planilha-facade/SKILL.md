@@ -43,6 +43,8 @@ public class Gerar {
   `realcarSeEntre`, `realcarSeIgual`, `escalaDeCores`.
 - Lista suspensa: `listaSuspensa(intervalo, opcoes...)`,
   `listaSuspensaDoIntervalo(intervaloDestino, intervaloOpcoes)`.
+- Validação de limites (sem menu): `validarNumeroEntre`/`validarInteiroEntre(
+  intervalo, min, max)`, `validarDataEntre(intervalo, LocalDate min, max)`.
 - Gráficos: `graficoDeBarras`/`graficoDePizza`/`graficoDeLinha(titulo,
   intervaloCategorias, intervaloValores, celulaSuperiorEsquerda)`.
 - Imagens: `inserirImagem(celula, caminho)` ou `inserirImagem(celula, caminho,

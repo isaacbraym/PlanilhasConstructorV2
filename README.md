@@ -195,6 +195,9 @@ Para CPF, CNPJ, telefone e códigos, prefira **`escreverTexto(...)`**.
 |---|---|
 | `listaSuspensa("C2:C50", "Pendente", "Pago", "Atrasado")` | menu com opções fixas |
 | `listaSuspensaDoIntervalo("A2:A50", "F2:F5")` | menu com opções vindas de outra coluna (sem limite de 255 caracteres) |
+| `validarNumeroEntre("B2:B50", 0, 100.5)` | só aceita números entre 0 e 100,5 |
+| `validarInteiroEntre("C2:C50", 1, 10)` | só aceita inteiros entre 1 e 10 |
+| `validarDataEntre("D2:D50", LocalDate.of(2024,1,1), LocalDate.of(2024,12,31))` | só aceita datas no intervalo |
 
 ### Gráficos
 | Comando | O que faz |

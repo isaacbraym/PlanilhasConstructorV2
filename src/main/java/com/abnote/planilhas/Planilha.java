@@ -30,6 +30,7 @@ import com.abnote.planilhas.utils.ListaSuspensaHelper;
 import com.abnote.planilhas.utils.OrdenadorDeLinhas;
 import com.abnote.planilhas.utils.PosicaoConverter;
 import com.abnote.planilhas.utils.ProtecaoHelper;
+import com.abnote.planilhas.utils.ValidacaoDeEntradaHelper;
 
 /**
  * Ponto de entrada <strong>amigável</strong> para criar planilhas Excel sem
@@ -603,7 +604,7 @@ public final class Planilha implements AutoCloseable {
 		return this;
 	}
 
-	// ==================== LISTA SUSPENSA (DROPDOWN) ====================
+	// ==================== VALIDAÇÃO DE DADOS (LISTA SUSPENSA / LIMITES) ====================
 
 	/**
 	 * Cria uma lista suspensa (menu de opções) em um intervalo de células, com
@@ -634,6 +635,46 @@ public final class Planilha implements AutoCloseable {
 	 */
 	public Planilha listaSuspensaDoIntervalo(final String intervaloDestino, final String intervaloOpcoes) {
 		ListaSuspensaHelper.doIntervalo(xssf(), regiaoDe(intervaloDestino), paraReferenciaAbsoluta(intervaloOpcoes));
+		return this;
+	}
+
+	/**
+	 * Restringe o intervalo a números entre dois limites (inclusive) — quem tentar
+	 * digitar um valor fora do limite vê um aviso de erro.
+	 *
+	 * @param intervalo Célula(s) restringidas (ex.: "B2:B50").
+	 * @param minimo    Valor mínimo aceito.
+	 * @param maximo    Valor máximo aceito.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha validarNumeroEntre(final String intervalo, final double minimo, final double maximo) {
+		ValidacaoDeEntradaHelper.numeroEntre(xssf(), regiaoDe(intervalo), minimo, maximo);
+		return this;
+	}
+
+	/**
+	 * Restringe o intervalo a números **inteiros** entre dois limites (inclusive).
+	 *
+	 * @param intervalo Célula(s) restringidas (ex.: "B2:B50").
+	 * @param minimo    Valor mínimo aceito.
+	 * @param maximo    Valor máximo aceito.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha validarInteiroEntre(final String intervalo, final int minimo, final int maximo) {
+		ValidacaoDeEntradaHelper.inteiroEntre(xssf(), regiaoDe(intervalo), minimo, maximo);
+		return this;
+	}
+
+	/**
+	 * Restringe o intervalo a datas entre dois limites (inclusive).
+	 *
+	 * @param intervalo Célula(s) restringidas (ex.: "B2:B50").
+	 * @param minimo    Data mínima aceita.
+	 * @param maximo    Data máxima aceita.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha validarDataEntre(final String intervalo, final LocalDate minimo, final LocalDate maximo) {
+		ValidacaoDeEntradaHelper.dataEntre(xssf(), regiaoDe(intervalo), minimo.toString(), maximo.toString());
 		return this;
 	}
 
