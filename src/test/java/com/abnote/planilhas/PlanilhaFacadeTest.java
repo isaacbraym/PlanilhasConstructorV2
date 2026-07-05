@@ -113,6 +113,34 @@ class PlanilhaFacadeTest {
 	}
 
 	@Test
+	@DisplayName("duplicarAba deve recusar nome existente sem criar aba parcial")
+	void deveRecusarDuplicarAbaComNomeExistenteSemMutacaoParcial() throws Exception {
+		try (Planilha planilha = Planilha.nova("Original")) {
+			planilha.novaAba("Existente").irParaAba("Original");
+
+			assertThrows(IllegalArgumentException.class, () -> planilha.duplicarAba("Existente"));
+
+			Workbook workbook = planilha.workbook();
+			assertEquals(2, workbook.getNumberOfSheets());
+			assertEquals("Original", workbook.getSheetName(0));
+			assertEquals("Existente", workbook.getSheetName(1));
+			assertNull(workbook.getSheet("Original (2)"));
+		}
+	}
+
+	@Test
+	@DisplayName("duplicarAba deve recusar nome inválido sem criar aba parcial")
+	void deveRecusarDuplicarAbaComNomeInvalidoSemMutacaoParcial() throws Exception {
+		try (Planilha planilha = Planilha.nova("Original")) {
+			assertThrows(IllegalArgumentException.class, () -> planilha.duplicarAba("Nome/Invalido"));
+
+			Workbook workbook = planilha.workbook();
+			assertEquals(1, workbook.getNumberOfSheets());
+			assertEquals("Original", workbook.getSheetName(0));
+		}
+	}
+
+	@Test
 	@DisplayName("duplicarColuna e moverColuna devem manipular colunas")
 	void deveManipularColunas() throws Exception {
 		try (Planilha planilha = Planilha.nova("Cols")) {

@@ -21,6 +21,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.ss.util.WorkbookUtil;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
@@ -180,7 +181,11 @@ public final class Planilha implements AutoCloseable {
 	 */
 	public Planilha duplicarAba(final String novoNome) {
 		final Workbook workbook = planilha.obterWorkbook();
-		final Sheet copia = workbook.cloneSheet(workbook.getSheetIndex(abaAtual));
+		WorkbookUtil.validateSheetName(novoNome);
+		if (workbook.getSheet(novoNome) != null) {
+			throw new IllegalArgumentException("A aba '" + novoNome + "' já existe.");
+		}
+		final Sheet copia = workbook.cloneSheet(indiceDaAba(abaAtual));
 		workbook.setSheetName(workbook.getSheetIndex(copia), novoNome);
 		return irParaAba(novoNome);
 	}

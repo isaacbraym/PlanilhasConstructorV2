@@ -26,6 +26,9 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
   passa a ser a ativa.
 - **Quando** `duplicarAba("Cópia")`, **Então** a aba ativa é copiada (conteúdo e
   estilos) para "Cópia", que passa a ser a ativa, e o workbook tem +1 aba.
+- **Quando** `duplicarAba(nome)` recebe um nome já existente ou inválido para o
+  Excel, **Então** lança `IllegalArgumentException` antes de clonar; o workbook
+  permanece com as mesmas abas, sem cópia parcial tipo `"Original (2)"`.
 - **Quando** `irParaAba("X")` e "X" não existe, **Então** lança exceção.
 
 ## Escrita

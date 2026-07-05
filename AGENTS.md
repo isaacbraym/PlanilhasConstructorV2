@@ -206,6 +206,14 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   campos vazios finais, e entradas `null` lançam `DadosInvalidosException`
   amigável. `PlanilhaXlsxTest` cobre round-trip com `XSSFWorkbook` novo.
   Total: 229 testes verdes.
+- [x] **Bug de duplicação parcial de aba corrigido**:
+  `Planilha.duplicarAba("NomeExistente")` chamava `Workbook.cloneSheet(...)`
+  antes de validar o novo nome; quando `setSheetName(...)` falhava, o workbook
+  ficava com uma aba parcial tipo `"Original (2)"`. Debug empírico confirmou a
+  mutação. Agora `WorkbookUtil.validateSheetName(...)` e a checagem de nome
+  existente rodam antes do clone. `PlanilhaFacadeTest` cobre nome duplicado e
+  nome inválido, garantindo que a lista real de abas do POI não muda.
+  Total: 231 testes verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -434,7 +442,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **229 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **231 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -528,6 +536,10 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
     perde a terceira célula e desloca a estrutura importada. Para
     `List<String>` com delimitador, cada item da lista deve ser uma linha
     delimitada, não uma célula única.
+13. **`cloneSheet` deve vir depois da validação do nome da nova aba** — se
+    `duplicarAba` clonar primeiro e só depois chamar `setSheetName`, uma falha
+    por nome duplicado/inválido deixa uma aba parcial no workbook. Valide com
+    `WorkbookUtil.validateSheetName` e cheque duplicidade antes de clonar.
 
 ## 5. Convenções de código (obrigatórias)
 
