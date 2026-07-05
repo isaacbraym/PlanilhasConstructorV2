@@ -7,6 +7,10 @@ import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Name;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+import com.abnote.planilhas.exceptions.DadosInvalidosException;
 
 /**
  * Testes de nomes de intervalo (named ranges) na facade.
@@ -57,6 +61,15 @@ class NomeDeIntervaloFacadeTest {
 			FormulaEvaluator avaliador = planilha.workbook().getCreationHelper().createFormulaEvaluator();
 			avaliador.evaluateFormulaCell(celula);
 			assertEquals(15.9, celula.getNumericCellValue(), 0.01);
+		}
+	}
+
+	@ParameterizedTest
+	@ValueSource(strings = { "1Nome", "Nome Com Espaco", "A1", "$B$2", "" })
+	@DisplayName("definirNome deve recusar nomes inválidos com DadosInvalidosException, não IllegalArgumentException crua do POI")
+	void deveRecusarNomeInvalido(final String nomeInvalido) throws Exception {
+		try (Planilha planilha = Planilha.nova("T")) {
+			assertThrows(DadosInvalidosException.class, () -> planilha.definirNome(nomeInvalido, "A1:A2"));
 		}
 	}
 }

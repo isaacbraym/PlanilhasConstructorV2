@@ -88,9 +88,12 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   `&`-prefixada não é descobrível sem doc, então o usuário nunca escreve ela
   diretamente. Round-trip verificado (salva e reabre com XSSFWorkbook fresco).
   Total: 190 testes verdes.
-- [ ] `definirNome` vaza `IllegalArgumentException` crua do POI para nome
-  inválido (começa com dígito, tem espaço, parece referência de célula) —
-  precisa envolver em `DadosInvalidosException`.
+- [x] **`definirNome` não vaza mais `IllegalArgumentException` do POI**:
+  `setNameName` agora está em try/catch, relançando `DadosInvalidosException`
+  (com a exceção original como causa) para os 5 casos empíricos confirmados —
+  nome começando com dígito, com espaço, igual a uma referência de célula
+  (`"A1"`, `"$B$2"`) ou vazio. Teste parametrizado (`@ValueSource`) cobre os 5
+  casos em `NomeDeIntervaloFacadeTest`. Total: 195 testes verdes.
 - [ ] `graficoDeX` com categorias/valores em **abas diferentes** monta o
   gráfico silenciosamente com dado errado (sem erro nenhum) — precisa validar
   e lançar exceção amigável, ou dar suporte de verdade a cross-sheet.

@@ -563,10 +563,22 @@ public final class Planilha implements AutoCloseable {
 	 * @param intervalo Intervalo que o nome representa (ex.: "B2:B100"), na aba
 	 *                  atual.
 	 * @return Esta planilha, para encadear comandos.
+	 * @throws DadosInvalidosException se {@code nome} não seguir as regras do
+	 *                                  Excel para nomes de intervalo (não pode
+	 *                                  começar com dígito, ter espaços, ou
+	 *                                  parecer uma referência de célula como
+	 *                                  "A1").
 	 */
 	public Planilha definirNome(final String nome, final String intervalo) {
 		final Name nomeDefinido = planilha.obterWorkbook().createName();
-		nomeDefinido.setNameName(nome);
+		try {
+			nomeDefinido.setNameName(nome);
+		} catch (final IllegalArgumentException erro) {
+			throw new DadosInvalidosException(
+					"Nome de intervalo inválido: não pode começar com dígito, ter espaços, "
+							+ "nem parecer uma referência de célula (ex.: \"A1\")",
+					erro);
+		}
 		nomeDefinido.setRefersToFormula("'" + abaAtual + "'!" + paraReferenciaAbsoluta(intervalo));
 		return this;
 	}
