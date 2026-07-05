@@ -450,6 +450,12 @@ linha, para a aparência não ficar presa na posição antiga.
   ```
   Cobre `adicionarTotais`, inclusive colunas com formulas numericas e
   round-trip OOXML.
+- **Rodar só os testes de nomes de intervalo:**
+  ```bash
+  mvn "-Dtest=NomeDeIntervaloFacadeTest" test
+  ```
+  Cobre `definirNome`, uso em formulas prontas/PROCV e ausencia de `Name`
+  parcial quando nome ou intervalo sao invalidos.
 - **Rodar só os testes dos cálculos legados:**
   ```bash
   mvn "-Dtest=CalculosTest" test
@@ -487,7 +493,7 @@ linha, para a aparência não ficar presa na posição antiga.
 - **Changelog:** veja [`CHANGELOG.md`](CHANGELOG.md) para o histórico de
   versões.
 - **Cobertura de testes:** `mvn clean test` já gera um relatório JaCoCo em
-  `target/site/jacoco/index.html`. Suíte atual: 240 testes. Os pontos fracos
+  `target/site/jacoco/index.html`. Suíte atual: 241 testes. Os pontos fracos
   históricos (`Fontes`, `ManipuladorPlanilhaHelper`, `LogsDeModificadores`)
   já receberam cobertura estrutural; consulte o relatório para escolher novos
   alvos.

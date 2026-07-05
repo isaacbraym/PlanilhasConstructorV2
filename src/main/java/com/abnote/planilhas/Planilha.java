@@ -587,16 +587,21 @@ public final class Planilha implements AutoCloseable {
 	 *                                  "A1").
 	 */
 	public Planilha definirNome(final String nome, final String intervalo) {
+		final String referencia = "'" + abaAtual + "'!" + paraReferenciaAbsoluta(intervalo);
 		final Name nomeDefinido = planilha.obterWorkbook().createName();
 		try {
 			nomeDefinido.setNameName(nome);
+			nomeDefinido.setRefersToFormula(referencia);
 		} catch (final IllegalArgumentException erro) {
+			planilha.obterWorkbook().removeName(nomeDefinido);
 			throw new DadosInvalidosException(
 					"Nome de intervalo inválido: não pode começar com dígito, ter espaços, "
 							+ "nem parecer uma referência de célula (ex.: \"A1\")",
 					erro);
+		} catch (final RuntimeException erro) {
+			planilha.obterWorkbook().removeName(nomeDefinido);
+			throw erro;
 		}
-		nomeDefinido.setRefersToFormula("'" + abaAtual + "'!" + paraReferenciaAbsoluta(intervalo));
 		return this;
 	}
 

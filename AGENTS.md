@@ -266,6 +266,14 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   formulas numericas recebem `SUM(...)`, formulas/textos nao numericos continuam
   sem soma. `TotalizadorFacadeTest` cobre o fluxo publico com round-trip OOXML.
   Total: 240 testes verdes.
+- [x] **`definirNome` nao deixa nome parcial em erro**:
+  Debug empirico mostrou que `definirNome("1Nome", "A1:A2")` ja lancava
+  `DadosInvalidosException`, mas deixava um `Name` vazio no workbook
+  (`getNumberOfNames()` ia de 0 para 1). Agora a referencia e montada antes de
+  `Workbook.createName()` e qualquer falha depois da criacao remove o `Name`
+  parcial com `Workbook.removeName(...)`. `NomeDeIntervaloFacadeTest` valida
+  nome invalido e intervalo invalido sem mutar a colecao real de nomes. Total:
+  241 testes verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -494,7 +502,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **240 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **241 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -624,6 +632,10 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
     o usuario. Em `TotalizadorDeTabela`, avalie formulas com `FormulaEvaluator`
     antes de decidir se a coluna recebe `SUM(...)`; texto, erro ou booleano
     continuam barrando a soma da coluna.
+20. **Falha em `definirNome` nao pode deixar `Name` parcial no workbook** —
+    valide/monte a referencia antes de criar o `Name` e remova o objeto criado
+    com `Workbook.removeName(...)` se o POI rejeitar nome ou formula. A regra
+    vale para nome invalido e intervalo invalido.
 
 ## 5. Convenções de código (obrigatórias)
 

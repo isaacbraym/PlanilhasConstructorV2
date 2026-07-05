@@ -98,7 +98,10 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
 - **Quando** o nome não segue as regras do Excel (começa com dígito, tem
   espaço, ou é igual a uma referência de célula como `"A1"`/`"$B$2"`, ou é
   vazio), **Então** lança `DadosInvalidosException` com a causa original —
-  nunca a `IllegalArgumentException` crua do POI.
+  nunca a `IllegalArgumentException` crua do POI, e o workbook nao ganha nenhum
+  `Name` parcial/vazio.
+- **Quando** o intervalo informado em `definirNome` e invalido, **Entao** a
+  excecao de posicao invalida e preservada e nenhum `Name` parcial e criado.
 
 ## Formatos
 

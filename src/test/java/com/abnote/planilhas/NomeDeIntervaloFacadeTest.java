@@ -11,6 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import com.abnote.planilhas.exceptions.DadosInvalidosException;
+import com.abnote.planilhas.exceptions.PosicaoInvalidaException;
 import com.abnote.planilhas.utils.PosicaoConverter;
 
 /**
@@ -104,6 +105,16 @@ class NomeDeIntervaloFacadeTest {
 	void deveRecusarNomeInvalido(final String nomeInvalido) throws Exception {
 		try (Planilha planilha = Planilha.nova("T")) {
 			assertThrows(DadosInvalidosException.class, () -> planilha.definirNome(nomeInvalido, "A1:A2"));
+			assertEquals(0, planilha.workbook().getNumberOfNames());
+		}
+	}
+
+	@Test
+	@DisplayName("definirNome deve recusar intervalo invalido sem criar nome parcial")
+	void deveRecusarIntervaloInvalidoSemCriarNomeParcial() throws Exception {
+		try (Planilha planilha = Planilha.nova("T")) {
+			assertThrows(PosicaoInvalidaException.class, () -> planilha.definirNome("Precos", ""));
+			assertEquals(0, planilha.workbook().getNumberOfNames());
 		}
 	}
 
