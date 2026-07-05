@@ -258,6 +258,14 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   round-trip OOXML, `CopiadorDeCelulasTest` cobre o utilitario direto e
   `BuscaFacadeTest` valida copia de linhas filtradas para outra aba. Total:
   239 testes verdes.
+- [x] **`adicionarTotais()` soma colunas de formulas numericas**:
+  Debug empirico mostrou que uma coluna "Total" preenchida com formulas
+  numericas (`D2=B2*C2`, `D3=B3*C3`) era ignorada por `adicionarTotais()`,
+  porque `TotalizadorDeTabela` aceitava apenas `CellType.NUMERIC`. Agora o
+  helper usa `FormulaEvaluator` para classificar formulas pelo resultado:
+  formulas numericas recebem `SUM(...)`, formulas/textos nao numericos continuam
+  sem soma. `TotalizadorFacadeTest` cobre o fluxo publico com round-trip OOXML.
+  Total: 240 testes verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -486,7 +494,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **239 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **240 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -611,6 +619,11 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
     `AjustadorDeFormulas` para deslocar linha/coluna como o Excel faria, sem
     mexer nas partes absolutas (`$A$2`, `B$2`, `$A2`). Nao volte a copiar
     `getCellFormula()` diretamente.
+19. **`adicionarTotais()` deve tratar formula numerica como coluna numerica** —
+    uma coluna calculada (`B2*C2`, `SUM(...)`, etc.) tambem e dado numerico para
+    o usuario. Em `TotalizadorDeTabela`, avalie formulas com `FormulaEvaluator`
+    antes de decidir se a coluna recebe `SUM(...)`; texto, erro ou booleano
+    continuam barrando a soma da coluna.
 
 ## 5. Convenções de código (obrigatórias)
 
@@ -695,7 +708,8 @@ células sem borda prévia). Ver seção 4 para os detalhes que não podem regre
 7. ~~**`adicionarTotais()` de alto nível**~~ — **ENTREGUE** nesta sessão: soma
    automaticamente cada coluna numérica de uma tabela via novo
    `utils/TotalizadorDeTabela` (detecta largura pelo cabeçalho, altura pela
-   primeira coluna, ignora colunas com qualquer célula não numérica).
+   primeira coluna, soma também colunas com fórmulas numéricas e ignora colunas
+   com qualquer célula não numérica).
 
 ### Prioridade baixa / nice-to-have
 

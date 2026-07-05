@@ -126,6 +126,9 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
   exatamente as linhas de dados detectadas; a **primeira** coluna não numérica
   encontrada recebe o texto `"Total"` (as demais colunas não numéricas ficam
   em branco).
+- Celulas com formula entram nessa decisao pelo resultado calculado: uma coluna
+  com `D2=B2*C2` e `D3=B3*C3` recebe `SUM(D2:D3)` se ambas avaliarem como
+  numero, e esse contrato deve sobreviver a salvar/reabrir o `.xlsx`.
 - A largura da tabela é detectada pelo cabeçalho (para de contar colunas no
   primeiro cabeçalho vazio); a altura é detectada pela primeira coluna (para
   na primeira linha em branco nessa coluna, a partir do início dos dados).

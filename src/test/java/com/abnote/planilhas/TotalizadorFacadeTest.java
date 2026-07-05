@@ -2,19 +2,28 @@ package com.abnote.planilhas;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.File;
+import java.nio.file.Path;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Testes de {@code adicionarTotais} na facade.
  */
 @DisplayName("Planilha — adicionarTotais")
 class TotalizadorFacadeTest {
+
+	@TempDir
+	Path pasta;
 
 	@Test
 	@DisplayName("Deve somar as colunas numéricas e rotular a coluna de texto com 'Total'")
@@ -83,6 +92,35 @@ class TotalizadorFacadeTest {
 			Row linhaTotais = sheet.getRow(3);
 			assertEquals("Total", linhaTotais.getCell(0).getStringCellValue());
 			assertNull(linhaTotais.getCell(1), "Coluna só com texto não deve ganhar fórmula de soma");
+		}
+	}
+
+	@Test
+	@DisplayName("Deve somar coluna com formulas numericas")
+	void deveSomarColunaComFormulasNumericas() throws Exception {
+		String caminho = pasta.resolve("totais-formulas.xlsx").toString();
+		try (Planilha planilha = Planilha.nova("T")) {
+			planilha.escreverLinha("A1", "Produto", "Preco", "Qtd", "Total")
+					.escreverLinha("A2", "Caneta", 2.5, 10, "")
+					.formula("D2", "B2*C2")
+					.escreverLinha("A3", "Caderno", 15, 2, "")
+					.formula("D3", "B3*C3")
+					.adicionarTotais("A1")
+					.salvar(caminho);
+
+			Sheet sheet = planilha.workbook().getSheetAt(0);
+			Cell somaTotal = sheet.getRow(3).getCell(3);
+			assertEquals("SUM(D2:D3)", somaTotal.getCellFormula());
+			FormulaEvaluator avaliador = planilha.workbook().getCreationHelper().createFormulaEvaluator();
+			assertEquals(55.0, avaliador.evaluate(somaTotal).getNumberValue(), 0.001);
+		}
+
+		try (Workbook reaberto = new XSSFWorkbook(new File(caminho))) {
+			Sheet sheet = reaberto.getSheetAt(0);
+			Cell somaTotal = sheet.getRow(3).getCell(3);
+			assertEquals("SUM(D2:D3)", somaTotal.getCellFormula());
+			FormulaEvaluator avaliador = reaberto.getCreationHelper().createFormulaEvaluator();
+			assertEquals(55.0, avaliador.evaluate(somaTotal).getNumberValue(), 0.001);
 		}
 	}
 }

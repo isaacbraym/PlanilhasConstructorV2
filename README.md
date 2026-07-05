@@ -185,7 +185,7 @@ célula se ela não existir) — se a célula não existir, o retorno é `null`
 | `procurarValor("E2", "A2", "H2:J100", 3)` | PROCV: busca A2 na tabela e traz a coluna 3 |
 | `procurarValorNaAba("B2", "A2", "Produtos", "A2:C100", 3)` | PROCV buscando em outra aba |
 | `definirNome("Precos", "B2:B100")` | dá nome a um intervalo, para usar em fórmulas prontas, `formula(...)` e `procurarValor(...)` |
-| `adicionarTotais("A1")` | soma sozinho cada coluna numérica da tabela, logo abaixo do último dado |
+| `adicionarTotais("A1")` | soma sozinho cada coluna numerica da tabela, inclusive colunas com formulas numericas |
 | `colarComoValores("A1:D50")` | calcula as fórmulas do intervalo e as substitui pelo valor (útil antes de compartilhar o arquivo) |
 | `colarComoValores()` | igual, mas em toda a área usada da aba |
 
@@ -444,6 +444,12 @@ linha, para a aparência não ficar presa na posição antiga.
   Cobre ajuste de formulas relativas em `duplicarLinha`, `duplicarColuna` e
   copia de linhas filtradas para outra aba, incluindo round-trip OOXML pela
   facade.
+- **Rodar só os testes de totais automáticos:**
+  ```bash
+  mvn "-Dtest=TotalizadorFacadeTest" test
+  ```
+  Cobre `adicionarTotais`, inclusive colunas com formulas numericas e
+  round-trip OOXML.
 - **Rodar só os testes dos cálculos legados:**
   ```bash
   mvn "-Dtest=CalculosTest" test
@@ -481,7 +487,7 @@ linha, para a aparência não ficar presa na posição antiga.
 - **Changelog:** veja [`CHANGELOG.md`](CHANGELOG.md) para o histórico de
   versões.
 - **Cobertura de testes:** `mvn clean test` já gera um relatório JaCoCo em
-  `target/site/jacoco/index.html`. Suíte atual: 239 testes. Os pontos fracos
+  `target/site/jacoco/index.html`. Suíte atual: 240 testes. Os pontos fracos
   históricos (`Fontes`, `ManipuladorPlanilhaHelper`, `LogsDeModificadores`)
   já receberam cobertura estrutural; consulte o relatório para escolher novos
   alvos.

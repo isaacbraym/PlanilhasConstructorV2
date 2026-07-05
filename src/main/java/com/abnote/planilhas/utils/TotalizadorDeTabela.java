@@ -2,6 +2,8 @@ package com.abnote.planilhas.utils;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
@@ -32,9 +34,10 @@ public final class TotalizadorDeTabela {
 		}
 
 		final Row linhaTotais = obterOuCriarLinha(sheet, ultimaLinhaDeDados + 1);
+		final FormulaEvaluator avaliador = sheet.getWorkbook().getCreationHelper().createFormulaEvaluator();
 		boolean rotuloTotalEscrito = false;
 		for (int coluna = colunaInicial; coluna <= colunaFinal; coluna++) {
-			if (colunaEhNumerica(sheet, primeiraLinhaDeDados, ultimaLinhaDeDados, coluna)) {
+			if (colunaEhNumerica(sheet, primeiraLinhaDeDados, ultimaLinhaDeDados, coluna, avaliador)) {
 				escreverSoma(linhaTotais, coluna, primeiraLinhaDeDados, ultimaLinhaDeDados);
 			} else if (!rotuloTotalEscrito) {
 				linhaTotais.createCell(coluna).setCellValue("Total");
@@ -85,12 +88,19 @@ public final class TotalizadorDeTabela {
 	}
 
 	private static boolean colunaEhNumerica(final Sheet sheet, final int primeiraLinha, final int ultimaLinha,
-			final int coluna) {
+			final int coluna, final FormulaEvaluator avaliador) {
 		boolean encontrouAlgumaCelula = false;
 		for (int indiceLinha = primeiraLinha; indiceLinha <= ultimaLinha; indiceLinha++) {
 			final Row linha = sheet.getRow(indiceLinha);
 			final Cell celula = linha == null ? null : linha.getCell(coluna);
 			if (celula == null || celula.getCellType() == CellType.BLANK) {
+				continue;
+			}
+			if (celula.getCellType() == CellType.FORMULA) {
+				if (!formulaAvaliaComoNumero(celula, avaliador)) {
+					return false;
+				}
+				encontrouAlgumaCelula = true;
 				continue;
 			}
 			if (celula.getCellType() != CellType.NUMERIC) {
@@ -99,6 +109,15 @@ public final class TotalizadorDeTabela {
 			encontrouAlgumaCelula = true;
 		}
 		return encontrouAlgumaCelula;
+	}
+
+	private static boolean formulaAvaliaComoNumero(final Cell celula, final FormulaEvaluator avaliador) {
+		try {
+			final CellValue valorCalculado = avaliador.evaluate(celula);
+			return valorCalculado != null && valorCalculado.getCellType() == CellType.NUMERIC;
+		} catch (RuntimeException e) {
+			return false;
+		}
 	}
 
 	private static boolean celulaTemConteudo(final Cell celula) {
