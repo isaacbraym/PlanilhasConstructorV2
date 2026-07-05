@@ -229,6 +229,16 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   com fallback para o texto da fórmula se a avaliação falhar. `BuscaFacadeTest`
   cobre busca e cópia de linhas por resultado de fórmula. Total: 234 testes
   verdes.
+- [x] **Ordenação por resultado de fórmula corrigida**:
+  `OrdenadorDeLinhas` também tratava células `FORMULA` pelo texto interno da
+  fórmula, então `ordenarPorCrescente("C")` em uma coluna `B{}*2` preservava a
+  ordem física (`B2*2`, `B3*2`, `B4*2`) em vez de usar os resultados exibidos.
+  Debug empírico revelou ainda que, quando uma linha com fórmula mudava de
+  posição, a fórmula podia continuar apontando para a linha antiga. Agora a
+  ordenação avalia fórmulas com `FormulaEvaluator` e, ao reescrever as linhas,
+  ajusta referências relativas com `FormulaShifter.createForRowCopy`.
+  `OrdenarFacadeTest` cobre a estrutura real do POI e round-trip com
+  `XSSFWorkbook` fresco. Total: 235 testes verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -457,7 +467,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **234 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **235 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -564,6 +574,12 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
     `removerLinhasOnde`, uma célula `FORMULA` deve casar com o valor exibido ao
     usuário, não com o texto interno da fórmula; use `FormulaEvaluator` com
     fallback seguro.
+16. **Ordenação por fórmula deve usar o resultado calculado e ajustar
+    referências relativas** — em `OrdenadorDeLinhas`, a chave de uma célula
+    `FORMULA` deve vir de `FormulaEvaluator`, não de `getCellFormula()`. Ao
+    mover a linha, fórmulas relativas como `B3*2` precisam virar `B2*2` se a
+    linha for reescrita na linha 2; use `FormulaShifter.createForRowCopy` e
+    valide com round-trip OOXML.
 
 ## 5. Convenções de código (obrigatórias)
 

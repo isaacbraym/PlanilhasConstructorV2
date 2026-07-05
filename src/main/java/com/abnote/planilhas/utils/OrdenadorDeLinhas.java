@@ -1,14 +1,24 @@
 package com.abnote.planilhas.utils;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
+import org.apache.poi.ss.formula.EvaluationWorkbook;
+import org.apache.poi.ss.formula.FormulaParser;
+import org.apache.poi.ss.formula.FormulaParsingWorkbook;
+import org.apache.poi.ss.formula.FormulaRenderer;
+import org.apache.poi.ss.formula.FormulaRenderingWorkbook;
+import org.apache.poi.ss.formula.FormulaShifter;
+import org.apache.poi.ss.formula.FormulaType;
+import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
+import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 /**
  * Ordena as linhas de uma planilha pelo valor de uma coluna, preservando o
@@ -40,9 +50,10 @@ public final class OrdenadorDeLinhas {
 		if (ultimaLinha <= primeiraLinha) {
 			return; // 0 ou 1 linha de dados: nada a ordenar.
 		}
+		final FormulaEvaluator avaliador = sheet.getWorkbook().getCreationHelper().createFormulaEvaluator();
 		final List<LinhaCapturada> capturadas = new ArrayList<>();
 		for (int indiceLinha = primeiraLinha; indiceLinha <= ultimaLinha; indiceLinha++) {
-			capturadas.add(LinhaCapturada.de(sheet.getRow(indiceLinha), coluna));
+			capturadas.add(LinhaCapturada.de(sheet.getRow(indiceLinha), coluna, avaliador));
 		}
 		capturadas.sort(crescente ? OrdenadorDeLinhas::compararChaves
 				: (a, b) -> compararChaves(b, a));
@@ -98,7 +109,7 @@ public final class OrdenadorDeLinhas {
 		private String chaveTexto;
 		private final List<CelulaCapturada> celulas = new ArrayList<>();
 
-		private static LinhaCapturada de(final Row linha, final int coluna) {
+		private static LinhaCapturada de(final Row linha, final int coluna, final FormulaEvaluator avaliador) {
 			final LinhaCapturada capturada = new LinhaCapturada();
 			if (linha == null) {
 				return capturada;
@@ -106,11 +117,11 @@ public final class OrdenadorDeLinhas {
 			for (final Cell celula : linha) {
 				capturada.celulas.add(CelulaCapturada.de(celula));
 			}
-			capturada.definirChave(linha.getCell(coluna));
+			capturada.definirChave(linha.getCell(coluna), avaliador);
 			return capturada;
 		}
 
-		private void definirChave(final Cell chave) {
+		private void definirChave(final Cell chave, final FormulaEvaluator avaliador) {
 			if (chave == null) {
 				return;
 			}
@@ -125,10 +136,35 @@ public final class OrdenadorDeLinhas {
 				chaveTexto = Boolean.toString(chave.getBooleanCellValue());
 				break;
 			case FORMULA:
-				chaveTexto = chave.getCellFormula();
+				definirChaveDeFormula(chave, avaliador);
 				break;
 			default:
 				break;
+			}
+		}
+
+		private void definirChaveDeFormula(final Cell chave, final FormulaEvaluator avaliador) {
+			try {
+				final CellValue resultado = avaliador.evaluate(chave);
+				if (resultado == null) {
+					return;
+				}
+				switch (resultado.getCellType()) {
+				case NUMERIC:
+					chaveNumerica = resultado.getNumberValue();
+					break;
+				case STRING:
+					chaveTexto = resultado.getStringValue();
+					break;
+				case BOOLEAN:
+					chaveTexto = Boolean.toString(resultado.getBooleanValue());
+					break;
+				default:
+					chaveTexto = chave.getCellFormula();
+					break;
+				}
+			} catch (RuntimeException e) {
+				chaveTexto = chave.getCellFormula();
 			}
 		}
 	}
@@ -136,6 +172,7 @@ public final class OrdenadorDeLinhas {
 	/** Foto de uma célula: valor, tipo e estilo. */
 	private static final class CelulaCapturada {
 		private int coluna;
+		private int linhaOrigem;
 		private CellType tipo;
 		private CellStyle estilo;
 		private String texto;
@@ -146,6 +183,7 @@ public final class OrdenadorDeLinhas {
 		private static CelulaCapturada de(final Cell celula) {
 			final CelulaCapturada capturada = new CelulaCapturada();
 			capturada.coluna = celula.getColumnIndex();
+			capturada.linhaOrigem = celula.getRowIndex();
 			capturada.tipo = celula.getCellType();
 			capturada.estilo = celula.getCellStyle();
 			switch (capturada.tipo) {
@@ -180,13 +218,34 @@ public final class OrdenadorDeLinhas {
 				nova.setCellValue(logico);
 				break;
 			case FORMULA:
-				nova.setCellFormula(formula);
+				nova.setCellFormula(ajustarFormulaParaLinha(nova.getSheet(), formula, linhaOrigem, nova.getRowIndex()));
 				break;
 			default:
 				break;
 			}
 			if (estilo != null) {
 				nova.setCellStyle(estilo);
+			}
+		}
+
+		private String ajustarFormulaParaLinha(final Sheet sheet, final String formulaOriginal, final int origem,
+				final int destino) {
+			if (formulaOriginal == null || origem == destino) {
+				return formulaOriginal;
+			}
+			try {
+				final Workbook workbook = sheet.getWorkbook();
+				final EvaluationWorkbook avaliacao = workbook.createEvaluationWorkbook();
+				final FormulaParsingWorkbook parser = (FormulaParsingWorkbook) avaliacao;
+				final FormulaRenderingWorkbook renderizador = (FormulaRenderingWorkbook) avaliacao;
+				final int indiceAba = workbook.getSheetIndex(sheet);
+				final Ptg[] tokens = FormulaParser.parse(formulaOriginal, parser, FormulaType.CELL, indiceAba, origem);
+				final FormulaShifter shifter = FormulaShifter.createForRowCopy(indiceAba, sheet.getSheetName(), origem,
+						origem, destino - origem, workbook.getSpreadsheetVersion());
+				shifter.adjustFormula(tokens, indiceAba);
+				return FormulaRenderer.toFormulaString(renderizador, tokens);
+			} catch (RuntimeException e) {
+				return formulaOriginal;
 			}
 		}
 	}

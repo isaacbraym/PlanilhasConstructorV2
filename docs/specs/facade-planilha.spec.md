@@ -266,6 +266,12 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
   `Carlos`, com a coluna Idade viajando junto e o cabeçalho intacto.
 - Números ordenam numericamente; `ordenarPorDecrescente` inverte;
   `ordenarPor(coluna, crescente, linhaInicial)` permite ordenar sem cabeçalho.
+- Se a coluna de ordenação contiver fórmulas, a comparação usa o resultado
+  calculado da fórmula (ex.: `B2*2` com resultado `4` ordena como número `4`,
+  não pelo texto `"B2*2"`). Ao reescrever linhas, referências relativas dentro
+  das fórmulas acompanham a nova posição da linha (`B3*2` vira `B2*2` se a
+  linha for para a linha 2); o contrato deve sobreviver a salvar e reabrir o
+  `.xlsx`.
 
 ## Buscar e filtrar linhas
 

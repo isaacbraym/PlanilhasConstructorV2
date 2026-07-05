@@ -213,7 +213,7 @@ célula se ela não existir) — se a célula não existir, o retorno é `null`
 ### Ordenar
 | Comando | O que faz |
 |---|---|
-| `ordenarPorCrescente("B")` | ordena por uma coluna (A→Z, menor→maior), mantendo o cabeçalho |
+| `ordenarPorCrescente("B")` | ordena por uma coluna (A→Z, menor→maior), mantendo o cabeçalho; fórmulas usam o resultado calculado |
 | `ordenarPorDecrescente("B")` | ordena ao contrário |
 | `ordenarPor("B", true, 1)` | ordena sem cabeçalho (a partir da linha 1) |
 
@@ -398,6 +398,10 @@ Sim. Depois de `definirNome("Precos", "B2:B100")`, você pode usar
 Nomes também funcionam com `formula(...)` (ex.: `formula("D1", "SUM(Precos)")`)
 e com `procurarValor`/`procurarValorNaAba`.
 
+**Dá para ordenar por uma coluna que tem fórmula?**
+Sim. A ordenação usa o resultado calculado da fórmula e, quando a linha muda de
+posição, ajusta referências relativas como `B3*2` para a nova linha.
+
 ---
 
 ## Para desenvolvedores
@@ -415,6 +419,12 @@ e com `procurarValor`/`procurarValorNaAba`.
   ```
   Eles criam milhares de linhas, salvam/reabrem `.xlsx` e exercitam escrita,
   filtros, congelamento, fórmulas, ordenação, busca e cópia entre abas.
+- **Rodar só os testes de ordenação:**
+  ```bash
+  mvn "-Dtest=OrdenarFacadeTest" test
+  ```
+  Cobre ordenação por texto, número e fórmula, incluindo ajuste de referências
+  relativas e round-trip com `XSSFWorkbook` fresco.
 - **Rodar só os testes dos cálculos legados:**
   ```bash
   mvn "-Dtest=CalculosTest" test
@@ -452,7 +462,7 @@ e com `procurarValor`/`procurarValorNaAba`.
 - **Changelog:** veja [`CHANGELOG.md`](CHANGELOG.md) para o histórico de
   versões.
 - **Cobertura de testes:** `mvn clean test` já gera um relatório JaCoCo em
-  `target/site/jacoco/index.html`. Suíte atual: 234 testes. Os pontos fracos
+  `target/site/jacoco/index.html`. Suíte atual: 235 testes. Os pontos fracos
   históricos (`Fontes`, `ManipuladorPlanilhaHelper`, `LogsDeModificadores`)
   já receberam cobertura estrutural; consulte o relatório para escolher novos
   alvos.

@@ -2,9 +2,17 @@ package com.abnote.planilhas;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 /**
  * Testes de ordenação de linhas na facade.
@@ -80,5 +88,43 @@ class OrdenarFacadeTest {
 			assertEquals(2.0, sheet.getRow(1).getCell(0).getNumericCellValue(), 0.001);
 			assertEquals(3.0, sheet.getRow(2).getCell(0).getNumericCellValue(), 0.001);
 		}
+	}
+
+	@Test
+	@DisplayName("ordenarPorCrescente por formula deve usar o resultado calculado e ajustar referencias")
+	void deveOrdenarPorResultadoDeFormulaEAjustarReferencias(@TempDir Path tempDir) throws Exception {
+		Path arquivo = tempDir.resolve("ordenado-formulas.xlsx");
+
+		try (Planilha planilha = Planilha.nova("Dados")) {
+			planilha.escreverLinha("A1", "Item", "Base", "Dobro")
+					.escreverLinha("A2", "Grande", 100).formula("C2", "B2*2")
+					.escreverLinha("A3", "Pequeno", 2).formula("C3", "B3*2")
+					.escreverLinha("A4", "Medio", 30).formula("C4", "B4*2")
+					.ordenarPorCrescente("C");
+
+			assertLinhasOrdenadasPorFormula(planilha.workbook().getSheetAt(0));
+			planilha.salvar(arquivo.toString());
+		}
+
+		try (InputStream entrada = Files.newInputStream(arquivo);
+				XSSFWorkbook workbook = new XSSFWorkbook(entrada)) {
+			assertLinhasOrdenadasPorFormula(workbook.getSheetAt(0));
+		}
+	}
+
+	private void assertLinhasOrdenadasPorFormula(Sheet sheet) {
+		FormulaEvaluator avaliador = sheet.getWorkbook().getCreationHelper().createFormulaEvaluator();
+		assertLinhaFormula(sheet, avaliador, 1, "Pequeno", 2.0, "B2*2", 4.0);
+		assertLinhaFormula(sheet, avaliador, 2, "Medio", 30.0, "B3*2", 60.0);
+		assertLinhaFormula(sheet, avaliador, 3, "Grande", 100.0, "B4*2", 200.0);
+	}
+
+	private void assertLinhaFormula(Sheet sheet, FormulaEvaluator avaliador, int indiceLinha, String item,
+			double base, String formula, double resultado) {
+		Cell celulaFormula = sheet.getRow(indiceLinha).getCell(2);
+		assertEquals(item, sheet.getRow(indiceLinha).getCell(0).getStringCellValue());
+		assertEquals(base, sheet.getRow(indiceLinha).getCell(1).getNumericCellValue(), 0.001);
+		assertEquals(formula, celulaFormula.getCellFormula());
+		assertEquals(resultado, avaliador.evaluate(celulaFormula).getNumberValue(), 0.001);
 	}
 }

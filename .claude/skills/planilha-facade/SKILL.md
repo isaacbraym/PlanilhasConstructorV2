@@ -41,7 +41,9 @@ public class Gerar {
   `multiplicar`, `subtrair`, `dividir`, `formula(celula, expr)`,
   `preencherColuna(coluna, ini, fim, "B{}*C{}")`, `procurarValor`,
   `procurarValorNaAba` (PROCV/VLOOKUP).
-- Ordenar: `ordenarPorCrescente`, `ordenarPorDecrescente`, `ordenarPor`.
+- Ordenar: `ordenarPorCrescente`, `ordenarPorDecrescente`, `ordenarPor`
+  (fórmulas ordenam pelo resultado calculado e referências relativas acompanham
+  a nova linha).
 - Busca/filtro: `buscarLinhas`, `contarLinhasOnde`, `copiarLinhasParaAba`,
   `moverLinhasParaAba`, `removerLinhasOnde`.
 - Formatação condicional: `realcarSeMaiorQue`, `realcarSeMenorQue`,
@@ -123,24 +125,28 @@ Detalhes/contrato: `docs/specs/facade-planilha.spec.md`.
    `moverLinhasParaAba`, `removerLinhasOnde`) ou `FiltroDeLinhas`, rode
    `mvn "-Dtest=BuscaFacadeTest" test`; ele protege comparação por números e
    por resultados avaliados de fórmulas.
-10. Ao mexer em escrita massiva, ordenação, filtros ou cópia de linhas, rode
+10. Ao mexer em ordenação (`ordenarPorCrescente`, `ordenarPorDecrescente`,
+   `ordenarPor`) ou `OrdenadorDeLinhas`, rode
+   `mvn "-Dtest=OrdenarFacadeTest" test`; ele protege ordenação por texto,
+   números e resultado de fórmulas, incluindo ajuste de referências relativas.
+11. Ao mexer em escrita massiva, ordenação, filtros ou cópia de linhas, rode
    `mvn "-Dtest=CargaFacadeTest" test` além do teste focal da feature.
-11. Ao mexer em linhas de total/resumo da API fluente legada, rode
+12. Ao mexer em linhas de total/resumo da API fluente legada, rode
    `mvn "-Dtest=CalculosTest" test` para proteger contra perda de células em
    linhas já existentes.
-12. Ao mexer em mover/remover/limpar/inserir coluna, rode
+13. Ao mexer em mover/remover/limpar/inserir coluna, rode
    `mvn "-Dtest=ManipuladorPlanilhaTest" test`; ele protege fórmulas contra o
    bug real de `Cell.setCellType(CellType.FORMULA)` e valida preservação de
    tipo/estilo no recorte de colunas.
-13. Ao mexer em `logAlteracoes()` ou `LogsDeModificadores`, rode
+14. Ao mexer em `logAlteracoes()` ou `LogsDeModificadores`, rode
    `mvn "-Dtest=LogsDeModificadoresTest" test`; ele captura `System.out` e
    confirma que a fila interna é limpa após exibir.
-14. Ao mexer em inserção delimitada, importação de arquivo texto ou
+15. Ao mexer em inserção delimitada, importação de arquivo texto ou
    `InsersorDeDados`, rode `mvn "-Dtest=PlanilhaXlsxTest,CoercaoNumericaTest" test`;
    isso protege campos vazios finais (`"A,B,"`) em string/lista/arquivo,
    coerção segura de CPF/CEP, dados nulos amigáveis e caminhos básicos de
    erro/no-op da API fluente.
-15. Ao mexer em fonte, cores, bordas, alinhamento ou autoajuste, rode
+16. Ao mexer em fonte, cores, bordas, alinhamento ou autoajuste, rode
    `mvn "-Dtest=EstiloCelulaTest" test`; ele também salva/reabre fonte
    combinada para proteger a serialização OOXML de nome, tamanho, cor e
    atributos.
