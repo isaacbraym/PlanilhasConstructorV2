@@ -242,6 +242,7 @@ célula se ela não existir) — se a célula não existir, o retorno é `null`
 |---|---|
 | `listaSuspensa("C2:C50", "Pendente", "Pago", "Atrasado")` | menu com opções fixas |
 | `listaSuspensaDoIntervalo("A2:A50", "F2:F5")` | menu com opções vindas de outra coluna (sem limite de 255 caracteres) |
+| `listaSuspensaDoIntervalo("A2:A50", "Apoio", "F2:F5")` | menu com opções vindas de outra aba, sem escrever fórmula de Excel |
 | `validarNumeroEntre("B2:B50", 0, 100.5)` | só aceita números entre 0 e 100,5 |
 | `validarInteiroEntre("C2:C50", 1, 10)` | só aceita inteiros entre 1 e 10 |
 | `validarDataEntre("D2:D50", LocalDate.of(2024,1,1), LocalDate.of(2024,12,31))` | só aceita datas no intervalo |
@@ -384,7 +385,9 @@ antigo), abra no Excel e salve novamente como `.xlsx` antes.
 **Minha lista suspensa não aceita todas as opções que eu passei.**
 O Excel tem um limite de 255 caracteres somados para listas com opções fixas
 (`listaSuspensa`). Para listas maiores, use `listaSuspensaDoIntervalo`,
-apontando para uma coluna com as opções — não tem esse limite.
+apontando para uma coluna com as opções — não tem esse limite. Se as opções
+ficarem em outra aba, use a versão com 3 argumentos:
+`listaSuspensaDoIntervalo("A2:A50", "Apoio", "F2:F100")`.
 
 **Preciso fechar a planilha?**
 Se usar `try (Planilha planilha = ...)`, é automático. Senão, chame `fechar()`.

@@ -176,6 +176,13 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
   restrição referencia a fórmula `$F$2:$F$5` (convertida para referência
   absoluta automaticamente); se o intervalo já contiver `!` (ex.:
   `"Opcoes!$A$1:$A$3"`), é usado exatamente como informado, sem conversão.
+- **Quando** `listaSuspensaDoIntervalo(intervaloDestino, "Apoio", "F2:F5")`,
+  **Então** a restrição referencia a fórmula `'Apoio'!$F$2:$F$5`, validando
+  que a aba existe antes de criar a lista. Nomes de aba com espaços são
+  protegidos por aspas simples e sobrevivem a round-trip (`XSSFWorkbook`
+  fresco após salvar/reabrir).
+- Referências já absolutas (ex.: `"$F$2:$F$5"`) continuam exatamente assim; a
+  facade não duplica cifrões ao montar listas suspensas ou nomes definidos.
 
 ## Gráficos
 

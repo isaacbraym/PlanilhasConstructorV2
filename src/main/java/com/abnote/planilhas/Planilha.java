@@ -46,6 +46,7 @@ import com.abnote.planilhas.utils.MargensDeImpressaoHelper;
 import com.abnote.planilhas.utils.OrdenadorDeLinhas;
 import com.abnote.planilhas.utils.PosicaoConverter;
 import com.abnote.planilhas.utils.ProtecaoHelper;
+import com.abnote.planilhas.utils.ReferenciasExcel;
 import com.abnote.planilhas.utils.TotalizadorDeTabela;
 import com.abnote.planilhas.utils.ValidacaoDeEntradaHelper;
 
@@ -552,11 +553,9 @@ public final class Planilha implements AutoCloseable {
 	 * {@code formula("D2", "SUM(Precos)")} em vez de {@code "SUM(B2:B100)"}).
 	 *
 	 * <p>
-	 * Funciona com {@link #formula}, {@link #procurarValor} e
-	 * {@link #procurarValorNaAba}. As fórmulas prontas ({@link #somar},
-	 * {@link #media} etc.) ainda exigem um intervalo de células (ex.:
-	 * {@code "B2:B100"}), não um nome — use {@code formula(celula, "SUM(Nome)")}
-	 * nesse caso.
+	 * Funciona com {@link #formula}, {@link #procurarValor},
+	 * {@link #procurarValorNaAba} e as fórmulas prontas ({@link #somar},
+	 * {@link #media}, {@link #contar}, {@link #minimo}, {@link #maximo}).
 	 * </p>
 	 *
 	 * @param nome      Nome a definir (ex.: "Precos"). Sem espaços, começando com
@@ -902,6 +901,30 @@ public final class Planilha implements AutoCloseable {
 	}
 
 	/**
+	 * Cria uma lista suspensa cujas opções vêm de um intervalo em outra aba, sem
+	 * precisar escrever a fórmula do Excel à mão.
+	 *
+	 * <p>Exemplo: opções em {@code Apoio!F2:F5}, menu no formulário:</p>
+	 * <pre>{@code
+	 * planilha.irParaAba("Formulario")
+	 *         .listaSuspensaDoIntervalo("A2:A50", "Apoio", "F2:F5");
+	 * }</pre>
+	 *
+	 * @param intervaloDestino Célula(s) que receberão a lista suspensa.
+	 * @param abaOpcoes        Nome da aba onde estão as opções.
+	 * @param intervaloOpcoes  Intervalo com as opções dentro da aba informada.
+	 * @return Esta planilha, para encadear comandos.
+	 * @throws IllegalArgumentException se {@code abaOpcoes} não existir.
+	 */
+	public Planilha listaSuspensaDoIntervalo(final String intervaloDestino, final String abaOpcoes,
+			final String intervaloOpcoes) {
+		indiceDaAba(abaOpcoes);
+		ListaSuspensaHelper.doIntervalo(xssf(), regiaoDe(intervaloDestino),
+				ReferenciasExcel.qualificada(abaOpcoes, intervaloOpcoes));
+		return this;
+	}
+
+	/**
 	 * Restringe o intervalo a números entre dois limites (inclusive) — quem tentar
 	 * digitar um valor fora do limite vê um aviso de erro.
 	 *
@@ -954,24 +977,7 @@ public final class Planilha implements AutoCloseable {
 	}
 
 	private String paraReferenciaAbsoluta(final String intervalo) {
-		if (intervalo.contains("!")) {
-			return intervalo; // Já qualificado com aba — mantém como está.
-		}
-		final String[] partes = intervalo.split(":", 2);
-		final StringBuilder referencia = new StringBuilder();
-		for (int i = 0; i < partes.length; i++) {
-			if (i > 0) {
-				referencia.append(':');
-			}
-			referencia.append(absoluta(partes[i].trim()));
-		}
-		return referencia.toString();
-	}
-
-	private String absoluta(final String celula) {
-		final String colunaParte = celula.replaceAll("\\d", "");
-		final String linhaParte = celula.replaceAll("\\D", "");
-		return "$" + colunaParte + "$" + linhaParte;
+		return ReferenciasExcel.absoluta(intervalo);
 	}
 
 	// ==================== GRÁFICOS ====================

@@ -32,6 +32,18 @@ class NomeDeIntervaloFacadeTest {
 	}
 
 	@Test
+	@DisplayName("definirNome deve aceitar intervalo já absoluto sem duplicar cifrões")
+	void deveAceitarIntervaloJaAbsoluto() throws Exception {
+		try (Planilha planilha = Planilha.nova("Vendas")) {
+			planilha.definirNome("Precos", "$B$2:$B$10");
+
+			Name nome = planilha.workbook().getName("Precos");
+			assertNotNull(nome);
+			assertEquals("'Vendas'!$B$2:$B$10", nome.getRefersToFormula());
+		}
+	}
+
+	@Test
 	@DisplayName("Nome definido deve funcionar dentro de formula() e avaliar corretamente")
 	void deveUsarNomeDentroDeFormula() throws Exception {
 		try (Planilha planilha = Planilha.nova("Vendas")) {

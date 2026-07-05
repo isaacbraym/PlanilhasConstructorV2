@@ -48,7 +48,8 @@ public class Gerar {
   `realcarSeEntre`, `realcarSeIgual`, `escalaDeCores`,
   `barrasDeDados(intervalo, cor)`, `iconesSemaforo(intervalo)`.
 - Lista suspensa: `listaSuspensa(intervalo, opcoes...)`,
-  `listaSuspensaDoIntervalo(intervaloDestino, intervaloOpcoes)`.
+  `listaSuspensaDoIntervalo(intervaloDestino, intervaloOpcoes)` ou
+  `listaSuspensaDoIntervalo(intervaloDestino, abaOpcoes, intervaloOpcoes)`.
 - Validação de limites (sem menu): `validarNumeroEntre`/`validarInteiroEntre(
   intervalo, min, max)`, `validarDataEntre(intervalo, LocalDate min, max)`.
 - Nomes de intervalo: `definirNome(nome, intervalo)` — use com `somar`/
@@ -109,6 +110,9 @@ Detalhes/contrato: `docs/specs/facade-planilha.spec.md`.
    `subtrair`, `dividir` ou `preencherColuna("D", 2, 10, "B{}*C{}")`. Para
    fórmulas do Excel arbitrárias, `formula("D2", "B2*C2")` (o "=" é opcional).
 5. Não adicione dependências nem use Spring/Lombok.
+6. No PowerShell, coloque argumentos Maven `-D...` entre aspas. Ex.:
+   `mvn "-Dtest=ListaSuspensaFacadeTest" test`; sem aspas, argumentos com ponto
+   (como `-Dmdep.outputFile=...`) podem ser quebrados pelo shell.
 
 ## Exemplos de referência (cookbook)
 

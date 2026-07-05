@@ -35,7 +35,7 @@ por valor; formatos (moeda/contábil/número/texto/data/porcentagem); colunas e
 linhas (mover/remover/limpar/inserir/duplicar); estilos (negrito, cores, bordas,
 mesclar, largura/altura, congelar N, filtros, autoajuste); **formatação
 condicional** (realçar/escala de cores); **lista suspensa** (dropdown, fixa ou
-de intervalo, e validação numérica/de data); **nomes de intervalo**
+de intervalo na mesma/outra aba, e validação numérica/de data); **nomes de intervalo**
 (`definirNome`, com nome inválido virando `DadosInvalidosException` amigável);
 **`adicionarTotais()`** automático; **gráficos** (barras/pizza/linha, com
 suporte a categorias/valores em abas diferentes da do gráfico); **imagens/
@@ -135,6 +135,16 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   ambos sobrevivendo a round-trip OOXML. Testes dedicados salvam/reabrem com
   `XSSFWorkbook` fresco e validam a estrutura real (`DataBarFormatting`,
   `IconMultiStateFormatting`, cor e thresholds). Total: 202 testes verdes.
+- [x] **Lista suspensa com opções em outra aba**:
+  `listaSuspensaDoIntervalo(intervaloDestino, abaOpcoes, intervaloOpcoes)`
+  monta a fórmula qualificada (`'Apoio'!$F$2:$F$5`) sem exigir que o usuário
+  conheça sintaxe de Excel/POI. Investigação empírica confirmou round-trip
+  OOXML para aba com espaço no nome. Extraído `utils/ReferenciasExcel` para
+  centralizar referências absolutas/qualificadas e corrigir um bug silencioso:
+  intervalos já absolutos (`$F$2:$F$5`) não podem virar `$$F$$2`. Testes
+  dedicados cobrem lista em outra aba, aba inexistente, intervalo já absoluto
+  e `definirNome` com intervalo absoluto. Total: 206 testes verdes (confirmar
+  com `mvn clean test` no fim do lote).
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -364,7 +374,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **186 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **206 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -483,7 +493,7 @@ valor; formatos (moeda/contábil/número/texto/data/porcentagem); colunas e
 linhas (mover/remover/limpar/inserir/duplicar); estilos (fonte, cor, borda,
 mesclar, largura/altura, congelar N, filtros, autoajuste); formatação
 condicional (realçar/escala de cores); lista suspensa (opções fixas ou de
-intervalo); gráficos (barras/pizza/linha); imagens/logo; configuração de
+intervalo na mesma/outra aba); gráficos (barras/pizza/linha); imagens/logo; configuração de
 impressão (orientação/área/ajustar em N páginas); proteção de planilha e
 desbloqueio de células para formulários.
 
