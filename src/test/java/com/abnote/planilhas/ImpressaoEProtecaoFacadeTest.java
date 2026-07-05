@@ -51,6 +51,50 @@ class ImpressaoEProtecaoFacadeTest {
 	}
 
 	@Test
+	@DisplayName("cabecalhoDeImpressao(centro) deve definir só o texto central")
+	void deveDefinirCabecalhoSoCentro() throws Exception {
+		try (Planilha planilha = Planilha.nova("T")) {
+			planilha.cabecalhoDeImpressao("Relatório Mensal");
+			Sheet sheet = planilha.workbook().getSheetAt(0);
+			assertEquals("Relatório Mensal", sheet.getHeader().getCenter());
+			assertEquals("", sheet.getHeader().getLeft());
+			assertEquals("", sheet.getHeader().getRight());
+		}
+	}
+
+	@Test
+	@DisplayName("cabecalhoDeImpressao(esquerda, centro, direita) deve traduzir marcadores amigáveis para códigos do Excel")
+	void deveDefinirCabecalhoComTresPartesEMarcadores() throws Exception {
+		try (Planilha planilha = Planilha.nova("T")) {
+			planilha.cabecalhoDeImpressao("{arquivo}", "Relatório", "{data}");
+			Sheet sheet = planilha.workbook().getSheetAt(0);
+			assertEquals("&F", sheet.getHeader().getLeft());
+			assertEquals("Relatório", sheet.getHeader().getCenter());
+			assertEquals("&D", sheet.getHeader().getRight());
+		}
+	}
+
+	@Test
+	@DisplayName("rodapeDeImpressao(centro) deve definir só o texto central")
+	void deveDefinirRodapeSoCentro() throws Exception {
+		try (Planilha planilha = Planilha.nova("T")) {
+			planilha.rodapeDeImpressao("Confidencial");
+			Sheet sheet = planilha.workbook().getSheetAt(0);
+			assertEquals("Confidencial", sheet.getFooter().getCenter());
+		}
+	}
+
+	@Test
+	@DisplayName("rodapeDeImpressao deve traduzir {pagina} e {total} para os códigos &P e &N")
+	void deveDefinirRodapeComPaginacao() throws Exception {
+		try (Planilha planilha = Planilha.nova("T")) {
+			planilha.rodapeDeImpressao("", "Página {pagina} de {total}", "");
+			Sheet sheet = planilha.workbook().getSheetAt(0);
+			assertEquals("Página &P de &N", sheet.getFooter().getCenter());
+		}
+	}
+
+	@Test
 	@DisplayName("protegerPlanilha deve ativar a proteção da aba")
 	void deveProtegerPlanilha() throws Exception {
 		try (Planilha planilha = Planilha.nova("T")) {

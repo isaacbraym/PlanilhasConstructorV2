@@ -280,6 +280,15 @@ Comparação por texto; números casam sem `.0` (ex.: `10` casa com `"10"`).
   convertendo para referência absoluta automaticamente.
 - `ajustarImpressaoEmPaginas(larguraPaginas, alturaPaginas)` ativa
   `sheet.getFitToPage()` e define `PrintSetup.getFitWidth()`/`getFitHeight()`.
+- `cabecalhoDeImpressao(centro)`/`cabecalhoDeImpressao(esquerda, centro, direita)`
+  escrevem em `sheet.getHeader()` (Left/Center/Right). Sobrecarga de 1 argumento
+  preenche só o centro, deixando esquerda/direita vazios (`""`, nunca `null`).
+- `rodapeDeImpressao(centro)`/`rodapeDeImpressao(esquerda, centro, direita)` —
+  mesma ideia para `sheet.getFooter()`.
+- Ambos traduzem marcadores amigáveis via `CodigosDeImpressao.traduzir`:
+  `{pagina}`→`&P`, `{total}`→`&N`, `{data}`→`&D`, `{hora}`→`&T`,
+  `{arquivo}`→`&F`, `{aba}`→`&A` — a sintaxe nativa do Excel (`&P`/`&N`/...)
+  não é descobrível sem documentação, então o usuário nunca precisa vê-la.
 - Todos sobrevivem a salvar em disco e reabrir (round-trip verificado).
 
 ## Proteção

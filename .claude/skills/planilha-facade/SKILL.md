@@ -62,7 +62,11 @@ public class Gerar {
 - Imagens: `inserirImagem(celula, caminho)` ou `inserirImagem(celula, caminho,
   escala)` — aceita `.png`/`.jpg`/`.jpeg`.
 - Impressão: `orientacaoPaisagem`/`orientacaoRetrato`, `areaDeImpressao`,
-  `ajustarImpressaoEmPaginas(larguraPaginas, alturaPaginas)`.
+  `ajustarImpressaoEmPaginas(larguraPaginas, alturaPaginas)`,
+  `cabecalhoDeImpressao(centro)`/`cabecalhoDeImpressao(esquerda, centro,
+  direita)`, `rodapeDeImpressao(centro)`/`rodapeDeImpressao(esquerda, centro,
+  direita)` — aceitam marcadores `{pagina}`, `{total}`, `{data}`, `{hora}`,
+  `{arquivo}`, `{aba}`.
 - Proteção: `desbloquearCelulas(intervalo)` (chame antes) +
   `protegerPlanilha(senha)` — para formulários com campos editáveis.
 - Formatos: `formatarComoMoeda`, `formatarComoContabil`, `formatarComoNumero`,

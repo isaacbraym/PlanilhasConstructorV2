@@ -79,7 +79,15 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   `personalizado(String)` em `utils/FormatosDeCelula` (cache por string de
   formato, mesmo padrão de `data()`/`porcentagem()`). Sintaxe do formato não é
   validada (Excel/POI não valida nesse ponto). Total: 186 testes verdes.
-- [ ] Cabeçalho/rodapé de impressão com texto.
+- [x] **Cabeçalho/rodapé de impressão com texto**: `cabecalhoDeImpressao`/
+  `rodapeDeImpressao`, cada um com sobrecarga de 1 argumento (só centro) e de
+  3 (esquerda/centro/direita), via `sheet.getHeader()`/`getFooter()`. Novo
+  `utils/CodigosDeImpressao.traduzir` converte marcadores amigáveis
+  (`{pagina}`, `{total}`, `{data}`, `{hora}`, `{arquivo}`, `{aba}`) para os
+  códigos nativos do Excel (`&P`, `&N`, `&D`, `&T`, `&F`, `&A`) — a sintaxe
+  `&`-prefixada não é descobrível sem doc, então o usuário nunca escreve ela
+  diretamente. Round-trip verificado (salva e reabre com XSSFWorkbook fresco).
+  Total: 190 testes verdes.
 - [ ] `definirNome` vaza `IllegalArgumentException` crua do POI para nome
   inválido (começa com dígito, tem espaço, parece referência de célula) —
   precisa envolver em `DadosInvalidosException`.

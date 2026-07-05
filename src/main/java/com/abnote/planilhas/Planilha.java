@@ -11,7 +11,9 @@ import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Footer;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
+import org.apache.poi.ss.usermodel.Header;
 import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.usermodel.Row;
@@ -32,6 +34,7 @@ import com.abnote.planilhas.impl.PlanilhaXlsx;
 import com.abnote.planilhas.interfaces.IPlanilha;
 import com.abnote.planilhas.utils.ColarComoValoresHelper;
 import com.abnote.planilhas.utils.ComentarioHelper;
+import com.abnote.planilhas.utils.CodigosDeImpressao;
 import com.abnote.planilhas.utils.CopiadorDeCelulas;
 import com.abnote.planilhas.utils.FiltroDeLinhas;
 import com.abnote.planilhas.utils.FormatacaoCondicionalHelper;
@@ -1671,6 +1674,62 @@ public final class Planilha implements AutoCloseable {
 		final PrintSetup configuracao = sheet.getPrintSetup();
 		configuracao.setFitWidth((short) larguraPaginas);
 		configuracao.setFitHeight((short) alturaPaginas);
+		return this;
+	}
+
+	/**
+	 * Define o texto central do cabeçalho de impressão. Aceita marcadores
+	 * amigáveis: {@code {pagina}}, {@code {total}}, {@code {data}},
+	 * {@code {hora}}, {@code {arquivo}}, {@code {aba}}.
+	 *
+	 * @param textoCentral Texto do cabeçalho (ex.: {@code "Relatório - {data}"}).
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha cabecalhoDeImpressao(final String textoCentral) {
+		return cabecalhoDeImpressao("", textoCentral, "");
+	}
+
+	/**
+	 * Define o cabeçalho de impressão nas três zonas (esquerda/centro/direita).
+	 * Aceita os mesmos marcadores amigáveis de {@link #cabecalhoDeImpressao(String)}.
+	 *
+	 * @param esquerda Texto à esquerda (ex.: {@code "{arquivo}"}).
+	 * @param centro   Texto ao centro.
+	 * @param direita  Texto à direita (ex.: {@code "Página {pagina} de {total}"}).
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha cabecalhoDeImpressao(final String esquerda, final String centro, final String direita) {
+		final Header cabecalho = sheetAtual().getHeader();
+		cabecalho.setLeft(CodigosDeImpressao.traduzir(esquerda));
+		cabecalho.setCenter(CodigosDeImpressao.traduzir(centro));
+		cabecalho.setRight(CodigosDeImpressao.traduzir(direita));
+		return this;
+	}
+
+	/**
+	 * Define o texto central do rodapé de impressão. Aceita os mesmos
+	 * marcadores amigáveis de {@link #cabecalhoDeImpressao(String)}.
+	 *
+	 * @param textoCentral Texto do rodapé (ex.: {@code "Página {pagina} de {total}"}).
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha rodapeDeImpressao(final String textoCentral) {
+		return rodapeDeImpressao("", textoCentral, "");
+	}
+
+	/**
+	 * Define o rodapé de impressão nas três zonas (esquerda/centro/direita).
+	 *
+	 * @param esquerda Texto à esquerda.
+	 * @param centro   Texto ao centro.
+	 * @param direita  Texto à direita.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha rodapeDeImpressao(final String esquerda, final String centro, final String direita) {
+		final Footer rodape = sheetAtual().getFooter();
+		rodape.setLeft(CodigosDeImpressao.traduzir(esquerda));
+		rodape.setCenter(CodigosDeImpressao.traduzir(centro));
+		rodape.setRight(CodigosDeImpressao.traduzir(direita));
 		return this;
 	}
 

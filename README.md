@@ -298,6 +298,9 @@ Aceita `.png`, `.jpg` e `.jpeg`.
 | `orientacaoPaisagem()` / `orientacaoRetrato()` | deitada / em pé |
 | `areaDeImpressao("A1:F30")` | só essa área sai na impressão |
 | `ajustarImpressaoEmPaginas(1, 1)` | encolhe para caber em N páginas (largura, altura) |
+| `cabecalhoDeImpressao("Relatório Mensal")` | texto central no topo de cada página impressa |
+| `cabecalhoDeImpressao("{arquivo}", "Relatório", "{data}")` | esquerda/centro/direita; aceita `{pagina}`, `{total}`, `{data}`, `{hora}`, `{arquivo}`, `{aba}` |
+| `rodapeDeImpressao("Página {pagina} de {total}")` | mesma ideia, no rodapé |
 
 ### Proteção (formulários)
 | Comando | O que faz |
