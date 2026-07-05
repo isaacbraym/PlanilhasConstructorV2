@@ -9,11 +9,13 @@ import java.nio.file.Path;
 import java.util.Arrays;
 
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.io.TempDir;
 
+import com.abnote.planilhas.exceptions.ArquivoException;
 import com.abnote.planilhas.interfaces.IPlanilha;
 
 /**
@@ -229,5 +231,53 @@ class PlanilhaXlsxTest {
 		}
 
 		assertTrue(new File(caminhoCompleto).exists());
+	}
+
+	@Test
+	@DisplayName("Deve lançar ArquivoException ao salvar sem nome")
+	void deveLancarAoSalvarSemNome() throws Exception {
+		try (IPlanilha planilha = new PlanilhaXlsx()) {
+			planilha.criarPlanilha("Teste");
+
+			assertThrows(ArquivoException.class, () -> planilha.salvar(" "));
+		}
+	}
+
+	@Test
+	@DisplayName("Deve lançar ArquivoException ao abrir caminho vazio")
+	void deveLancarAoAbrirCaminhoVazio() throws Exception {
+		try (IPlanilha planilha = new PlanilhaXlsx()) {
+			assertThrows(ArquivoException.class, () -> planilha.abrirPlanilha(" "));
+		}
+	}
+
+	@Test
+	@DisplayName("Deve lançar exceção ao criar aba duplicada")
+	void deveLancarAoCriarSheetDuplicada() throws Exception {
+		try (IPlanilha planilha = new PlanilhaXlsx()) {
+			planilha.criarPlanilha("Dados");
+
+			assertThrows(IllegalArgumentException.class, () -> planilha.criarSheet("Dados"));
+		}
+	}
+
+	@Test
+	@DisplayName("Deve lançar ao inserir filtros antes de criar sheet")
+	void deveLancarAoInserirFiltrosSemSheet() throws Exception {
+		try (IPlanilha planilha = new PlanilhaXlsx()) {
+			assertThrows(IllegalStateException.class, planilha::inserirFiltros);
+		}
+	}
+
+	@Test
+	@DisplayName("Inserir filtros em sheet vazia deve ser no-op")
+	void deveTolerarFiltrosEmSheetVazia() throws Exception {
+		try (IPlanilha planilha = new PlanilhaXlsx()) {
+			planilha.criarPlanilha("Vazia");
+
+			assertDoesNotThrow(planilha::inserirFiltros);
+			XSSFSheet sheet = (XSSFSheet) planilha.obterWorkbook().getSheetAt(0);
+			assertFalse(sheet.getCTWorksheet().isSetAutoFilter());
+		}
 	}
 }

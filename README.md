@@ -438,7 +438,8 @@ e com `procurarValor`/`procurarValorNaAba`.
   mvn "-Dtest=PlanilhaXlsxTest" test
   ```
   Cobre criação/salvamento, múltiplas abas, dados delimitados e preservação de
-  campos vazios finais ao importar string/arquivo delimitado.
+  campos vazios finais ao importar string/arquivo delimitado, além de caminhos
+  de erro/no-op da API fluente básica.
 - **Rodar só os testes de estilos:**
   ```bash
   mvn "-Dtest=EstiloCelulaTest" test
@@ -451,7 +452,7 @@ e com `procurarValor`/`procurarValorNaAba`.
 - **Changelog:** veja [`CHANGELOG.md`](CHANGELOG.md) para o histórico de
   versões.
 - **Cobertura de testes:** `mvn clean test` já gera um relatório JaCoCo em
-  `target/site/jacoco/index.html`. Suíte atual: 222 testes. Os pontos fracos
+  `target/site/jacoco/index.html`. Suíte atual: 227 testes. Os pontos fracos
   históricos (`Fontes`, `ManipuladorPlanilhaHelper`, `LogsDeModificadores`)
   já receberam cobertura estrutural; consulte o relatório para escolher novos
   alvos.

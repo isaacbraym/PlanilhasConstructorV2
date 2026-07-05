@@ -127,7 +127,8 @@ Detalhes/contrato: `docs/specs/facade-planilha.spec.md`.
    confirma que a fila interna é limpa após exibir.
 11. Ao mexer em inserção delimitada, importação de arquivo texto ou
    `InsersorDeDados`, rode `mvn "-Dtest=PlanilhaXlsxTest,CoercaoNumericaTest" test`;
-   isso protege campos vazios finais (`"A,B,"`) e coerção segura de CPF/CEP.
+   isso protege campos vazios finais (`"A,B,"`), coerção segura de CPF/CEP e
+   caminhos básicos de erro/no-op da API fluente.
 12. Ao mexer em fonte, cores, bordas, alinhamento ou autoajuste, rode
    `mvn "-Dtest=EstiloCelulaTest" test`; ele também salva/reabre fonte
    combinada para proteger a serialização OOXML de nome, tamanho, cor e

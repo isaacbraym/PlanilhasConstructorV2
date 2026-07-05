@@ -388,6 +388,11 @@ Comparação por texto; números casam sem `.0` (ex.: `10` casa com `"10"`).
   `inserirDadosArquivo`) deve preservar campos vazios finais; `"A,B,"` precisa
   criar a terceira célula vazia em vez de descartá-la pelo comportamento padrão
   de `String.split(...)`.
+- Caminhos básicos de erro da API fluente devem permanecer amigáveis:
+  `salvar(" ")` e `abrirPlanilha(" ")` lançam `ArquivoException`, criar aba
+  duplicada lança `IllegalArgumentException`, `inserirFiltros()` antes de criar
+  sheet lança `IllegalStateException`, e `inserirFiltros()` em sheet vazia é
+  no-op sem gravar `<autoFilter>` no OOXML.
 - Estilos internos devem respeitar o alvo selecionado (célula, linha inteira,
   intervalo ou planilha inteira). Cores em hexadecimal inválido devem lançar
   `IllegalArgumentException`, e `centralizarERedimensionarTudo` deve avaliar

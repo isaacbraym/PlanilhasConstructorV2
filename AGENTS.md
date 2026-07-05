@@ -192,6 +192,12 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   preserva vazios finais para delimitadores não vazios e mantém o comportamento
   antigo para delimitador vazio. `PlanilhaXlsxTest` cobre string delimitada e
   arquivo texto com célula final vazia real. Total: 222 testes verdes.
+- [x] **Caminhos de erro/no-op da API fluente básica cobertos**:
+  `PlanilhaXlsxTest` agora cobre `salvar(" ")` e `abrirPlanilha(" ")` com
+  `ArquivoException`, criação de aba duplicada com `IllegalArgumentException`,
+  `inserirFiltros()` antes de criar sheet com `IllegalStateException`, e
+  `inserirFiltros()` em sheet vazia como no-op sem `<autoFilter>` no OOXML.
+  Total: 227 testes verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -420,7 +426,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **222 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **227 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
