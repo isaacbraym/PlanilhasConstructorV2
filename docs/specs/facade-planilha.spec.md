@@ -270,6 +270,8 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
 ## Buscar e filtrar linhas
 
 Comparação por texto; números casam sem `.0` (ex.: `10` casa com `"10"`).
+Fórmulas são avaliadas antes da comparação, então uma célula com `=A2*2` e
+resultado `20` casa com `"20"`, não com o texto `"A2*2"` da fórmula.
 
 - **Dado** cabeçalho + `Ana/SP`, `Bia/RJ`, `Cid/SP`, **Quando**
   `buscarLinhas("B", "SP")`, **Então** retorna `[2, 4]` (números 1-based).

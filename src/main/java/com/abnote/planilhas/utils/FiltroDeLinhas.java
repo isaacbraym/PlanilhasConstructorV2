@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellValue;
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
@@ -32,13 +34,14 @@ public final class FiltroDeLinhas {
 			return linhasEncontradas;
 		}
 		final String alvo = valor.trim();
+		final FormulaEvaluator avaliador = sheet.getWorkbook().getCreationHelper().createFormulaEvaluator();
 		for (int indiceLinha = 0; indiceLinha <= sheet.getLastRowNum(); indiceLinha++) {
 			final Row linha = sheet.getRow(indiceLinha);
 			if (linha == null) {
 				continue;
 			}
 			final Cell celula = linha.getCell(coluna);
-			if (celula != null && valorComoTexto(celula).equals(alvo)) {
+			if (celula != null && valorComoTexto(celula, avaliador).equals(alvo)) {
 				linhasEncontradas.add(indiceLinha);
 			}
 		}
@@ -53,21 +56,52 @@ public final class FiltroDeLinhas {
 	 * @return O texto equivalente ao conteúdo da célula.
 	 */
 	public static String valorComoTexto(final Cell celula) {
+		return valorComoTexto(celula, null);
+	}
+
+	private static String valorComoTexto(final Cell celula, final FormulaEvaluator avaliador) {
 		switch (celula.getCellType()) {
 		case STRING:
 			return celula.getStringCellValue().trim();
 		case NUMERIC:
-			final double numero = celula.getNumericCellValue();
-			if (numero == Math.rint(numero) && !Double.isInfinite(numero)) {
-				return Long.toString((long) numero);
-			}
-			return Double.toString(numero);
+			return numeroComoTexto(celula.getNumericCellValue());
 		case BOOLEAN:
 			return Boolean.toString(celula.getBooleanCellValue());
 		case FORMULA:
-			return celula.getCellFormula();
+			return formulaComoTexto(celula, avaliador);
 		default:
 			return "";
 		}
+	}
+
+	private static String formulaComoTexto(final Cell celula, final FormulaEvaluator avaliador) {
+		try {
+			final FormulaEvaluator avaliadorEfetivo = avaliador != null ? avaliador
+					: celula.getSheet().getWorkbook().getCreationHelper().createFormulaEvaluator();
+			final CellValue resultadoFormula = avaliadorEfetivo.evaluate(celula);
+			return resultadoFormula == null ? "" : valorCalculadoComoTexto(resultadoFormula);
+		} catch (RuntimeException e) {
+			return celula.getCellFormula();
+		}
+	}
+
+	private static String valorCalculadoComoTexto(final CellValue resultadoFormula) {
+		switch (resultadoFormula.getCellType()) {
+		case STRING:
+			return resultadoFormula.getStringValue().trim();
+		case NUMERIC:
+			return numeroComoTexto(resultadoFormula.getNumberValue());
+		case BOOLEAN:
+			return Boolean.toString(resultadoFormula.getBooleanValue());
+		default:
+			return "";
+		}
+	}
+
+	private static String numeroComoTexto(final double numero) {
+		if (numero == Math.rint(numero) && !Double.isInfinite(numero)) {
+			return Long.toString((long) numero);
+		}
+		return Double.toString(numero);
 	}
 }

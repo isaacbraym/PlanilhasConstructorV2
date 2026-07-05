@@ -220,7 +220,7 @@ célula se ela não existir) — se a célula não existir, o retorno é `null`
 ### Buscar e filtrar linhas
 | Comando | O que faz |
 |---|---|
-| `buscarLinhas("B", "SP")` | números das linhas onde a coluna B é "SP" |
+| `buscarLinhas("B", "SP")` | números das linhas onde a coluna B é "SP" (fórmulas são avaliadas) |
 | `contarLinhasOnde("B", "SP")` | quantas linhas têm B = "SP" |
 | `copiarLinhasParaAba("B", "SP", "SoSP")` | copia essas linhas para outra aba |
 | `moverLinhasParaAba("B", "SP", "Arquivo")` | copia e remove da origem |
@@ -452,7 +452,7 @@ e com `procurarValor`/`procurarValorNaAba`.
 - **Changelog:** veja [`CHANGELOG.md`](CHANGELOG.md) para o histórico de
   versões.
 - **Cobertura de testes:** `mvn clean test` já gera um relatório JaCoCo em
-  `target/site/jacoco/index.html`. Suíte atual: 233 testes. Os pontos fracos
+  `target/site/jacoco/index.html`. Suíte atual: 234 testes. Os pontos fracos
   históricos (`Fontes`, `ManipuladorPlanilhaHelper`, `LogsDeModificadores`)
   já receberam cobertura estrutural; consulte o relatório para escolher novos
   alvos.

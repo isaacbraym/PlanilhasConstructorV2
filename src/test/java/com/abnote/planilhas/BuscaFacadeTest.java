@@ -96,4 +96,24 @@ class BuscaFacadeTest {
 			assertEquals(Arrays.asList(2), comDez);
 		}
 	}
+
+	@Test
+	@DisplayName("busca deve comparar pelo resultado avaliado de fórmulas")
+	void deveBuscarPeloResultadoDeFormula() throws Exception {
+		try (Planilha planilha = Planilha.nova("Calculos")) {
+			planilha.escreverLinha("A1", "Base", "Dobro")
+					.adicionarLinha(10, "")
+					.adicionarLinha(7, "")
+					.formula("B2", "A2*2")
+					.formula("B3", "A3*2");
+
+			assertEquals(Arrays.asList(2), planilha.buscarLinhas("B", "20"));
+			assertTrue(planilha.buscarLinhas("B", "A2*2").isEmpty());
+
+			planilha.copiarLinhasParaAba("B", "20", "Achados");
+			Sheet destino = planilha.workbook().getSheet("Achados");
+			assertEquals(10D, destino.getRow(0).getCell(0).getNumericCellValue());
+			assertEquals("A2*2", destino.getRow(0).getCell(1).getCellFormula());
+		}
+	}
 }

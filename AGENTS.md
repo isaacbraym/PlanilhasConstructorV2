@@ -221,6 +221,14 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   antes de `Paths.get(...)`, e caminho inválido é encapsulado em
   `ArquivoException`. `DuplicarArquivoFacadeTest` cobre origem inexistente,
   origem/destino obrigatórios e caminho inválido. Total: 233 testes verdes.
+- [x] **Busca por resultado de fórmula corrigida**:
+  `FiltroDeLinhas.valorComoTexto` comparava células `FORMULA` pelo texto da
+  fórmula (`"A2*2"`), então `buscarLinhas("B", "20")` não encontrava uma célula
+  cujo resultado exibido era `20`. Debug empírico confirmou o comportamento.
+  Agora a busca usa `FormulaEvaluator` para comparar pelo resultado calculado,
+  com fallback para o texto da fórmula se a avaliação falhar. `BuscaFacadeTest`
+  cobre busca e cópia de linhas por resultado de fórmula. Total: 234 testes
+  verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -449,7 +457,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **233 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **234 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -551,6 +559,11 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
     valide `null`/vazio antes de `Paths.get(...)` e capture
     `InvalidPathException` quando o comando promete erro de arquivo (ex.:
     `Planilha.duplicarArquivo`).
+15. **Busca/filtro deve comparar fórmula pelo resultado calculado** — para
+    `buscarLinhas`/`copiarLinhasParaAba`/`moverLinhasParaAba`/
+    `removerLinhasOnde`, uma célula `FORMULA` deve casar com o valor exibido ao
+    usuário, não com o texto interno da fórmula; use `FormulaEvaluator` com
+    fallback seguro.
 
 ## 5. Convenções de código (obrigatórias)
 
