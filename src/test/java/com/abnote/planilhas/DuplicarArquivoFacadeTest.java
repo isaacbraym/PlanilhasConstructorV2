@@ -55,4 +55,20 @@ class DuplicarArquivoFacadeTest {
 		String destino = pasta.resolve("destino.xlsx").toString();
 		assertThrows(ArquivoException.class, () -> Planilha.duplicarArquivo(inexistente, destino));
 	}
+
+	@Test
+	@DisplayName("Deve lançar ArquivoException para caminhos obrigatórios vazios")
+	void deveLancarParaCaminhosObrigatoriosVazios() {
+		String destino = pasta.resolve("destino.xlsx").toString();
+		assertThrows(ArquivoException.class, () -> Planilha.duplicarArquivo(null, destino));
+		assertThrows(ArquivoException.class, () -> Planilha.duplicarArquivo(" ", destino));
+		assertThrows(ArquivoException.class, () -> Planilha.duplicarArquivo(destino, " "));
+	}
+
+	@Test
+	@DisplayName("Deve encapsular caminho inválido em ArquivoException")
+	void deveLancarArquivoExceptionParaCaminhoInvalido() {
+		String destino = pasta.resolve("destino.xlsx").toString();
+		assertThrows(ArquivoException.class, () -> Planilha.duplicarArquivo("\0", destino));
+	}
 }

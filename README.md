@@ -142,7 +142,7 @@ Para CPF, CNPJ, telefone e códigos, prefira **`escreverTexto(...)`**.
 | `novaAba("Resumo")` | cria uma aba nova e vai para ela |
 | `irParaAba("Vendas")` | volta para uma aba existente |
 | `duplicarAba("Cópia")` | duplica a aba atual (conteúdo + estilo), validando o nome antes de clonar |
-| `Planilha.duplicarArquivo("a.xlsx", "b.xlsx")` | copia o arquivo inteiro (todas as abas) para outro caminho |
+| `Planilha.duplicarArquivo("a.xlsx", "b.xlsx")` | copia o arquivo inteiro para outro caminho, validando origem/destino |
 
 ### Escrever dados
 | Comando | O que faz |
@@ -452,7 +452,7 @@ e com `procurarValor`/`procurarValorNaAba`.
 - **Changelog:** veja [`CHANGELOG.md`](CHANGELOG.md) para o histórico de
   versões.
 - **Cobertura de testes:** `mvn clean test` já gera um relatório JaCoCo em
-  `target/site/jacoco/index.html`. Suíte atual: 231 testes. Os pontos fracos
+  `target/site/jacoco/index.html`. Suíte atual: 233 testes. Os pontos fracos
   históricos (`Fontes`, `ManipuladorPlanilhaHelper`, `LogsDeModificadores`)
   já receberam cobertura estrutural; consulte o relatório para escolher novos
   alvos.

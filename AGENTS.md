@@ -214,6 +214,13 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   existente rodam antes do clone. `PlanilhaFacadeTest` cobre nome duplicado e
   nome inválido, garantindo que a lista real de abas do POI não muda.
   Total: 231 testes verdes.
+- [x] **Erros de `duplicarArquivo` padronizados**:
+  `Planilha.duplicarArquivo` já prometia `ArquivoException`, mas caminhos
+  `null`/vazios ou inválidos podiam escapar como `NullPointerException`/
+  `InvalidPathException` antes da cópia. Agora origem e destino são validados
+  antes de `Paths.get(...)`, e caminho inválido é encapsulado em
+  `ArquivoException`. `DuplicarArquivoFacadeTest` cobre origem inexistente,
+  origem/destino obrigatórios e caminho inválido. Total: 233 testes verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -442,7 +449,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **231 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **233 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -540,6 +547,10 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
     `duplicarAba` clonar primeiro e só depois chamar `setSheetName`, uma falha
     por nome duplicado/inválido deixa uma aba parcial no workbook. Valide com
     `WorkbookUtil.validateSheetName` e cheque duplicidade antes de clonar.
+14. **Caminhos de arquivo públicos devem virar `ArquivoException` amigável** —
+    valide `null`/vazio antes de `Paths.get(...)` e capture
+    `InvalidPathException` quando o comando promete erro de arquivo (ex.:
+    `Planilha.duplicarArquivo`).
 
 ## 5. Convenções de código (obrigatórias)
 

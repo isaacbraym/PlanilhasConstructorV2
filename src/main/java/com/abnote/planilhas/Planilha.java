@@ -2,6 +2,7 @@ package com.abnote.planilhas;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDate;
@@ -138,12 +139,23 @@ public final class Planilha implements AutoCloseable {
 	 * @throws ArquivoException se a origem não existir ou a cópia falhar.
 	 */
 	public static void duplicarArquivo(final String caminhoOrigem, final String caminhoDestino) {
+		validarCaminhoObrigatorio(caminhoOrigem, "origem");
+		validarCaminhoObrigatorio(caminhoDestino, "destino");
 		try {
 			Files.copy(Paths.get(caminhoOrigem), Paths.get(caminhoDestino), StandardCopyOption.REPLACE_EXISTING);
+		} catch (InvalidPathException e) {
+			throw new ArquivoException("Caminho inválido ao duplicar o arquivo",
+					caminhoOrigem + " -> " + caminhoDestino, e);
 		} catch (IOException e) {
 			throw new ArquivoException(
 					"Erro ao duplicar o arquivo. Verifique se a origem existe e o destino é acessível",
 					caminhoOrigem, e);
+		}
+	}
+
+	private static void validarCaminhoObrigatorio(final String caminhoArquivo, final String papel) {
+		if (caminhoArquivo == null || caminhoArquivo.trim().isEmpty()) {
+			throw new ArquivoException("Caminho de " + papel + " não pode ser nulo ou vazio", caminhoArquivo);
 		}
 	}
 

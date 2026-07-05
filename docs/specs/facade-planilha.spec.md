@@ -11,9 +11,10 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
 - **Quando** `Planilha.duplicarArquivo(origem, destino)`, **Então** o arquivo
   em `destino` é uma cópia byte-a-byte de `origem` (todas as abas, fórmulas,
   estilos, gráficos, imagens) e os dois passam a ser independentes — editar um
-  não afeta o outro. Origem inexistente → `ArquivoException`. Não precisa
-  abrir a planilha (é uma cópia direta do arquivo, mais simples e robusta do
-  que reconstruir o workbook via POI).
+  não afeta o outro. Origem inexistente, origem/destino nulos ou vazios, e
+  caminho inválido → `ArquivoException` (não `NullPointerException`/
+  `InvalidPathException`). Não precisa abrir a planilha (é uma cópia direta do
+  arquivo, mais simples e robusta do que reconstruir o workbook via POI).
 - **Dado** um arquivo `.xlsx` existente, **Quando** `Planilha.abrir(caminho)`,
   **Então** o conteúdo é carregado, a primeira aba fica ativa e pode ser editado
   com os mesmos comandos; arquivo inexistente/ inválido lança `ArquivoException`.
