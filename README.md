@@ -207,8 +207,8 @@ célula se ela não existir) — se a célula não existir, o retorno é `null`
 | `removerColuna("I")` | remove uma coluna |
 | `limparColuna("B")` | esvazia sem remover |
 | `inserirColunaEntre("A", "B")` | insere coluna vazia entre duas |
-| `duplicarColuna("A", "D")` | copia conteúdo de uma coluna |
-| `duplicarLinha(1, 5)` | copia a linha 1 para a linha 5 |
+| `duplicarColuna("A", "D")` | copia conteudo e estilo de uma coluna, ajustando formulas relativas |
+| `duplicarLinha(1, 5)` | copia a linha 1 para a linha 5, ajustando formulas relativas |
 
 ### Ordenar
 | Comando | O que faz |
@@ -225,6 +225,9 @@ célula se ela não existir) — se a célula não existir, o retorno é `null`
 | `copiarLinhasParaAba("B", "SP", "SoSP")` | copia essas linhas para outra aba |
 | `moverLinhasParaAba("B", "SP", "Arquivo")` | copia e remove da origem |
 | `removerLinhasOnde("B", "SP")` | apaga as linhas correspondentes |
+
+Ao copiar linhas para outra aba, formulas relativas sao reescritas para a nova
+posicao, como acontece ao colar no Excel.
 
 ### Formatação condicional (realçar células)
 | Comando | O que faz |
@@ -402,6 +405,11 @@ e com `procurarValor`/`procurarValorNaAba`.
 Sim. A ordenação usa o resultado calculado da fórmula e, quando a linha muda de
 posição, ajusta referências relativas como `B3*2` para a nova linha.
 
+**Se eu duplicar uma linha ou coluna, as formulas acompanham?**
+Sim. `duplicarLinha`, `duplicarColuna` e a copia de linhas filtradas ajustam
+referencias relativas como o Excel faria. Partes absolutas, como `$A$2`, ficam
+fixas.
+
 **Se eu ordenar, altura ou linha oculta acompanham os dados?**
 Sim. A ordenação move junto altura personalizada, linha oculta e estilo de
 linha, para a aparência não ficar presa na posição antiga.
@@ -429,6 +437,13 @@ linha, para a aparência não ficar presa na posição antiga.
   ```
   Cobre ordenação por texto, número e fórmula, incluindo ajuste de referências
   relativas, atributos de linha e round-trip com `XSSFWorkbook` fresco.
+- **Rodar só os testes de cópia com fórmulas:**
+  ```bash
+  mvn "-Dtest=CopiadorDeCelulasTest,PlanilhaFacadeTest,BuscaFacadeTest" test
+  ```
+  Cobre ajuste de formulas relativas em `duplicarLinha`, `duplicarColuna` e
+  copia de linhas filtradas para outra aba, incluindo round-trip OOXML pela
+  facade.
 - **Rodar só os testes dos cálculos legados:**
   ```bash
   mvn "-Dtest=CalculosTest" test
@@ -466,7 +481,7 @@ linha, para a aparência não ficar presa na posição antiga.
 - **Changelog:** veja [`CHANGELOG.md`](CHANGELOG.md) para o histórico de
   versões.
 - **Cobertura de testes:** `mvn clean test` já gera um relatório JaCoCo em
-  `target/site/jacoco/index.html`. Suíte atual: 236 testes. Os pontos fracos
+  `target/site/jacoco/index.html`. Suíte atual: 239 testes. Os pontos fracos
   históricos (`Fontes`, `ManipuladorPlanilhaHelper`, `LogsDeModificadores`)
   já receberam cobertura estrutural; consulte o relatório para escolher novos
   alvos.

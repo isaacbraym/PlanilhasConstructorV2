@@ -78,7 +78,31 @@ class CopiadorDeCelulasTest {
 		formula.setCellFormula("SUM(A1:A2)");
 		Cell destinoFormula = celula(2, 1);
 		CopiadorDeCelulas.copiar(formula, destinoFormula);
-		assertEquals("SUM(A1:A2)", destinoFormula.getCellFormula());
+		assertEquals("SUM(B1:B2)", destinoFormula.getCellFormula());
+	}
+
+	@Test
+	@DisplayName("Deve ajustar formula relativa ao copiar para outra linha")
+	void deveAjustarFormulaRelativaAoCopiarLinha() {
+		Cell formula = celula(1, 1);
+		formula.setCellFormula("A2*2");
+		Cell destinoFormula = celula(4, 1);
+
+		CopiadorDeCelulas.copiar(formula, destinoFormula);
+
+		assertEquals("A5*2", destinoFormula.getCellFormula());
+	}
+
+	@Test
+	@DisplayName("Deve preservar partes absolutas ao ajustar formula copiada")
+	void devePreservarReferenciasAbsolutasAoCopiarFormula() {
+		Cell formula = celula(1, 1);
+		formula.setCellFormula("$A$2+B$2+$A2+A2");
+		Cell destinoFormula = celula(4, 2);
+
+		CopiadorDeCelulas.copiar(formula, destinoFormula);
+
+		assertEquals("$A$2+C$2+$A5+B5", destinoFormula.getCellFormula());
 	}
 
 	@Test

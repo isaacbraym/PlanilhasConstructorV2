@@ -3,14 +3,6 @@ package com.abnote.planilhas.utils;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.poi.ss.formula.EvaluationWorkbook;
-import org.apache.poi.ss.formula.FormulaParser;
-import org.apache.poi.ss.formula.FormulaParsingWorkbook;
-import org.apache.poi.ss.formula.FormulaRenderer;
-import org.apache.poi.ss.formula.FormulaRenderingWorkbook;
-import org.apache.poi.ss.formula.FormulaShifter;
-import org.apache.poi.ss.formula.FormulaType;
-import org.apache.poi.ss.formula.ptg.Ptg;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
@@ -18,7 +10,6 @@ import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 
 /**
  * Ordena as linhas de uma planilha pelo valor de uma coluna, preservando o
@@ -240,34 +231,14 @@ public final class OrdenadorDeLinhas {
 				nova.setCellValue(logico);
 				break;
 			case FORMULA:
-				nova.setCellFormula(ajustarFormulaParaLinha(nova.getSheet(), formula, linhaOrigem, nova.getRowIndex()));
+				nova.setCellFormula(AjustadorDeFormulas.ajustarParaNovaLinha(nova.getSheet(), formula, linhaOrigem,
+						nova.getRowIndex()));
 				break;
 			default:
 				break;
 			}
 			if (estilo != null) {
 				nova.setCellStyle(estilo);
-			}
-		}
-
-		private String ajustarFormulaParaLinha(final Sheet sheet, final String formulaOriginal, final int origem,
-				final int destino) {
-			if (formulaOriginal == null || origem == destino) {
-				return formulaOriginal;
-			}
-			try {
-				final Workbook workbook = sheet.getWorkbook();
-				final EvaluationWorkbook avaliacao = workbook.createEvaluationWorkbook();
-				final FormulaParsingWorkbook parser = (FormulaParsingWorkbook) avaliacao;
-				final FormulaRenderingWorkbook renderizador = (FormulaRenderingWorkbook) avaliacao;
-				final int indiceAba = workbook.getSheetIndex(sheet);
-				final Ptg[] tokens = FormulaParser.parse(formulaOriginal, parser, FormulaType.CELL, indiceAba, origem);
-				final FormulaShifter shifter = FormulaShifter.createForRowCopy(indiceAba, sheet.getSheetName(), origem,
-						origem, destino - origem, workbook.getSpreadsheetVersion());
-				shifter.adjustFormula(tokens, indiceAba);
-				return FormulaRenderer.toFormulaString(renderizador, tokens);
-			} catch (RuntimeException e) {
-				return formulaOriginal;
 			}
 		}
 	}

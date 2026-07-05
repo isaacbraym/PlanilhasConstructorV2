@@ -155,7 +155,47 @@ class PlanilhaFacadeTest {
 	}
 
 	@Test
-	@DisplayName("mesclar deve criar região mesclada")
+	@DisplayName("duplicarLinha e duplicarColuna devem ajustar formulas relativas")
+	void deveAjustarFormulasAoDuplicarLinhaEColuna() throws Exception {
+		try (Planilha planilha = Planilha.nova("Formulas")) {
+			planilha.escreverLinha("A1", "Base", "Dobro", "Soma")
+					.escreverLinha("A2", 10, "", "")
+					.formula("B2", "A2*2")
+					.formula("C2", "A2+B2")
+					.duplicarLinha(2, 5)
+					.duplicarColuna("C", "D");
+
+			Sheet sheet = planilha.workbook().getSheetAt(0);
+			assertEquals("A5*2", sheet.getRow(4).getCell(1).getCellFormula());
+			assertEquals("A5+B5", sheet.getRow(4).getCell(2).getCellFormula());
+			assertEquals("B2+C2", sheet.getRow(1).getCell(3).getCellFormula());
+
+			FormulaEvaluator avaliador = planilha.workbook().getCreationHelper().createFormulaEvaluator();
+			assertEquals(20.0, avaliador.evaluate(sheet.getRow(4).getCell(1)).getNumberValue(), 0.001);
+			assertEquals(30.0, avaliador.evaluate(sheet.getRow(4).getCell(2)).getNumberValue(), 0.001);
+			assertEquals(50.0, avaliador.evaluate(sheet.getRow(1).getCell(3)).getNumberValue(), 0.001);
+
+			String caminho = pasta.resolve("formulas-copiadas.xlsx").toString();
+			planilha.salvar(caminho);
+			try (Workbook reaberto = new XSSFWorkbook(new File(caminho))) {
+				Sheet sheetReaberto = reaberto.getSheetAt(0);
+				assertEquals("A5*2", sheetReaberto.getRow(4).getCell(1).getCellFormula());
+				assertEquals("A5+B5", sheetReaberto.getRow(4).getCell(2).getCellFormula());
+				assertEquals("B2+C2", sheetReaberto.getRow(1).getCell(3).getCellFormula());
+
+				FormulaEvaluator avaliadorReaberto = reaberto.getCreationHelper().createFormulaEvaluator();
+				assertEquals(20.0, avaliadorReaberto.evaluate(sheetReaberto.getRow(4).getCell(1)).getNumberValue(),
+						0.001);
+				assertEquals(30.0, avaliadorReaberto.evaluate(sheetReaberto.getRow(4).getCell(2)).getNumberValue(),
+						0.001);
+				assertEquals(50.0, avaliadorReaberto.evaluate(sheetReaberto.getRow(1).getCell(3)).getNumberValue(),
+						0.001);
+			}
+		}
+	}
+
+	@Test
+	@DisplayName("mesclar deve criar regiao mesclada")
 	void deveMesclar() throws Exception {
 		try (Planilha planilha = Planilha.nova("Merge")) {
 			planilha.escrever("A1", "Título").mesclar("A1:C1");

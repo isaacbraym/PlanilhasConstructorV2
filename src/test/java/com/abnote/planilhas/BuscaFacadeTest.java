@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -113,7 +114,9 @@ class BuscaFacadeTest {
 			planilha.copiarLinhasParaAba("B", "20", "Achados");
 			Sheet destino = planilha.workbook().getSheet("Achados");
 			assertEquals(10D, destino.getRow(0).getCell(0).getNumericCellValue());
-			assertEquals("A2*2", destino.getRow(0).getCell(1).getCellFormula());
+			assertEquals("A1*2", destino.getRow(0).getCell(1).getCellFormula());
+			FormulaEvaluator avaliador = planilha.workbook().getCreationHelper().createFormulaEvaluator();
+			assertEquals(20.0, avaliador.evaluate(destino.getRow(0).getCell(1)).getNumberValue(), 0.001);
 		}
 	}
 }

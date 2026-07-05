@@ -237,6 +237,11 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
 - **Quando** `duplicarColuna("A", "D")`, **Então** conteúdo e estilo da coluna A
   são copiados para a coluna D.
 - **Quando** `duplicarLinha(1, 5)`, **Então** a linha 1 é copiada para a linha 5.
+- Se a celula copiada contiver formula, referencias relativas acompanham a nova
+  posicao como no Excel: `A2*2` em `B2` vira `A5*2` ao duplicar a linha para 5,
+  e `A2+B2` em `C2` vira `B2+C2` ao duplicar a coluna C para D. Partes
+  absolutas (`$A$2`, `B$2`, `$A2`) permanecem fixas no eixo correspondente.
+  Esse contrato deve sobreviver a salvar e reabrir o `.xlsx`.
 
 ## Aparência
 
@@ -289,6 +294,9 @@ resultado `20` casa com `"20"`, não com o texto `"A2*2"` da fórmula.
 - **Quando** `contarLinhasOnde("B", "SP")`, **Então** retorna `2`.
 - **Quando** `copiarLinhasParaAba("B", "SP", "SoSP")`, **Então** a aba "SoSP" é
   criada (se preciso) com as linhas correspondentes; a origem **não** muda.
+  Formulas copiadas sao ajustadas para a nova linha/aba de destino (ex.:
+  `A2*2` na origem vira `A1*2` quando a linha 2 e colada na primeira linha da
+  aba "SoSP").
 - **Quando** `removerLinhasOnde("B", "SP")`, **Então** as linhas somem e as de
   baixo sobem.
 - **Quando** `moverLinhasParaAba("B", "SP", "Arquivo")`, **Então** copia para a

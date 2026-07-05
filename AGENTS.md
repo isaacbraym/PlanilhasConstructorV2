@@ -247,6 +247,17 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   inclui altura, ocultação e estilo de linha (`RowStyle`), e a reescrita limpa
   atributos residuais quando a linha capturada era vazia. `OrdenarFacadeTest`
   cobre o caso com round-trip OOXML. Total: 236 testes verdes.
+- [x] **Copia de formulas ao duplicar linhas/colunas corrigida**:
+  Debug empirico mostrou que `duplicarLinha`, `duplicarColuna` e
+  `copiarLinhasParaAba` copiavam formulas pelo texto original, deixando
+  referencias relativas presas na origem (`A2*2` continuava `A2*2` ao ir para
+  a linha 5). Novo `utils/AjustadorDeFormulas` centraliza `FormulaParser`/
+  `FormulaShifter` e faz a copia se comportar como o Excel: referencias
+  relativas acompanham linha/coluna, partes absolutas (`$A$2`, `B$2`, `$A2`)
+  ficam preservadas. `PlanilhaFacadeTest` cobre o fluxo publico com
+  round-trip OOXML, `CopiadorDeCelulasTest` cobre o utilitario direto e
+  `BuscaFacadeTest` valida copia de linhas filtradas para outra aba. Total:
+  239 testes verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -475,7 +486,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **236 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **239 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -498,6 +509,7 @@ interfaces/            → contratos públicos (IPlanilha, ISelecao, IConversao,
 utils/                 → PosicaoConverter, PositionManager, InsersorDeDados,
                          ManipuladorPlanilha(Helper), LoggerUtil,
                          FiltroDeLinhas, OrdenadorDeLinhas, CopiadorDeCelulas,
+                         AjustadorDeFormulas,
                          FormatosDeCelula, FormatacaoCondicionalHelper,
                          ListaSuspensaHelper, ProtecaoHelper,
                          ValidacaoDeEntradaHelper, TotalizadorDeTabela,
@@ -593,6 +605,12 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
     da linha que está sendo ordenada. Ao reescrever em outra posição, limpe
     atributos residuais quando a linha capturada era vazia para evitar que a
     posição antiga "empreste" altura/ocultação à linha errada.
+18. **Copias de celulas com formula devem ajustar referencias relativas** —
+    `CopiadorDeCelulas` alimenta `duplicarLinha`, `duplicarColuna`,
+    `copiarLinhasParaAba` e outros fluxos de copia. Ao copiar formula, use
+    `AjustadorDeFormulas` para deslocar linha/coluna como o Excel faria, sem
+    mexer nas partes absolutas (`$A$2`, `B$2`, `$A2`). Nao volte a copiar
+    `getCellFormula()` diretamente.
 
 ## 5. Convenções de código (obrigatórias)
 
@@ -638,6 +656,8 @@ condicional (realçar/escala de cores); lista suspensa (opções fixas ou de
 intervalo na mesma/outra aba); gráficos (barras/pizza/linha); imagens/logo; configuração de
 impressão (orientação/área/ajustar em N páginas); proteção de planilha e
 desbloqueio de células para formulários.
+Copias de linhas/colunas/celulas com formulas ajustam referencias relativas
+como o Excel, inclusive ao copiar linhas filtradas para outra aba.
 
 Dois bugs reais foram encontrados e corrigidos por testes nesta sessão:
 direcionamento de `aplicarEstilos()` em célula única, e

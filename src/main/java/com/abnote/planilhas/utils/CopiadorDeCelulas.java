@@ -37,7 +37,7 @@ public final class CopiadorDeCelulas {
 			destino.setCellValue(origem.getBooleanCellValue());
 			break;
 		case FORMULA:
-			destino.setCellFormula(origem.getCellFormula());
+			destino.setCellFormula(AjustadorDeFormulas.ajustarParaCopia(origem, destino));
 			break;
 		case BLANK:
 			destino.setBlank();
