@@ -380,6 +380,10 @@ Comparação por texto; números casam sem `.0` (ex.: `10` casa com `"10"`).
   `setCellFormula(...)`, erros com `setCellErrorValue(...)`, e células em
   branco com `setBlank()`. O recorte temporário deve preservar valor e estilo
   para texto, número, booleano, fórmula, erro e branco.
+- Logs internos de modificação devem imprimir as ações conhecidas de coluna
+  (deslocamento, remoção, inserção vazia e limpeza), incluir colunas
+  deslocadas quando houver, ignorar tipos futuros desconhecidos e limpar a fila
+  após `exibirLogs()`.
 - Estilos internos devem respeitar o alvo selecionado (célula, linha inteira,
   intervalo ou planilha inteira). Cores em hexadecimal inválido devem lançar
   `IllegalArgumentException`, e `centralizarERedimensionarTudo` deve avaliar

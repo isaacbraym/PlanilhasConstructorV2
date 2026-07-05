@@ -122,7 +122,10 @@ Detalhes/contrato: `docs/specs/facade-planilha.spec.md`.
    `mvn "-Dtest=ManipuladorPlanilhaTest" test`; ele protege fórmulas contra o
    bug real de `Cell.setCellType(CellType.FORMULA)` e valida preservação de
    tipo/estilo no recorte de colunas.
-10. Ao mexer em fonte, cores, bordas, alinhamento ou autoajuste, rode
+10. Ao mexer em `logAlteracoes()` ou `LogsDeModificadores`, rode
+   `mvn "-Dtest=LogsDeModificadoresTest" test`; ele captura `System.out` e
+   confirma que a fila interna é limpa após exibir.
+11. Ao mexer em fonte, cores, bordas, alinhamento ou autoajuste, rode
    `mvn "-Dtest=EstiloCelulaTest" test`; ele também salva/reabre fonte
    combinada para proteger a serialização OOXML de nome, tamanho, cor e
    atributos.

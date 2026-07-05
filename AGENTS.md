@@ -181,6 +181,11 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   `ManipuladorPlanilhaTest` com fluxo público e recorte temporário preservando
   texto, número, booleano, fórmula, erro, branco e estilo. Total: 217 testes
   verdes.
+- [x] **Cobertura de logs de modificação**: novo `LogsDeModificadoresTest`
+  captura `System.out` e cobre deslocamento, remoção, inserção vazia, limpeza,
+  colunas deslocadas, tipo futuro desconhecido (ignorado) e limpeza da fila
+  após `exibirLogs()`. Isso fecha o ponto fraco histórico de log/auditoria no
+  JaCoCo sem mudar API pública. Total: 220 testes verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -287,12 +292,10 @@ sugestões e mandar "pode ir pra cima") — em andamento
   branches.** Achado imediato: `utils/RowIteratorUtil` estava em **0%** porque
   era **código morto de verdade** (nunca referenciado em `src/main`, testes
   ou docs) — removido, mesmo precedente do `IBuscaDados` (retomada inicial).
-  Pontos ainda fracos naquele baseline (ver `jacoco.csv` para a lista atual):
-  `LogsDeModificadores` (7%, área de log/auditoria, baixo risco). `Fontes` já
-  teve código morto removido/round-trip OOXML coberto, e
-  `ManipuladorPlanilhaHelper` recebeu cobertura estrutural e bugfix de fórmula
-  em lotes posteriores. Candidato para um próximo lote de cobertura se o Codex
-  quiser continuar essa frente.
+  Pontos fracos daquele baseline (`Fontes`, `ManipuladorPlanilhaHelper` e
+  `LogsDeModificadores`) já receberam cobertura estrutural em lotes posteriores.
+  Para continuar a frente de cobertura, consulte o `jacoco.csv` atual em vez de
+  confiar nessa fotografia histórica.
 - [x] **"Colar como valores"**: `colarComoValores(intervalo)` +
   `colarComoValores()` (toda a área usada), via novo
   `utils/ColarComoValoresHelper`. **Bug real encontrado e corrigido pelos
@@ -411,7 +414,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **217 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **220 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.

@@ -427,6 +427,12 @@ e com `procurarValor`/`procurarValorNaAba`.
   ```
   Cobre mover/remover/limpar/inserir coluna e preservação de tipo, fórmula,
   erro e estilo durante recortes internos de coluna.
+- **Rodar só os testes dos logs de modificação:**
+  ```bash
+  mvn "-Dtest=LogsDeModificadoresTest" test
+  ```
+  Cobre a saída de `logAlteracoes()` para mover/remover/inserir/limpar coluna
+  e confirma que a fila de logs é limpa após a exibição.
 - **Rodar só os testes de estilos:**
   ```bash
   mvn "-Dtest=EstiloCelulaTest" test
@@ -439,9 +445,10 @@ e com `procurarValor`/`procurarValorNaAba`.
 - **Changelog:** veja [`CHANGELOG.md`](CHANGELOG.md) para o histórico de
   versões.
 - **Cobertura de testes:** `mvn clean test` já gera um relatório JaCoCo em
-  `target/site/jacoco/index.html`. Suíte atual: 217 testes. Ponto mais fraco:
-  `LogsDeModificadores` (log/auditoria) — candidato ao roadmap de cobertura do
-  `AGENTS.md`.
+  `target/site/jacoco/index.html`. Suíte atual: 220 testes. Os pontos fracos
+  históricos (`Fontes`, `ManipuladorPlanilhaHelper`, `LogsDeModificadores`)
+  já receberam cobertura estrutural; consulte o relatório para escolher novos
+  alvos.
 - **Skills para agentes de IA** (Claude Code e Codex): veja
   [`.claude/skills/`](.claude/skills/) e [`docs/skills-codex/`](docs/skills-codex/).
 
