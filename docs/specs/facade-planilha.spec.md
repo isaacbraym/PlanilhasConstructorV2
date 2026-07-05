@@ -358,6 +358,18 @@ Comparação por texto; números casam sem `.0` (ex.: `10` casa com `"10"`).
 - **Quando** usada em `try (Planilha p = ...)`, **Então** os recursos são
   liberados ao final; fora disso, chame `fechar()`.
 
+## Carga / milhares de linhas
+
+- **Dado** uma planilha com 3.000 linhas de dados, **Quando** a facade escreve
+  linhas, aplica `somar`, `congelarPrimeiraLinha`, `filtrosNoCabecalho`,
+  salva e reabre com `XSSFWorkbook` fresco, **Então** a última linha, filtros,
+  freeze pane e fórmulas `SUM` persistem e avaliam corretamente.
+- **Dado** uma planilha com 2.000 linhas, **Quando** a facade ordena, busca e
+  copia linhas por critério para outra aba, **Então** a ordenação numérica, a
+  contagem de linhas encontradas e a aba de destino ficam consistentes.
+- Esses testes usam `assertTimeout` generoso (30s por cenário) como guarda
+  contra regressão grosseira de carga, não como benchmark rígido.
+
 ## Escape hatch
 
 - `avancado()` devolve `IPlanilha` (API fluente completa).

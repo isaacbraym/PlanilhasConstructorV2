@@ -113,6 +113,8 @@ Detalhes/contrato: `docs/specs/facade-planilha.spec.md`.
 6. No PowerShell, coloque argumentos Maven `-D...` entre aspas. Ex.:
    `mvn "-Dtest=ListaSuspensaFacadeTest" test`; sem aspas, argumentos com ponto
    (como `-Dmdep.outputFile=...`) podem ser quebrados pelo shell.
+7. Ao mexer em escrita massiva, ordenação, filtros ou cópia de linhas, rode
+   `mvn "-Dtest=CargaFacadeTest" test` além do teste focal da feature.
 
 ## Exemplos de referência (cookbook)
 

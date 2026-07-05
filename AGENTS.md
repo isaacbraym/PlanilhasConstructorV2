@@ -143,8 +143,15 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   centralizar referências absolutas/qualificadas e corrigir um bug silencioso:
   intervalos já absolutos (`$F$2:$F$5`) não podem virar `$$F$$2`. Testes
   dedicados cobrem lista em outra aba, aba inexistente, intervalo já absoluto
-  e `definirNome` com intervalo absoluto. Total: 206 testes verdes (confirmar
-  com `mvn clean test` no fim do lote).
+  e `definirNome` com intervalo absoluto. Total: 206 testes verdes.
+- [x] **Testes de carga com milhares de linhas**: novo `CargaFacadeTest`
+  cobre dois cenários de confiança operacional, sem virar benchmark rígido:
+  (1) 3.000 linhas escritas, fórmulas `SUM`, filtros, congelamento, salvar e
+  reabrir com `XSSFWorkbook` fresco; (2) 2.000 linhas ordenadas, buscadas e
+  copiadas para outra aba. Cada cenário usa `assertTimeout` generoso de 30s
+  para pegar regressão grosseira sem criar teste frágil. Teste focal passou em
+  ~5s localmente; `mvn clean test` confirmou BUILD SUCCESS. Total: 208 testes
+  verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -374,7 +381,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **206 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **208 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -537,8 +544,9 @@ células sem borda prévia). Ver seção 4 para os detalhes que não podem regre
 
 ### Prioridade baixa / nice-to-have
 
-- Testes de performance/carga com planilhas de milhares de linhas (confiança,
-  não funcionalidade nova).
+- ~~Testes de performance/carga com planilhas de milhares de linhas~~ —
+  **ENTREGUE**: `CargaFacadeTest` cobre escrita/salvar/reabrir 3.000 linhas e
+  ordenação/busca/cópia com 2.000 linhas.
 - Exportar para CSV (fora do escopo original — esta lib foca em `.xlsx`;
   avaliar com o usuário antes de assumir que é desejado).
 

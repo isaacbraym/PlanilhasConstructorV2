@@ -409,13 +409,19 @@ e com `procurarValor`/`procurarValorNaAba`.
   ```bash
   mvn clean test
   ```
+- **Rodar só os testes de carga:**
+  ```bash
+  mvn "-Dtest=CargaFacadeTest" test
+  ```
+  Eles criam milhares de linhas, salvam/reabrem `.xlsx` e exercitam escrita,
+  filtros, congelamento, fórmulas, ordenação, busca e cópia entre abas.
 - **CI:** todo push/PR na `main` roda a suíte em JDK 8 e 17
   ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
 - **Changelog:** veja [`CHANGELOG.md`](CHANGELOG.md) para o histórico de
   versões.
 - **Cobertura de testes:** `mvn clean test` já gera um relatório JaCoCo em
-  `target/site/jacoco/index.html`. Baseline em 2026-07-04: ~67% de linhas
-  cobertas (156 testes). Pontos mais fracos: `Calculos`, `CenterStyle`,
+  `target/site/jacoco/index.html`. Suíte atual: 208 testes. Pontos mais fracos:
+  `Calculos`, `CenterStyle`,
   `Fontes`, `ManipuladorPlanilhaHelper` — candidatos ao roadmap de cobertura
   do `AGENTS.md`.
 - **Skills para agentes de IA** (Claude Code e Codex): veja
