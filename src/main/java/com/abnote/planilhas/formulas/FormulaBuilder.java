@@ -198,13 +198,22 @@ public class FormulaBuilder implements IFormulas {
         
         String rangeTrimmed = range.trim();
         
-        // Regex para validar: A1 ou A1:B10 ou AA100 ou AA100:ZZ999
-        if (!rangeTrimmed.matches("^[A-Z]+[0-9]+(:[A-Z]+[0-9]+)?$")) {
-            throw new FormulaException(
-                "Formato de range inválido. Use formato 'A1' ou 'A1:B10'",
-                rangeTrimmed
-            );
+        if (ehRangeDeCelulas(rangeTrimmed) || ehNomeDefinido(rangeTrimmed)) {
+            return;
         }
+
+        throw new FormulaException(
+            "Formato de range inválido. Use formato 'A1', 'A1:B10' ou um nome definido",
+            rangeTrimmed
+        );
+    }
+
+    private boolean ehRangeDeCelulas(String range) {
+        return range.matches("^[A-Z]+[0-9]+(:[A-Z]+[0-9]+)?$");
+    }
+
+    private boolean ehNomeDefinido(String range) {
+        return workbook.getName(range) != null;
     }
     
     /**

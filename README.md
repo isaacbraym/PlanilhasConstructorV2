@@ -173,9 +173,9 @@ célula se ela não existir) — se a célula não existir, o retorno é `null`
 ### Cálculos (fórmulas do Excel)
 | Comando | O que faz |
 |---|---|
-| `somar("C5", "C2:C4")` | soma um intervalo |
-| `media("C5", "C2:C4")` | média |
-| `contar("C5", "C2:C4")` | conta valores |
+| `somar("C5", "C2:C4")` | soma um intervalo ou nome definido |
+| `media("C5", "C2:C4")` | média de um intervalo ou nome definido |
+| `contar("C5", "C2:C4")` | conta valores de um intervalo ou nome definido |
 | `minimo(...)` / `maximo(...)` | menor / maior valor |
 | `seEntao("D2", "C2>100", "Alto", "Baixo")` | condição se/então |
 | `multiplicar("D2", "B2", "C2")` | D2 = B2 × C2 |
@@ -184,7 +184,7 @@ célula se ela não existir) — se a célula não existir, o retorno é `null`
 | `preencherColuna("D", 2, 10, "B{}*C{}")` | repete a fórmula por linha (`{}` = nº da linha) |
 | `procurarValor("E2", "A2", "H2:J100", 3)` | PROCV: busca A2 na tabela e traz a coluna 3 |
 | `procurarValorNaAba("B2", "A2", "Produtos", "A2:C100", 3)` | PROCV buscando em outra aba |
-| `definirNome("Precos", "B2:B100")` | dá nome a um intervalo, para usar em `formula(...)`/`procurarValor(...)` |
+| `definirNome("Precos", "B2:B100")` | dá nome a um intervalo, para usar em fórmulas prontas, `formula(...)` e `procurarValor(...)` |
 | `adicionarTotais("A1")` | soma sozinho cada coluna numérica da tabela, logo abaixo do último dado |
 | `colarComoValores("A1:D50")` | calcula as fórmulas do intervalo e as substitui pelo valor (útil antes de compartilhar o arquivo) |
 | `colarComoValores()` | igual, mas em toda a área usada da aba |
@@ -387,9 +387,10 @@ apontando para uma coluna com as opções — não tem esse limite.
 Se usar `try (Planilha planilha = ...)`, é automático. Senão, chame `fechar()`.
 
 **Posso usar `definirNome` dentro de `somar`/`media`?**
-Ainda não — essas fórmulas prontas exigem um intervalo de células (ex.:
-`"B2:B100"`). Nomes funcionam com `formula(...)` (ex.:
-`formula("D1", "SUM(Precos)")`) e com `procurarValor`/`procurarValorNaAba`.
+Sim. Depois de `definirNome("Precos", "B2:B100")`, você pode usar
+`somar("D1", "Precos")`, `media`, `contar`, `minimo` e `maximo` com esse nome.
+Nomes também funcionam com `formula(...)` (ex.: `formula("D1", "SUM(Precos)")`)
+e com `procurarValor`/`procurarValorNaAba`.
 
 ---
 

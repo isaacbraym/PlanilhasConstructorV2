@@ -11,6 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import com.abnote.planilhas.exceptions.DadosInvalidosException;
+import com.abnote.planilhas.utils.PosicaoConverter;
 
 /**
  * Testes de nomes de intervalo (named ranges) na facade.
@@ -47,6 +48,27 @@ class NomeDeIntervaloFacadeTest {
 	}
 
 	@Test
+	@DisplayName("Nome definido deve funcionar nas fórmulas prontas de agregação")
+	void deveUsarNomeNasFormulasProntasDeAgregacao() throws Exception {
+		try (Planilha planilha = Planilha.nova("Vendas")) {
+			planilha.escreverColuna("B2", 10, 20, 30)
+					.definirNome("Precos", "B2:B4")
+					.somar("D1", "Precos")
+					.media("D2", "Precos")
+					.contar("D3", "Precos")
+					.minimo("D4", "Precos")
+					.maximo("D5", "Precos");
+
+			final FormulaEvaluator avaliador = planilha.workbook().getCreationHelper().createFormulaEvaluator();
+			assertFormulaEAvaliacao(planilha, avaliador, "D1", "SUM(Precos)", 60.0);
+			assertFormulaEAvaliacao(planilha, avaliador, "D2", "AVERAGE(Precos)", 20.0);
+			assertFormulaEAvaliacao(planilha, avaliador, "D3", "COUNT(Precos)", 3.0);
+			assertFormulaEAvaliacao(planilha, avaliador, "D4", "MIN(Precos)", 10.0);
+			assertFormulaEAvaliacao(planilha, avaliador, "D5", "MAX(Precos)", 30.0);
+		}
+	}
+
+	@Test
 	@DisplayName("Nome definido deve funcionar dentro de procurarValor (PROCV)")
 	void deveUsarNomeDentroDeProcurarValor() throws Exception {
 		try (Planilha planilha = Planilha.nova("Tabela")) {
@@ -71,5 +93,15 @@ class NomeDeIntervaloFacadeTest {
 		try (Planilha planilha = Planilha.nova("T")) {
 			assertThrows(DadosInvalidosException.class, () -> planilha.definirNome(nomeInvalido, "A1:A2"));
 		}
+	}
+
+	private void assertFormulaEAvaliacao(final Planilha planilha, final FormulaEvaluator avaliador,
+			final String celula, final String formulaEsperada, final double numeroEsperado) {
+		final int[] indices = PosicaoConverter.converterPosicao(celula);
+		final Cell celulaFormula = planilha.workbook().getSheetAt(0).getRow(indices[1]).getCell(indices[0]);
+
+		assertEquals(formulaEsperada, celulaFormula.getCellFormula());
+		avaliador.evaluateFormulaCell(celulaFormula);
+		assertEquals(numeroEsperado, celulaFormula.getNumericCellValue(), 0.001);
 	}
 }

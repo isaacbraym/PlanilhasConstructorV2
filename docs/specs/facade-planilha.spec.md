@@ -89,8 +89,8 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
   `'AbaAtual'!$B$2:$B$100` (referência absoluta, qualificada com a aba atual).
   O nome funciona dentro de `formula(...)` e `procurarValor`/
   `procurarValorNaAba` (ex.: `formula("D1", "SUM(Precos)")` avalia
-  corretamente); **não** funciona ainda em `somar`/`media`/`contar`/`minimo`/
-  `maximo` (que exigem sintaxe de intervalo de células, não nome).
+  corretamente), e também em `somar`/`media`/`contar`/`minimo`/`maximo`
+  (ex.: `somar("D1", "Precos")` gera `SUM(Precos)` e avalia corretamente).
 - **Quando** o nome não segue as regras do Excel (começa com dígito, tem
   espaço, ou é igual a uma referência de célula como `"A1"`/`"$B$2"`, ou é
   vazio), **Então** lança `DadosInvalidosException` com a causa original —

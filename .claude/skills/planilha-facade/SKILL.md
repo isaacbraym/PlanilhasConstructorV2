@@ -50,8 +50,9 @@ public class Gerar {
   `listaSuspensaDoIntervalo(intervaloDestino, intervaloOpcoes)`.
 - Validação de limites (sem menu): `validarNumeroEntre`/`validarInteiroEntre(
   intervalo, min, max)`, `validarDataEntre(intervalo, LocalDate min, max)`.
-- Nomes de intervalo: `definirNome(nome, intervalo)` — use com `formula(...)`
-  e `procurarValor`/`procurarValorNaAba` (ainda não com `somar`/`media`/etc).
+- Nomes de intervalo: `definirNome(nome, intervalo)` — use com `somar`/
+  `media`/`contar`/`minimo`/`maximo`, `formula(...)` e
+  `procurarValor`/`procurarValorNaAba`.
 - Totais automáticos: `adicionarTotais(celulaCabecalho)` — detecta a tabela e
   soma sozinho cada coluna numérica, sem precisar chamar `somar()` por coluna.
 - Comentários: `comentario(celula, texto)` — nota/balão do Excel.

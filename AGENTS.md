@@ -112,6 +112,14 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   `getDataRangeReference()` do XDDF traz o nome da aba corretamente
   (`"Produtos!$A$2:$A$4"`) e que os valores resolvem certo. Total: 197 testes
   verdes.
+- [x] **Nomes definidos nas fórmulas prontas de agregação**: `somar`/`media`/
+  `contar`/`minimo`/`maximo` agora aceitam nomes criados por `definirNome`
+  (ex.: `definirNome("Precos", "B2:B4").somar("D1", "Precos")` gera
+  `SUM(Precos)` e avalia corretamente). Investigação empírica confirmou que
+  `formula("D1", "SUM(Precos)")` já funcionava e que o bloqueio real era só a
+  validação estrita de `FormulaBuilder.validarRange`; ela agora aceita ranges
+  de células ou nomes existentes no `Workbook`, mantendo `FormulaException`
+  amigável para texto solto não definido. Total: 198 testes verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -491,11 +499,8 @@ células sem borda prévia). Ver seção 4 para os detalhes que não podem regre
 4. ~~**Nomes de intervalo (named ranges)**~~ — **ENTREGUE** nesta sessão:
    `definirNome(nome, intervalo)`. Funciona com `formula(...)` e
    `procurarValor`/`procurarValorNaAba` (validado com avaliação real da
-   fórmula). **Ainda não** funciona com `somar`/`media`/`contar`/`minimo`/
-   `maximo` (a validação de range do `FormulaBuilder` é regex estrita para
-   sintaxe de célula — deliberadamente não alterada nesta sessão para não
-   arriscar quebrar validação existente; se for prioridade, avaliar relaxar
-   `FormulaBuilder.validarRange` para aceitar identificadores de nome também).
+   fórmula), e também com `somar`/`media`/`contar`/`minimo`/`maximo` quando o
+   nome já existe no `Workbook`.
 5. **Mais tipos de formatação condicional** — barras de dados (`DataBarFormatting`)
    e conjuntos de ícones (`IconMultiStateFormatting`), complementando
    `escalaDeCores`. `FormatacaoCondicionalHelper` já tem a estrutura pronta
@@ -514,8 +519,6 @@ células sem borda prévia). Ver seção 4 para os detalhes que não podem regre
 - Exportar para CSV (fora do escopo original — esta lib foca em `.xlsx`;
   avaliar com o usuário antes de assumir que é desejado).
 - Margens de impressão (`sheet.getMargin`/`setMargin`) — ver item 1 acima.
-- `somar`/`media`/`contar`/`minimo`/`maximo` ainda não aceitam nomes definidos
-  por `definirNome` (só `formula`/`procurarValor` aceitam) — ver item 4 acima.
 
 ### Convenção para continuar
 
