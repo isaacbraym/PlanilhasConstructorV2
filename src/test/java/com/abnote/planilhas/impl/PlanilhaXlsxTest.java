@@ -3,7 +3,10 @@ package com.abnote.planilhas.impl;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -156,6 +159,39 @@ class PlanilhaXlsxTest {
 			assertEquals("Nome", row.getCell(0).getStringCellValue());
 			assertEquals("Idade", row.getCell(1).getStringCellValue());
 			assertEquals("Cidade", row.getCell(2).getStringCellValue());
+		}
+	}
+
+	@Test
+	@DisplayName("Deve preservar campo vazio no fim de string delimitada")
+	void devePreservarCampoVazioFinalComDelimitador() throws Exception {
+		try (IPlanilha planilha = new PlanilhaXlsx()) {
+			planilha.criarPlanilha("Dados");
+
+			planilha.selecionar().celula("A1").inserirDados("Nome,Idade,", ",");
+
+			Row row = planilha.obterWorkbook().getSheetAt(0).getRow(0);
+			assertEquals("Nome", row.getCell(0).getStringCellValue());
+			assertEquals("Idade", row.getCell(1).getStringCellValue());
+			assertNotNull(row.getCell(2), "Campo final vazio deve virar uma célula real");
+			assertEquals("", row.getCell(2).getStringCellValue());
+		}
+	}
+
+	@Test
+	@DisplayName("Deve preservar campo vazio no fim de linhas vindas de arquivo")
+	void devePreservarCampoVazioFinalAoInserirArquivo() throws Exception {
+		Path arquivo = pastaTemporaria.resolve("dados.csv");
+		Files.write(arquivo, Arrays.asList("Nome,Idade,", "Ana,30,"), StandardCharsets.UTF_8);
+
+		try (IPlanilha planilha = new PlanilhaXlsx()) {
+			planilha.criarPlanilha("Dados");
+
+			planilha.selecionar().celula("A1").inserirDadosArquivo(arquivo.toString(), ",");
+
+			Sheet sheet = planilha.obterWorkbook().getSheetAt(0);
+			assertEquals("", sheet.getRow(0).getCell(2).getStringCellValue());
+			assertEquals("", sheet.getRow(1).getCell(2).getStringCellValue());
 		}
 	}
 

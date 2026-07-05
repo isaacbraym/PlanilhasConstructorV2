@@ -384,6 +384,10 @@ Comparação por texto; números casam sem `.0` (ex.: `10` casa com `"10"`).
   (deslocamento, remoção, inserção vazia e limpeza), incluir colunas
   deslocadas quando houver, ignorar tipos futuros desconhecidos e limpar a fila
   após `exibirLogs()`.
+- Inserção delimitada da API fluente (`inserirDados(texto, delimitador)` e
+  `inserirDadosArquivo`) deve preservar campos vazios finais; `"A,B,"` precisa
+  criar a terceira célula vazia em vez de descartá-la pelo comportamento padrão
+  de `String.split(...)`.
 - Estilos internos devem respeitar o alvo selecionado (célula, linha inteira,
   intervalo ou planilha inteira). Cores em hexadecimal inválido devem lançar
   `IllegalArgumentException`, e `centralizarERedimensionarTudo` deve avaliar

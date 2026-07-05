@@ -58,7 +58,7 @@ public class InsersorDeDados {
 			if (Files.exists(Paths.get(str))) {
 				inserirDadosArquivo(str, delimitador);
 			} else {
-				List<String> lista = Arrays.asList(str.split(Pattern.quote(delimitador)));
+				List<String> lista = Arrays.asList(dividirPreservandoVaziosFinais(str, delimitador));
 				inserirDados(lista);
 			}
 		} else if (dados instanceof File) {
@@ -101,7 +101,7 @@ public class InsersorDeDados {
             int linhaAtual = positionManager.getPosicaoInicialLinha();
 
             while ((linhaTexto = br.readLine()) != null) {
-                String[] valores = linhaTexto.split(Pattern.quote(delimitador));
+                String[] valores = dividirPreservandoVaziosFinais(linhaTexto, delimitador);
                 inserirValoresEmLinha(linhaAtual, valores);
 
                 linhaAtual++;
@@ -124,6 +124,16 @@ public class InsersorDeDados {
 
         positionManager.resetarPosicao();
     }
+
+	private static String[] dividirPreservandoVaziosFinais(final String texto, final String delimitador) {
+		if (delimitador == null) {
+			throw new DadosInvalidosException("Delimitador não pode ser nulo");
+		}
+		if (delimitador.isEmpty()) {
+			return texto.split(Pattern.quote(delimitador));
+		}
+		return texto.split(Pattern.quote(delimitador), -1);
+	}
 
 	/**
 	 * Define o valor da célula, tentando converter para número quando possível.

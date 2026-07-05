@@ -186,6 +186,12 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   colunas deslocadas, tipo futuro desconhecido (ignorado) e limpeza da fila
   após `exibirLogs()`. Isso fecha o ponto fraco histórico de log/auditoria no
   JaCoCo sem mudar API pública. Total: 220 testes verdes.
+- [x] **Bug de campos finais vazios em dados delimitados corrigido**:
+  `InsersorDeDados` usava `String.split(...)` sem limite, descartando campos
+  vazios no fim (`"A,B,"` virava só duas células). Corrigido com helper que
+  preserva vazios finais para delimitadores não vazios e mantém o comportamento
+  antigo para delimitador vazio. `PlanilhaXlsxTest` cobre string delimitada e
+  arquivo texto com célula final vazia real. Total: 222 testes verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -414,7 +420,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **220 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **222 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -502,6 +508,10 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
     em cópias manuais: erro com `setCellErrorValue(...)`, branco com
     `setBlank()`. Bug real corrigido em `ManipuladorPlanilhaHelper` ao mover
     colunas com fórmula.
+12. **`String.split(delimitador)` descarta campos vazios finais** — para
+    importação/inserção delimitada, use o helper de `InsersorDeDados` que chama
+    `split(..., -1)` quando o delimitador não é vazio. Sem isso, `"A,B,"`
+    perde a terceira célula e desloca a estrutura importada.
 
 ## 5. Convenções de código (obrigatórias)
 

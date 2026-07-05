@@ -433,6 +433,12 @@ e com `procurarValor`/`procurarValorNaAba`.
   ```
   Cobre a saída de `logAlteracoes()` para mover/remover/inserir/limpar coluna
   e confirma que a fila de logs é limpa após a exibição.
+- **Rodar só a integração da API fluente básica:**
+  ```bash
+  mvn "-Dtest=PlanilhaXlsxTest" test
+  ```
+  Cobre criação/salvamento, múltiplas abas, dados delimitados e preservação de
+  campos vazios finais ao importar string/arquivo delimitado.
 - **Rodar só os testes de estilos:**
   ```bash
   mvn "-Dtest=EstiloCelulaTest" test
@@ -445,7 +451,7 @@ e com `procurarValor`/`procurarValorNaAba`.
 - **Changelog:** veja [`CHANGELOG.md`](CHANGELOG.md) para o histórico de
   versões.
 - **Cobertura de testes:** `mvn clean test` já gera um relatório JaCoCo em
-  `target/site/jacoco/index.html`. Suíte atual: 220 testes. Os pontos fracos
+  `target/site/jacoco/index.html`. Suíte atual: 222 testes. Os pontos fracos
   históricos (`Fontes`, `ManipuladorPlanilhaHelper`, `LogsDeModificadores`)
   já receberam cobertura estrutural; consulte o relatório para escolher novos
   alvos.
