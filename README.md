@@ -198,6 +198,7 @@ célula se ela não existir) — se a célula não existir, o retorno é `null`
 | `formatarComoTexto("B2")` | converte em texto puro |
 | `formatarComoData("A2")` | formata a coluna como data (dd/MM/aaaa) |
 | `formatarComoPorcentagem("B2")` | formata como % (0,15 → 15%) |
+| `formatarComoPersonalizado("B2", "0.00 \"kg\"")` | qualquer formato numérico do Excel não coberto acima |
 
 ### Colunas e linhas
 | Comando | O que faz |

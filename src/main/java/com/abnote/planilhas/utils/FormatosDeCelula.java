@@ -1,5 +1,8 @@
 package com.abnote.planilhas.utils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.Row;
@@ -22,6 +25,7 @@ public final class FormatosDeCelula {
 	private CellStyle estiloData;
 	private CellStyle estiloDataHora;
 	private CellStyle estiloPorcentagem;
+	private final Map<String, CellStyle> estilosPersonalizados = new HashMap<>();
 
 	/**
 	 * @param workbook O workbook para o qual os formatos serão criados.
@@ -64,6 +68,19 @@ public final class FormatosDeCelula {
 			estiloPorcentagem = criarEstiloDeFormato("0.00%");
 		}
 		return estiloPorcentagem;
+	}
+
+	/**
+	 * Estilo com um formato numérico do Excel arbitrário (ex.:
+	 * {@code "0.00 \"kg\""}), para casos que os formatos prontos não cobrem. A
+	 * sintaxe do formato é de responsabilidade de quem chama — o Excel não avisa
+	 * se estiver incorreta, só exibe algo inesperado.
+	 *
+	 * @param formatoExcel O formato, na sintaxe de formato numérico do Excel.
+	 * @return O estilo, criando-o (e cacheando por formato) na primeira chamada.
+	 */
+	public CellStyle personalizado(final String formatoExcel) {
+		return estilosPersonalizados.computeIfAbsent(formatoExcel, this::criarEstiloDeFormato);
 	}
 
 	private CellStyle criarEstiloDeFormato(final String formato) {

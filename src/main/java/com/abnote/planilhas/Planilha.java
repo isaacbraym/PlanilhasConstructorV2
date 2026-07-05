@@ -730,6 +730,25 @@ public final class Planilha implements AutoCloseable {
 		return this;
 	}
 
+	/**
+	 * Formata a coluna (a partir da célula) com um formato numérico do Excel
+	 * arbitrário — use quando os formatos prontos (moeda, data, porcentagem...)
+	 * não cobrirem o que você precisa.
+	 *
+	 * <p>Exemplo — duas casas decimais seguidas da unidade "kg":</p>
+	 * <pre>{@code
+	 * planilha.formatarComoPersonalizado("B2", "0.00 \"kg\"");
+	 * }</pre>
+	 *
+	 * @param celulaInicial Primeira célula da coluna a formatar.
+	 * @param formatoExcel  O formato, na sintaxe de formato numérico do Excel.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha formatarComoPersonalizado(final String celulaInicial, final String formatoExcel) {
+		aplicarEstiloNaColuna(celulaInicial, formatos.personalizado(formatoExcel));
+		return this;
+	}
+
 	// ==================== FORMATAÇÃO CONDICIONAL ====================
 
 	/**

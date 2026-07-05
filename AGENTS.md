@@ -74,7 +74,11 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   (não lança exceção). Total: 183 testes verdes.
 - [x] **Cor da aba**: `corDaAba(CorEnum)` via `XSSFSheet.setTabColor`. Total:
   184 testes verdes.
-- [ ] Formato numérico personalizado (escape hatch para os 6 formatos fixos).
+- [x] **Formato numérico personalizado**:
+  `formatarComoPersonalizado(intervalo, formatoExcel)`, via novo método
+  `personalizado(String)` em `utils/FormatosDeCelula` (cache por string de
+  formato, mesmo padrão de `data()`/`porcentagem()`). Sintaxe do formato não é
+  validada (Excel/POI não valida nesse ponto). Total: 186 testes verdes.
 - [ ] Cabeçalho/rodapé de impressão com texto.
 - [ ] `definirNome` vaza `IllegalArgumentException` crua do POI para nome
   inválido (começa com dígito, tem espaço, parece referência de célula) —
@@ -311,7 +315,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **184 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **186 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.

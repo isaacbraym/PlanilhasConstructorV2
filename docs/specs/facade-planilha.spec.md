@@ -101,6 +101,11 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
   `.0` para inteiros).
 - **Quando** `formatarComoPorcentagem("B2")`, **Então** a coluna usa formato de
   porcentagem (`0,15` exibe `15%`).
+- **Quando** `formatarComoPersonalizado(intervalo, formatoExcel)`, **Então** a
+  coluna recebe exatamente esse formato (`CellStyle.getDataFormatString()`
+  igual ao informado); o mesmo formato pedido duas vezes reaproveita o mesmo
+  `CellStyle` (cache por string de formato em `FormatosDeCelula`). A sintaxe
+  do formato **não é validada** — é responsabilidade de quem chama.
 - `larguraColuna("A", n)` define a largura (≈ n caracteres, 0–255);
   `alturaLinha(l, p)` define a altura em pontos; `congelar(linhas, colunas)`
   fixa linhas/colunas ao rolar.

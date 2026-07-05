@@ -66,7 +66,9 @@ public class Gerar {
 - Proteção: `desbloquearCelulas(intervalo)` (chame antes) +
   `protegerPlanilha(senha)` — para formulários com campos editáveis.
 - Formatos: `formatarComoMoeda`, `formatarComoContabil`, `formatarComoNumero`,
-  `formatarComoTexto`, `formatarComoData`, `formatarComoPorcentagem`.
+  `formatarComoTexto`, `formatarComoData`, `formatarComoPorcentagem`,
+  `formatarComoPersonalizado(intervalo, formatoExcel)` (qualquer formato não
+  coberto pelos outros).
 - Colunas/linhas: `moverColuna`, `removerColuna`, `limparColuna`,
   `inserirColunaEntre`, `duplicarColuna`, `duplicarLinha`.
 - Estilos/layout: `negrito`, `italico`, `corDoTexto`, `corDeFundo`, `centralizar`,
