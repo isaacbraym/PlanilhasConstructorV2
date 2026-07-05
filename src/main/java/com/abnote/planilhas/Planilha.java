@@ -1213,6 +1213,25 @@ public final class Planilha implements AutoCloseable {
 	}
 
 	/**
+	 * Desfaz a mesclagem de um intervalo previamente mesclado com
+	 * {@link #mesclar}. Se o intervalo não estiver mesclado, não faz nada.
+	 *
+	 * @param intervalo Intervalo a desmesclar (ex.: "A1:C1").
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha desmesclar(final String intervalo) {
+		final Sheet sheet = sheetAtual();
+		final CellRangeAddress regiao = regioesDe(intervalo)[0];
+		for (int indice = sheet.getNumMergedRegions() - 1; indice >= 0; indice--) {
+			if (sheet.getMergedRegion(indice).equals(regiao)) {
+				sheet.removeMergedRegion(indice);
+				break;
+			}
+		}
+		return this;
+	}
+
+	/**
 	 * Contorna toda a área usada da planilha com bordas (externas espessas,
 	 * internas finas).
 	 *

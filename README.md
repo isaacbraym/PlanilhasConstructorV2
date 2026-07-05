@@ -277,6 +277,7 @@ Aceita `.png`, `.jpg` e `.jpeg`.
 | `fonte("A1", "Arial")` / `tamanhoDaFonte("A1", 14)` | fonte e tamanho |
 | `bordas("A1:C10")` | bordas em um intervalo |
 | `mesclar("A1:C1")` | junta células |
+| `desmesclar("A1:C1")` | desfaz a junção |
 | `contornarTudo()` | bordas em toda a área usada |
 | `removerLinhasDeGrade()` | tira o quadriculado cinza |
 | `ajustarColunas()` | ajusta a largura ao conteúdo |

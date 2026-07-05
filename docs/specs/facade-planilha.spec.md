@@ -211,6 +211,11 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
   `congelarPrimeiraLinha`, `filtrosNoCabecalho` operam na aba ativa.
 - **Regra**: estilizar deve ser feito **depois** de escrever — estilos de fonte
   só afetam células que já existem.
+- **Quando** `desmesclar(intervalo)` sobre um intervalo **exatamente igual**
+  a um já mesclado com `mesclar`, **Então** a mesclagem é desfeita
+  (`getNumMergedRegions()` diminui em 1). Se o intervalo não estiver mesclado
+  (ou não corresponder exatamente a uma região mesclada existente), é no-op —
+  não lança exceção nem afeta outras mesclagens.
 
 ## Ordenar
 

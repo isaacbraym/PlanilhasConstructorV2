@@ -70,7 +70,7 @@ public class Gerar {
 - Colunas/linhas: `moverColuna`, `removerColuna`, `limparColuna`,
   `inserirColunaEntre`, `duplicarColuna`, `duplicarLinha`.
 - Estilos/layout: `negrito`, `italico`, `corDoTexto`, `corDeFundo`, `centralizar`,
-  `fonte`, `tamanhoDaFonte`, `bordas`, `mesclar`, `contornarTudo`,
+  `fonte`, `tamanhoDaFonte`, `bordas`, `mesclar`, `desmesclar`, `contornarTudo`,
   `removerLinhasDeGrade`, `ajustarColunas`, `larguraColuna`, `alturaLinha`,
   `congelarPrimeiraLinha`, `congelar`, `filtrosNoCabecalho`,
   `agruparLinhas(inicio, fim)`, `agruparColunas(de, para)` (outline — sem
