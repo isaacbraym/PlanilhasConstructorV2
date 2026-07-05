@@ -159,6 +159,12 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   com `obterOuCriarLinha(...)` e testes em `CalculosTest` cobrindo preservação
   de células existentes tanto em soma com texto quanto em multiplicação com
   texto. `mvn clean test` confirmou BUILD SUCCESS. Total: 210 testes verdes.
+- [x] **Cobertura estrutural de estilos**: `EstiloCelulaTest` ganhou cenários
+  que faltavam para `CenterStyle`, `Fontes` e `BackGroundColor`: estilo em
+  linha inteira (`columnIndex == -1`), rejeição de hexadecimal inválido e
+  `centralizarERedimensionarTudo` com fórmula avaliada antes do `autoSize`.
+  Teste focal verde; `mvn clean test` confirmou BUILD SUCCESS. Total: 213
+  testes verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -266,7 +272,7 @@ sugestões e mandar "pode ir pra cima") — em andamento
   era **código morto de verdade** (nunca referenciado em `src/main`, testes
   ou docs) — removido, mesmo precedente do `IBuscaDados` (retomada inicial).
   Pontos ainda fracos naquele baseline (ver `jacoco.csv` para a lista atual):
-  `CenterStyle` (44%), `Fontes`/`BackGroundColor` (~55-61%),
+  `Fontes`/`BackGroundColor` (~55-61%),
   `ManipuladorPlanilhaHelper.CellData` (45%), `LogsDeModificadores` (7%, área
   de log/auditoria, baixo risco). Candidatos para um próximo lote de
   cobertura se o Codex quiser continuar essa frente.
@@ -388,7 +394,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **210 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **213 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.

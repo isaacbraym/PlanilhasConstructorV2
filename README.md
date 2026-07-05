@@ -421,13 +421,18 @@ e com `procurarValor`/`procurarValorNaAba`.
   ```
   Útil ao mexer em linhas de total/resumo, porque protege contra perda de
   células já existentes na linha onde o total é criado.
+- **Rodar só os testes de estilos:**
+  ```bash
+  mvn "-Dtest=EstiloCelulaTest" test
+  ```
+  Cobre fonte, cor, bordas, alinhamento, redimensionamento e aplicação em
+  célula, linha, intervalo e planilha inteira.
 - **CI:** todo push/PR na `main` roda a suíte em JDK 8 e 17
   ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
 - **Changelog:** veja [`CHANGELOG.md`](CHANGELOG.md) para o histórico de
   versões.
 - **Cobertura de testes:** `mvn clean test` já gera um relatório JaCoCo em
-  `target/site/jacoco/index.html`. Suíte atual: 210 testes. Pontos mais fracos:
-  `CenterStyle`,
+  `target/site/jacoco/index.html`. Suíte atual: 213 testes. Pontos mais fracos:
   `Fontes`, `ManipuladorPlanilhaHelper` — candidatos ao roadmap de cobertura
   do `AGENTS.md`.
 - **Skills para agentes de IA** (Claude Code e Codex): veja

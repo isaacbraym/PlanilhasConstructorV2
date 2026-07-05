@@ -118,6 +118,8 @@ Detalhes/contrato: `docs/specs/facade-planilha.spec.md`.
 8. Ao mexer em linhas de total/resumo da API fluente legada, rode
    `mvn "-Dtest=CalculosTest" test` para proteger contra perda de células em
    linhas já existentes.
+9. Ao mexer em fonte, cores, bordas, alinhamento ou autoajuste, rode
+   `mvn "-Dtest=EstiloCelulaTest" test`.
 
 ## Exemplos de referência (cookbook)
 

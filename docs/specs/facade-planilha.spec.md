@@ -375,6 +375,10 @@ Comparação por texto; números casam sem `.0` (ex.: `10` casa com `"10"`).
 - Linhas de total/resumo em cálculos legados devem preservar células já
   existentes fora da área calculada. Helpers internos devem reutilizar a linha
   quando ela já existe, em vez de chamar `Sheet.createRow(indice)` às cegas.
+- Estilos internos devem respeitar o alvo selecionado (célula, linha inteira,
+  intervalo ou planilha inteira). Cores em hexadecimal inválido devem lançar
+  `IllegalArgumentException`, e `centralizarERedimensionarTudo` deve avaliar
+  fórmulas antes de redimensionar colunas.
 
 ## Escape hatch
 

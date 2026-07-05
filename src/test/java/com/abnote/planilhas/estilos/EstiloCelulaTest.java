@@ -191,6 +191,27 @@ class EstiloCelulaTest {
 		}
 	}
 
+	@Test
+	@DisplayName("corFonte/corDeFundo devem recusar hexadecimal inválido")
+	void deveRecusarHexadecimalInvalido() {
+		assertThrows(IllegalArgumentException.class,
+				() -> new EstiloCelula(workbook, sheet, 0, 0).corFonte("0000FF"));
+		assertThrows(IllegalArgumentException.class,
+				() -> new EstiloCelula(workbook, sheet, 0, 0).corDeFundo("#GG0000"));
+	}
+
+	@Test
+	@DisplayName("Estilo com columnIndex -1 deve aplicar fonte e fundo na linha inteira")
+	void deveAplicarEstiloNaLinhaInteira() {
+		new EstiloCelula(workbook, sheet, 1, -1).aplicarItalico().corDeFundo(CorEnum.AMARELO);
+
+		for (int coluna = 0; coluna < 3; coluna++) {
+			assertTrue(fonteDe(celula(1, coluna)).getItalic());
+			assertEquals(FillPatternType.SOLID_FOREGROUND, celula(1, coluna).getCellStyle().getFillPattern());
+			assertFalse(fonteDe(celula(0, coluna)).getItalic());
+		}
+	}
+
 	// ---------- bordas ----------
 
 	@Test
@@ -253,6 +274,19 @@ class EstiloCelulaTest {
 				"Alinhamento explícito não deve ser sobrescrito");
 		assertEquals(HorizontalAlignment.CENTER, celula(0, 1).getCellStyle().getAlignment());
 		assertEquals(VerticalAlignment.CENTER, celula(0, 1).getCellStyle().getVerticalAlignment());
+	}
+
+	@Test
+	@DisplayName("centralizarERedimensionarTudo deve centralizar e redimensionar coluna com fórmula avaliada")
+	void deveCentralizarERedimensionarAvaliandoFormula() {
+		celula(0, 0).setCellValue("Texto bem longo para redimensionamento");
+		celula(0, 1).setCellFormula("A1");
+		int larguraAntes = sheet.getColumnWidth(1);
+
+		new EstiloCelula(workbook, sheet).centralizarERedimensionarTudo();
+
+		assertEquals(HorizontalAlignment.CENTER, celula(0, 1).getCellStyle().getAlignment());
+		assertTrue(sheet.getColumnWidth(1) > larguraAntes, "Coluna da fórmula deve aumentar após autoSize");
 	}
 
 	@Test
