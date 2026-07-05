@@ -38,10 +38,7 @@ public class Calculos {
 		}
 
 		int linhaSoma = ultimaLinhaDados + 1;
-		Row rowSoma = sheet.getRow(linhaSoma);
-		if (rowSoma == null) {
-			rowSoma = sheet.createRow(linhaSoma);
-		}
+		Row rowSoma = obterOuCriarLinha(sheet, linhaSoma);
 		Cell cellSoma = rowSoma.getCell(coluna);
 		if (cellSoma == null) {
 			cellSoma = rowSoma.createCell(coluna);
@@ -93,7 +90,7 @@ public class Calculos {
 			ultimaLinha = i;
 		}
 
-		Row linhaSoma = sheet.createRow(ultimaLinha + 1);
+		Row linhaSoma = obterOuCriarLinha(sheet, ultimaLinha + 1);
 		Cell cellTexto = linhaSoma.createCell(coluna - 1);
 		cellTexto.setCellValue(texto);
 		Cell cellSoma = linhaSoma.createCell(coluna);
@@ -173,7 +170,7 @@ public class Calculos {
 
 		if (ultimaLinhaDados >= rowIndexInicial) {
 			int linhaSoma = ultimaLinhaDados + 1;
-			Row rowSoma = sheet.createRow(linhaSoma);
+			Row rowSoma = obterOuCriarLinha(sheet, linhaSoma);
 			Cell cellTexto = rowSoma.createCell(colunaDestinoIndex - 1);
 			cellTexto.setCellValue(texto);
 			Cell cellSoma = rowSoma.createCell(colunaDestinoIndex);
@@ -190,5 +187,10 @@ public class Calculos {
 				cellSoma.setCellStyle(defaultStyle);
 			}
 		}
+	}
+
+	private static Row obterOuCriarLinha(Sheet sheet, int indiceLinha) {
+		Row row = sheet.getRow(indiceLinha);
+		return row != null ? row : sheet.createRow(indiceLinha);
 	}
 }

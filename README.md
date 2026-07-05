@@ -415,13 +415,19 @@ e com `procurarValor`/`procurarValorNaAba`.
   ```
   Eles criam milhares de linhas, salvam/reabrem `.xlsx` e exercitam escrita,
   filtros, congelamento, fórmulas, ordenação, busca e cópia entre abas.
+- **Rodar só os testes dos cálculos legados:**
+  ```bash
+  mvn "-Dtest=CalculosTest" test
+  ```
+  Útil ao mexer em linhas de total/resumo, porque protege contra perda de
+  células já existentes na linha onde o total é criado.
 - **CI:** todo push/PR na `main` roda a suíte em JDK 8 e 17
   ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
 - **Changelog:** veja [`CHANGELOG.md`](CHANGELOG.md) para o histórico de
   versões.
 - **Cobertura de testes:** `mvn clean test` já gera um relatório JaCoCo em
-  `target/site/jacoco/index.html`. Suíte atual: 208 testes. Pontos mais fracos:
-  `Calculos`, `CenterStyle`,
+  `target/site/jacoco/index.html`. Suíte atual: 210 testes. Pontos mais fracos:
+  `CenterStyle`,
   `Fontes`, `ManipuladorPlanilhaHelper` — candidatos ao roadmap de cobertura
   do `AGENTS.md`.
 - **Skills para agentes de IA** (Claude Code e Codex): veja

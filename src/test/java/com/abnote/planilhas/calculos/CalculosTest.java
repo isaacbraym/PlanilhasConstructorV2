@@ -115,6 +115,42 @@ class CalculosTest {
         // Se não criou linha/célula, também é comportamento válido
     }
 
+    @Test
+    @DisplayName("somarColunaComTexto deve preservar linhas existentes antes do total")
+    void deveSomarColunaComTextoDepoisDaUltimaLinhaExistente() {
+        criarCelula(0, 1, 10.0);
+        criarCelula(1, 1, 20.0);
+        Row linhaExistente = sheet.createRow(2);
+        linhaExistente.createCell(3).setCellValue("Preservar");
+
+        Calculos.somarColunaComTexto(sheet, "B1", "Total");
+
+        assertEquals("Preservar", sheet.getRow(2).getCell(3).getStringCellValue());
+        Row linhaTotal = sheet.getRow(3);
+        assertEquals("Total", linhaTotal.getCell(0).getStringCellValue());
+        assertEquals(30.0, linhaTotal.getCell(1).getNumericCellValue(), 0.001);
+    }
+
+    @Test
+    @DisplayName("multiplicarColunasComTexto não deve apagar células já existentes na linha de total")
+    void deveMultiplicarColunasComTextoSemApagarCelulasExistentes() {
+        criarCelula(0, 3, 2.0);
+        criarCelula(0, 8, 3.0);
+        criarCelula(1, 3, 4.0);
+        criarCelula(1, 8, 5.0);
+        Row linhaExistente = sheet.createRow(2);
+        linhaExistente.createCell(11).setCellValue("Preservar");
+
+        Calculos.multiplicarColunasComTexto(sheet, "D", "I", 1, "Total", "J");
+
+        Row linhaTotal = sheet.getRow(2);
+        assertEquals("D1*I1", sheet.getRow(0).getCell(9).getCellFormula());
+        assertEquals("D2*I2", sheet.getRow(1).getCell(9).getCellFormula());
+        assertEquals("Total", linhaTotal.getCell(8).getStringCellValue());
+        assertEquals("SUM(J1:J2)", linhaTotal.getCell(9).getCellFormula());
+        assertEquals("Preservar", linhaTotal.getCell(11).getStringCellValue());
+    }
+
     // ========== MÉTODOS AUXILIARES ==========
 
     /**

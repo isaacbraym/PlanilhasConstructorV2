@@ -115,6 +115,9 @@ Detalhes/contrato: `docs/specs/facade-planilha.spec.md`.
    (como `-Dmdep.outputFile=...`) podem ser quebrados pelo shell.
 7. Ao mexer em escrita massiva, ordenação, filtros ou cópia de linhas, rode
    `mvn "-Dtest=CargaFacadeTest" test` além do teste focal da feature.
+8. Ao mexer em linhas de total/resumo da API fluente legada, rode
+   `mvn "-Dtest=CalculosTest" test` para proteger contra perda de células em
+   linhas já existentes.
 
 ## Exemplos de referência (cookbook)
 

@@ -152,6 +152,13 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   para pegar regressão grosseira sem criar teste frágil. Teste focal passou em
   ~5s localmente; `mvn clean test` confirmou BUILD SUCCESS. Total: 208 testes
   verdes.
+- [x] **Bug de preservação de linhas em cálculos legados**:
+  `Calculos.multiplicarColunasComTexto` usava `sheet.createRow(linhaSoma)` na
+  linha de total. Se essa linha já existisse por conter dados em outra coluna,
+  o POI podia substituir a linha e apagar células fora do cálculo. Corrigido
+  com `obterOuCriarLinha(...)` e testes em `CalculosTest` cobrindo preservação
+  de células existentes tanto em soma com texto quanto em multiplicação com
+  texto. `mvn clean test` confirmou BUILD SUCCESS. Total: 210 testes verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -258,8 +265,8 @@ sugestões e mandar "pode ir pra cima") — em andamento
   branches.** Achado imediato: `utils/RowIteratorUtil` estava em **0%** porque
   era **código morto de verdade** (nunca referenciado em `src/main`, testes
   ou docs) — removido, mesmo precedente do `IBuscaDados` (retomada inicial).
-  Pontos ainda fracos (ver `jacoco.csv` para a lista completa): `Calculos`
-  (28%), `CenterStyle` (44%), `Fontes`/`BackGroundColor` (~55-61%),
+  Pontos ainda fracos naquele baseline (ver `jacoco.csv` para a lista atual):
+  `CenterStyle` (44%), `Fontes`/`BackGroundColor` (~55-61%),
   `ManipuladorPlanilhaHelper.CellData` (45%), `LogsDeModificadores` (7%, área
   de log/auditoria, baixo risco). Candidatos para um próximo lote de
   cobertura se o Codex quiser continuar essa frente.
@@ -381,7 +388,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **208 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **210 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -458,6 +465,11 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
    POI deixa criar um arquivo sem nenhuma aba visível (Excel não abre). A
    facade valida isso em `ocultarAba` (conta abas visíveis antes de ocultar);
    se implementar outro caminho para ocultar aba, replicar a checagem.
+10. **`Sheet.createRow(indice)` não deve ser usado às cegas em linha que pode
+    existir** — ao criar linhas de total/resumo, use "obter ou criar" primeiro.
+    Bug real corrigido em `Calculos.multiplicarColunasComTexto`: uma linha de
+    total que já tivesse células em outras colunas podia ser substituída,
+    apagando esses dados.
 
 ## 5. Convenções de código (obrigatórias)
 

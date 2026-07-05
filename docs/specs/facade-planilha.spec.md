@@ -370,6 +370,12 @@ Comparação por texto; números casam sem `.0` (ex.: `10` casa com `"10"`).
 - Esses testes usam `assertTimeout` generoso (30s por cenário) como guarda
   contra regressão grosseira de carga, não como benchmark rígido.
 
+## Regressões internas que protegem a facade
+
+- Linhas de total/resumo em cálculos legados devem preservar células já
+  existentes fora da área calculada. Helpers internos devem reutilizar a linha
+  quando ela já existe, em vez de chamar `Sheet.createRow(indice)` às cegas.
+
 ## Escape hatch
 
 - `avancado()` devolve `IPlanilha` (API fluente completa).
