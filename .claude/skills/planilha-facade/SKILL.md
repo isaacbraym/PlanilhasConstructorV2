@@ -78,6 +78,7 @@ public class Gerar {
 - Ocultar/exibir: `ocultarLinha`/`exibirLinha`, `ocultarColuna`/
   `exibirColuna`, `ocultarAba`/`exibirAba` (recusa ocultar a única aba
   visível).
+- Cor da aba: `corDaAba(CorEnum)`.
 - Salvar: `salvar`, `salvarNaPasta`.
 - Avançado: `avancado()` → `IPlanilha`; `workbook()` → POI; `estilo(pos)`.
 

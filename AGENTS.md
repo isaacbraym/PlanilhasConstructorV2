@@ -72,7 +72,8 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
 - [x] **Desmesclar células**: `desmesclar(intervalo)` — procura a região
   mesclada com o range **exatamente igual** e remove; no-op se não achar
   (não lança exceção). Total: 183 testes verdes.
-- [ ] Cor da aba.
+- [x] **Cor da aba**: `corDaAba(CorEnum)` via `XSSFSheet.setTabColor`. Total:
+  184 testes verdes.
 - [ ] Formato numérico personalizado (escape hatch para os 6 formatos fixos).
 - [ ] Cabeçalho/rodapé de impressão com texto.
 - [ ] `definirNome` vaza `IllegalArgumentException` crua do POI para nome
@@ -310,7 +311,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **183 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **184 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.

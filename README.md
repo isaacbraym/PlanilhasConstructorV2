@@ -280,6 +280,7 @@ Aceita `.png`, `.jpg` e `.jpeg`.
 | `desmesclar("A1:C1")` | desfaz a junção |
 | `contornarTudo()` | bordas em toda a área usada |
 | `removerLinhasDeGrade()` | tira o quadriculado cinza |
+| `corDaAba(CorEnum.VERDE)` | muda a cor da etiqueta da aba |
 | `ajustarColunas()` | ajusta a largura ao conteúdo |
 | `larguraColuna("A", 20)` / `alturaLinha(1, 30)` | largura (≈ caracteres) / altura (pontos) |
 | `congelarPrimeiraLinha()` / `congelar(1, 2)` | fixa cabeçalho / N linhas e colunas |

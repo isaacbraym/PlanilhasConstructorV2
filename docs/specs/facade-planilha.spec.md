@@ -217,6 +217,11 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
   (ou não corresponder exatamente a uma região mesclada existente), é no-op —
   não lança exceção nem afeta outras mesclagens.
 
+## Cor da aba
+
+- **Quando** `corDaAba(cor)`, **Então** `XSSFSheet.getTabColor()` da aba ativa
+  tem o RGB exato de `cor` (`CorEnum.getRed/getGreen/getBlue`).
+
 ## Ordenar
 
 - **Dado** cabeçalho + `Carlos/30`, `Ana/25`, `Bia/40`, **Quando**

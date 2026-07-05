@@ -19,6 +19,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellRangeAddressList;
+import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 
 import com.abnote.planilhas.estilos.EstiloCelula;
@@ -1249,6 +1250,18 @@ public final class Planilha implements AutoCloseable {
 	 */
 	public Planilha removerLinhasDeGrade() {
 		sheetAtual().setDisplayGridlines(false);
+		return this;
+	}
+
+	/**
+	 * Muda a cor da aba (a "etiqueta" na parte inferior do Excel).
+	 *
+	 * @param cor Cor da aba.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha corDaAba(final CorEnum cor) {
+		xssf().setTabColor(new XSSFColor(new byte[] { (byte) cor.getRed(), (byte) cor.getGreen(), (byte) cor.getBlue() },
+				null));
 		return this;
 	}
 
