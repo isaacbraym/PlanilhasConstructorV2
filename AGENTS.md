@@ -165,6 +165,13 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   `centralizarERedimensionarTudo` com fórmula avaliada antes do `autoSize`.
   Teste focal verde; `mvn clean test` confirmou BUILD SUCCESS. Total: 213
   testes verdes.
+- [x] **Round-trip de fontes combinadas**: `EstiloCelulaTest` ganhou validação
+  salvando e reabrindo `.xlsx` com `XSSFWorkbook` fresco para uma fonte com
+  nome, tamanho, itálico, sublinhado, tachado e cor RGB. A investigação
+  empírica em `target/debug` confirmou a estrutura antes do teste permanente.
+  Também foi removido código morto em `Fontes` (`fontMatchesAttributes` e
+  comparadores privados não chamados), reduzindo área enganosa de cobertura.
+  Total: 214 testes verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -272,10 +279,10 @@ sugestões e mandar "pode ir pra cima") — em andamento
   era **código morto de verdade** (nunca referenciado em `src/main`, testes
   ou docs) — removido, mesmo precedente do `IBuscaDados` (retomada inicial).
   Pontos ainda fracos naquele baseline (ver `jacoco.csv` para a lista atual):
-  `Fontes`/`BackGroundColor` (~55-61%),
-  `ManipuladorPlanilhaHelper.CellData` (45%), `LogsDeModificadores` (7%, área
-  de log/auditoria, baixo risco). Candidatos para um próximo lote de
-  cobertura se o Codex quiser continuar essa frente.
+  `ManipuladorPlanilhaHelper.CellData` (45%) e `LogsDeModificadores` (7%, área
+  de log/auditoria, baixo risco). `Fontes` já teve código morto removido e
+  round-trip OOXML coberto em lote posterior. Candidatos para um próximo lote
+  de cobertura se o Codex quiser continuar essa frente.
 - [x] **"Colar como valores"**: `colarComoValores(intervalo)` +
   `colarComoValores()` (toda a área usada), via novo
   `utils/ColarComoValoresHelper`. **Bug real encontrado e corrigido pelos
@@ -394,7 +401,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **213 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **214 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.

@@ -379,6 +379,9 @@ Comparação por texto; números casam sem `.0` (ex.: `10` casa com `"10"`).
   intervalo ou planilha inteira). Cores em hexadecimal inválido devem lançar
   `IllegalArgumentException`, e `centralizarERedimensionarTudo` deve avaliar
   fórmulas antes de redimensionar colunas.
+- Atributos combinados de fonte (nome, tamanho, itálico, sublinhado, tachado e
+  cor RGB) devem sobreviver a salvar e reabrir o arquivo com um `XSSFWorkbook`
+  novo; a cobertura não deve depender apenas do estado em memória.
 
 ## Escape hatch
 

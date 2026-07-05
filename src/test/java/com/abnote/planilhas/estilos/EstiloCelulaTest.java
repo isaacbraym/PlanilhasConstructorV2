@@ -2,6 +2,10 @@ package com.abnote.planilhas.estilos;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.file.Path;
+
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
@@ -19,6 +23,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import com.abnote.planilhas.estilos.estilos.CorEnum;
 import com.abnote.planilhas.estilos.estilos.FonteEnum;
@@ -37,6 +42,9 @@ class EstiloCelulaTest {
 
 	private Workbook workbook;
 	private Sheet sheet;
+
+	@TempDir
+	Path pastaTemporaria;
 
 	@BeforeEach
 	void setUp() {
@@ -156,6 +164,32 @@ class EstiloCelulaTest {
 	void deveTrocarTamanhoDeFonte() {
 		new EstiloCelula(workbook, sheet, 0, 0).fonteTamanho(20);
 		assertEquals(20, fonteDe(celula(0, 0)).getFontHeightInPoints());
+	}
+
+	@Test
+	@DisplayName("atributos combinados de fonte devem sobreviver a round-trip OOXML")
+	void devePersistirAtributosCombinadosDeFonteAoSalvarEReabrir() throws Exception {
+		new EstiloCelula(workbook, sheet, 0, 0).fonte("Consolas").fonteTamanho(18).aplicarSublinhado()
+				.aplicarTachado().aplicarItalico().corFonte("#3366CC");
+
+		Path arquivo = pastaTemporaria.resolve("fontes.xlsx");
+		try (FileOutputStream saida = new FileOutputStream(arquivo.toFile())) {
+			workbook.write(saida);
+		}
+
+		try (XSSFWorkbook reaberto = new XSSFWorkbook(new FileInputStream(arquivo.toFile()))) {
+			XSSFFont fonte = ((XSSFCellStyle) reaberto.getSheet("T").getRow(0).getCell(0).getCellStyle()).getFont();
+			assertEquals("Consolas", fonte.getFontName());
+			assertEquals(18, fonte.getFontHeightInPoints());
+			assertTrue(fonte.getItalic());
+			assertNotEquals(org.apache.poi.ss.usermodel.Font.U_NONE, fonte.getUnderline());
+			assertTrue(fonte.getStrikeout());
+
+			byte[] rgb = fonte.getXSSFColor().getRGB();
+			assertEquals(51, rgb[0] & 0xFF);
+			assertEquals(102, rgb[1] & 0xFF);
+			assertEquals(204, rgb[2] & 0xFF);
+		}
 	}
 
 	@Test

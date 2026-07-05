@@ -426,15 +426,16 @@ e com `procurarValor`/`procurarValorNaAba`.
   mvn "-Dtest=EstiloCelulaTest" test
   ```
   Cobre fonte, cor, bordas, alinhamento, redimensionamento e aplicação em
-  célula, linha, intervalo e planilha inteira.
+  célula, linha, intervalo e planilha inteira; também salva/reabre fonte
+  combinada para garantir que nome, tamanho, cor e atributos sobrevivem no OOXML.
 - **CI:** todo push/PR na `main` roda a suíte em JDK 8 e 17
   ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)).
 - **Changelog:** veja [`CHANGELOG.md`](CHANGELOG.md) para o histórico de
   versões.
 - **Cobertura de testes:** `mvn clean test` já gera um relatório JaCoCo em
-  `target/site/jacoco/index.html`. Suíte atual: 213 testes. Pontos mais fracos:
-  `Fontes`, `ManipuladorPlanilhaHelper` — candidatos ao roadmap de cobertura
-  do `AGENTS.md`.
+  `target/site/jacoco/index.html`. Suíte atual: 214 testes. Pontos mais fracos:
+  `ManipuladorPlanilhaHelper` e `LogsDeModificadores` — candidatos ao roadmap
+  de cobertura do `AGENTS.md`.
 - **Skills para agentes de IA** (Claude Code e Codex): veja
   [`.claude/skills/`](.claude/skills/) e [`docs/skills-codex/`](docs/skills-codex/).
 

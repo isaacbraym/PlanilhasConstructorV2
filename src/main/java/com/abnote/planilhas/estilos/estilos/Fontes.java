@@ -100,56 +100,6 @@ public class Fontes {
 		});
 	}
 
-	private boolean fontMatchesAttributes(Font font, Font baseFont, FontAttributes attributes) {
-		if (attributes.getFontName() != null && !font.getFontName().equals(attributes.getFontName())) {
-			return false;
-		}
-		if (attributes.getFontSize() != null && font.getFontHeightInPoints() != attributes.getFontSize()) {
-			return false;
-		}
-		if (attributes.isBold() != null && font.getBold() != attributes.isBold()) {
-			return false;
-		}
-		if (attributes.isItalic() != null && font.getItalic() != attributes.isItalic()) {
-			return false;
-		}
-		if (attributes.getUnderline() != null && font.getUnderline() != attributes.getUnderline()) {
-			return false;
-		}
-		if (attributes.isStrikeout() != null && font.getStrikeout() != attributes.isStrikeout()) {
-			return false;
-		}
-		if (attributes.getColorRGB() != null && !fontsHaveSameRGBColor(font, attributes.getColorRGB())) {
-			return false;
-		}
-		return fontsHaveSameBaseAttributes(font, baseFont, attributes);
-	}
-
-	private boolean fontsHaveSameBaseAttributes(Font font1, Font font2, FontAttributes attributes) {
-		if (attributes.getFontName() == null && !font1.getFontName().equals(font2.getFontName())) {
-			return false;
-		}
-		if (attributes.getFontSize() == null && font1.getFontHeightInPoints() != font2.getFontHeightInPoints()) {
-			return false;
-		}
-		if (attributes.isBold() == null && font1.getBold() != font2.getBold()) {
-			return false;
-		}
-		if (attributes.isItalic() == null && font1.getItalic() != font2.getItalic()) {
-			return false;
-		}
-		if (attributes.getUnderline() == null && font1.getUnderline() != font2.getUnderline()) {
-			return false;
-		}
-		if (attributes.isStrikeout() == null && font1.getStrikeout() != font2.getStrikeout()) {
-			return false;
-		}
-		if (attributes.getColorRGB() == null && !fontsHaveSameColor(font1, font2)) {
-			return false;
-		}
-		return true;
-	}
-
 	private void copyFontAttributes(Font newFont, Font currentFont, FontAttributes attributes) {
 	    newFont.setFontName(attributes.getFontName() != null ? attributes.getFontName() : currentFont.getFontName());
 	    newFont.setFontHeightInPoints(
@@ -180,31 +130,6 @@ public class Fontes {
 	            ((XSSFFont) newFont).setColor(color);
 	        }
 	    }
-	}
-
-	private boolean fontsHaveSameColor(Font font1, Font font2) {
-		if (font1 instanceof XSSFFont && font2 instanceof XSSFFont) {
-			XSSFColor color1 = ((XSSFFont) font1).getXSSFColor();
-			XSSFColor color2 = ((XSSFFont) font2).getXSSFColor();
-			if (color1 == null && color2 == null) {
-				return true;
-			}
-			return color1 != null && color1.equals(color2);
-		} else {
-			return font1.getColor() == font2.getColor();
-		}
-	}
-
-	private boolean fontsHaveSameRGBColor(Font font, Color color) {
-		if (font instanceof XSSFFont) {
-			XSSFColor fontColor = ((XSSFFont) font).getXSSFColor();
-			if (fontColor != null) {
-				byte[] rgb = fontColor.getRGB();
-				return rgb[0] == (byte) color.getRed() && rgb[1] == (byte) color.getGreen()
-						&& rgb[2] == (byte) color.getBlue();
-			}
-		}
-		return false;
 	}
 
 	private short getNearestColorIndex(Color color) {

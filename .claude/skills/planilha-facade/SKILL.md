@@ -119,7 +119,9 @@ Detalhes/contrato: `docs/specs/facade-planilha.spec.md`.
    `mvn "-Dtest=CalculosTest" test` para proteger contra perda de células em
    linhas já existentes.
 9. Ao mexer em fonte, cores, bordas, alinhamento ou autoajuste, rode
-   `mvn "-Dtest=EstiloCelulaTest" test`.
+   `mvn "-Dtest=EstiloCelulaTest" test`; ele também salva/reabre fonte
+   combinada para proteger a serialização OOXML de nome, tamanho, cor e
+   atributos.
 
 ## Exemplos de referência (cookbook)
 
