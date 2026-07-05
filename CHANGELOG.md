@@ -3,6 +3,37 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.0.0/).
 Este projeto segue [versionamento semântico](https://semver.org/lang/pt-BR/).
 
+## [2.2.0] — 2026-07-04
+
+Reanálise crítica sob a lente "o usuário nunca deveria precisar tocar em
+Apache POI para criações avançadas". Fecha os 8 gaps de vazamento de POI
+identificados.
+
+### Adicionado
+- **Leitura** (o "inverso" de escrever, faltava por completo): `ler`/
+  `lerTexto`/`lerNumero`/`lerData`/`lerTabela`/`contarLinhasPreenchidas`, via
+  novos `utils/LeitorDeCelulas` e `utils/LeitorDeTabela`.
+- **Ocultar/exibir**: `ocultarLinha`/`exibirLinha`, `ocultarColuna`/
+  `exibirColuna`, `ocultarAba`/`exibirAba` (recusa ocultar a única aba
+  visível).
+- **Desmesclar células**: `desmesclar(intervalo)`.
+- **Cor da aba**: `corDaAba(CorEnum)`.
+- **Formato numérico personalizado** (escape hatch): `formatarComoPersonalizado(intervalo, formatoExcel)`.
+- **Cabeçalho/rodapé de impressão**: `cabecalhoDeImpressao`/`rodapeDeImpressao`,
+  com marcadores amigáveis (`{pagina}`, `{total}`, `{data}`, `{hora}`,
+  `{arquivo}`, `{aba}`) em vez da sintaxe nativa `&P`/`&N`/etc.
+- **Gráfico entre abas**: sobrecarga de 6 argumentos em `graficoDeBarras`/
+  `graficoDePizza`/`graficoDeLinha` para categorias e valores vindos de abas
+  diferentes (ex.: um "Dashboard" resumindo dados de outras abas).
+- Suíte de testes: 186 → 197, todos verdes.
+
+### Corrigido
+- `definirNome` vazava `IllegalArgumentException` crua do POI para nomes de
+  intervalo inválidos — agora vira `DadosInvalidosException` amigável.
+- Gráfico com categorias/valores logicamente de abas diferentes montava
+  silenciosamente com dado errado (sem erro nenhum), porque tudo resolvia
+  contra a aba atual — agora tem suporte real via a sobrecarga de 6 argumentos.
+
 ## [2.1.0] — 2026-07-04
 
 ### Adicionado
