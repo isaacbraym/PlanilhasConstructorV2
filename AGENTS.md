@@ -198,6 +198,14 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   `inserirFiltros()` antes de criar sheet com `IllegalStateException`, e
   `inserirFiltros()` em sheet vazia como no-op sem `<autoFilter>` no OOXML.
   Total: 227 testes verdes.
+- [x] **Bug de lista delimitada na API fluente corrigido**:
+  `InsersorDeDados.inserirDados(List<String>, delimitador)` ignorava o
+  delimitador e gravava linhas como textos únicos (`"A,B,"`) na mesma linha.
+  Debug empírico contra `target/classes` confirmou o estado real das células.
+  Agora cada item da lista é tratado como uma linha delimitada, preservando
+  campos vazios finais, e entradas `null` lançam `DadosInvalidosException`
+  amigável. `PlanilhaXlsxTest` cobre round-trip com `XSSFWorkbook` novo.
+  Total: 229 testes verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -426,7 +434,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **227 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **229 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -517,7 +525,9 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
 12. **`String.split(delimitador)` descarta campos vazios finais** — para
     importação/inserção delimitada, use o helper de `InsersorDeDados` que chama
     `split(..., -1)` quando o delimitador não é vazio. Sem isso, `"A,B,"`
-    perde a terceira célula e desloca a estrutura importada.
+    perde a terceira célula e desloca a estrutura importada. Para
+    `List<String>` com delimitador, cada item da lista deve ser uma linha
+    delimitada, não uma célula única.
 
 ## 5. Convenções de código (obrigatórias)
 

@@ -384,10 +384,13 @@ Comparação por texto; números casam sem `.0` (ex.: `10` casa com `"10"`).
   (deslocamento, remoção, inserção vazia e limpeza), incluir colunas
   deslocadas quando houver, ignorar tipos futuros desconhecidos e limpar a fila
   após `exibirLogs()`.
-- Inserção delimitada da API fluente (`inserirDados(texto, delimitador)` e
-  `inserirDadosArquivo`) deve preservar campos vazios finais; `"A,B,"` precisa
-  criar a terceira célula vazia em vez de descartá-la pelo comportamento padrão
-  de `String.split(...)`.
+- Inserção delimitada da API fluente (`inserirDados(texto, delimitador)`,
+  `inserirDados(lista, delimitador)` e `inserirDadosArquivo`) deve preservar
+  campos vazios finais; `"A,B,"` precisa criar a terceira célula vazia em vez
+  de descartá-la pelo comportamento padrão de `String.split(...)`. Quando a
+  entrada for `List<String>` com delimitador não vazio, cada item da lista é uma
+  linha delimitada. Dados nulos lançam `DadosInvalidosException`, não
+  `NullPointerException`.
 - Caminhos básicos de erro da API fluente devem permanecer amigáveis:
   `salvar(" ")` e `abrirPlanilha(" ")` lançam `ArquivoException`, criar aba
   duplicada lança `IllegalArgumentException`, `inserirFiltros()` antes de criar

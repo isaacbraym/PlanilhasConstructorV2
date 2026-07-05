@@ -7,6 +7,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.io.TempDir;
 
 import com.abnote.planilhas.exceptions.ArquivoException;
+import com.abnote.planilhas.exceptions.DadosInvalidosException;
 import com.abnote.planilhas.interfaces.IPlanilha;
 
 /**
@@ -194,6 +196,42 @@ class PlanilhaXlsxTest {
 			Sheet sheet = planilha.obterWorkbook().getSheetAt(0);
 			assertEquals("", sheet.getRow(0).getCell(2).getStringCellValue());
 			assertEquals("", sheet.getRow(1).getCell(2).getStringCellValue());
+		}
+	}
+
+	@Test
+	@DisplayName("Deve inserir lista de linhas delimitadas preservando campos vazios finais")
+	void deveInserirListaDeLinhasDelimitadas() throws Exception {
+		Path arquivo = pastaTemporaria.resolve("lista_delimitada.xlsx");
+		List<String> linhas = Arrays.asList("Nome,Idade,", "Ana,30,");
+
+		try (IPlanilha planilha = new PlanilhaXlsx()) {
+			planilha.criarPlanilha("Dados");
+
+			planilha.selecionar().celula("A1").inserirDados(linhas, ",");
+			planilha.salvar(arquivo.toString());
+		}
+
+		try (Workbook workbook = new XSSFWorkbook(arquivo.toFile())) {
+			Sheet sheet = workbook.getSheetAt(0);
+			assertEquals("Nome", sheet.getRow(0).getCell(0).getStringCellValue());
+			assertEquals("Idade", sheet.getRow(0).getCell(1).getStringCellValue());
+			assertEquals("", sheet.getRow(0).getCell(2).getStringCellValue());
+			assertEquals("Ana", sheet.getRow(1).getCell(0).getStringCellValue());
+			assertEquals(30D, sheet.getRow(1).getCell(1).getNumericCellValue());
+			assertEquals("", sheet.getRow(1).getCell(2).getStringCellValue());
+		}
+	}
+
+	@Test
+	@DisplayName("Deve lançar DadosInvalidosException ao inserir dados nulos")
+	void deveLancarAoInserirDadosNulos() throws Exception {
+		try (IPlanilha planilha = new PlanilhaXlsx()) {
+			planilha.criarPlanilha("Dados");
+
+			assertThrows(DadosInvalidosException.class, () -> planilha.inserirDados((Object) null, ","));
+			assertThrows(DadosInvalidosException.class,
+					() -> planilha.selecionar().celula("A1").inserirDados((List<String>) null, ","));
 		}
 	}
 

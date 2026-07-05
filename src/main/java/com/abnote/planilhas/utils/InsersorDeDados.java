@@ -49,10 +49,13 @@ public class InsersorDeDados {
 	}
 
 	public void inserirDados(Object dados, String delimitador) {
+		if (dados == null) {
+			throw new DadosInvalidosException("Dados não podem ser nulos");
+		}
 		if (dados instanceof List) {
 			@SuppressWarnings("unchecked")
 			List<String> lista = (List<String>) dados;
-			inserirDados(lista);
+			inserirDados(lista, delimitador);
 		} else if (dados instanceof String) {
 			String str = (String) dados;
 			if (Files.exists(Paths.get(str))) {
@@ -69,6 +72,7 @@ public class InsersorDeDados {
 	}
 
 	public void inserirDados(List<String> dados) {
+		validarDadosNaoNulos(dados);
 		definirPosicaoPadraoSeNecessario();
 
 		if (positionManager.isIntervaloDefinida()) {
@@ -81,7 +85,31 @@ public class InsersorDeDados {
 	}
 
 	public void inserirDados(List<String> dados, String delimitador) {
-		inserirDados(dados);
+		validarDadosNaoNulos(dados);
+		if (delimitador == null) {
+			throw new DadosInvalidosException("Delimitador não pode ser nulo");
+		}
+		if (delimitador.isEmpty()) {
+			inserirDados(dados);
+			return;
+		}
+
+		definirPosicaoPadraoSeNecessario();
+
+		int linhaAtual = positionManager.getPosicaoInicialLinha();
+		for (String linhaTexto : dados) {
+			if (positionManager.isIntervaloDefinida() && linhaAtual > positionManager.getPosicaoFinalLinha()) {
+				break;
+			}
+			String textoSeguro = linhaTexto == null ? "" : linhaTexto;
+			String[] valores = dividirPreservandoVaziosFinais(textoSeguro, delimitador);
+			inserirValoresEmLinha(linhaAtual, valores);
+			linhaAtual++;
+		}
+
+		atualizarIndicesInseridos(linhaAtual - 1, ultimoIndiceDeColunaInserido);
+		positionManager.setPosicaoInicialLinha(linhaAtual);
+		positionManager.resetarPosicao();
 	}
 
 	public void inserirDadosArquivo(String caminhoArquivo, String delimitador) {
@@ -200,6 +228,12 @@ public class InsersorDeDados {
 		if (!positionManager.isPosicaoDefinida() && !positionManager.isIntervaloDefinida()) {
 			positionManager.setPosicaoInicialColuna(0);
 			positionManager.setPosicaoInicialLinha(0);
+		}
+	}
+
+	private void validarDadosNaoNulos(List<String> dados) {
+		if (dados == null) {
+			throw new DadosInvalidosException("Dados não podem ser nulos");
 		}
 	}
 
