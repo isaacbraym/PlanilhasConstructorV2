@@ -234,6 +234,8 @@ célula se ela não existir) — se a célula não existir, o retorno é `null`
 | `realcarSeEntre("B2:B20", 10, 20, CorEnum.AMARELO)` | pinta se estiver no intervalo |
 | `realcarSeIgual("B2:B20", "Atrasado", CorEnum.VERMELHO_ESCURO)` | pinta se for igual (texto ou número) |
 | `escalaDeCores("B2:B20")` | escala vermelho→amarelo→verde (semáforo) |
+| `barrasDeDados("B2:B20", CorEnum.AZUL)` | barras proporcionais dentro das células |
+| `iconesSemaforo("B2:B20")` | ícones verde/amarelo/vermelho conforme o valor |
 
 ### Lista suspensa (dropdown)
 | Comando | O que faz |

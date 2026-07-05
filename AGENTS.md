@@ -128,6 +128,13 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   Teste dedicado salva/reabre com `XSSFWorkbook` fresco e valida as quatro
   margens reais, além de recusar margem negativa com `DadosInvalidosException`.
   Total: 200 testes verdes.
+- [x] **Formatação condicional avançada**: `barrasDeDados(intervalo, cor)` e
+  `iconesSemaforo(intervalo)` fecham o roadmap de data bars/ícones sem expor
+  `DataBarFormatting`/`IconSet` ao usuário. Debug empírico confirmou que o POI
+  cria barras com limiares MIN/MAX e ícones semáforo com percentuais 0/33/66,
+  ambos sobrevivendo a round-trip OOXML. Testes dedicados salvam/reabrem com
+  `XSSFWorkbook` fresco e validam a estrutura real (`DataBarFormatting`,
+  `IconMultiStateFormatting`, cor e thresholds). Total: 202 testes verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -508,10 +515,9 @@ células sem borda prévia). Ver seção 4 para os detalhes que não podem regre
    `procurarValor`/`procurarValorNaAba` (validado com avaliação real da
    fórmula), e também com `somar`/`media`/`contar`/`minimo`/`maximo` quando o
    nome já existe no `Workbook`.
-5. **Mais tipos de formatação condicional** — barras de dados (`DataBarFormatting`)
-   e conjuntos de ícones (`IconMultiStateFormatting`), complementando
-   `escalaDeCores`. `FormatacaoCondicionalHelper` já tem a estrutura pronta
-   para crescer nessa direção.
+5. ~~**Mais tipos de formatação condicional**~~ — **ENTREGUE**: barras de dados
+   (`barrasDeDados`) e ícones de semáforo (`iconesSemaforo`), via
+   `FormatacaoCondicionalHelper`, com round-trip OOXML.
 6. ~~**Comentários em células**~~ — **ENTREGUE** nesta sessão:
    `comentario(celula, texto)` via novo `utils/ComentarioHelper`.
 7. ~~**`adicionarTotais()` de alto nível**~~ — **ENTREGUE** nesta sessão: soma

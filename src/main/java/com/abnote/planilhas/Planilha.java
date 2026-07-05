@@ -841,6 +841,32 @@ public final class Planilha implements AutoCloseable {
 		return this;
 	}
 
+	/**
+	 * Aplica barras de dados no intervalo: quanto maior o valor, maior a barra
+	 * colorida dentro da célula.
+	 *
+	 * @param intervalo Intervalo a visualizar (ex.: "B2:B20").
+	 * @param cor       Cor das barras.
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha barrasDeDados(final String intervalo, final CorEnum cor) {
+		FormatacaoCondicionalHelper.aplicarBarrasDeDados(xssf(), regioesDe(intervalo), cor.getRed(), cor.getGreen(),
+				cor.getBlue());
+		return this;
+	}
+
+	/**
+	 * Aplica ícones de semáforo (verde/amarelo/vermelho) para sinalizar valores
+	 * altos, médios e baixos no intervalo.
+	 *
+	 * @param intervalo Intervalo a visualizar (ex.: "B2:B20").
+	 * @return Esta planilha, para encadear comandos.
+	 */
+	public Planilha iconesSemaforo(final String intervalo) {
+		FormatacaoCondicionalHelper.aplicarIconesSemaforo(xssf(), regioesDe(intervalo));
+		return this;
+	}
+
 	// ==================== VALIDAÇÃO DE DADOS (LISTA SUSPENSA / LIMITES) ====================
 
 	/**

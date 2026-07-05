@@ -45,7 +45,8 @@ public class Gerar {
 - Busca/filtro: `buscarLinhas`, `contarLinhasOnde`, `copiarLinhasParaAba`,
   `moverLinhasParaAba`, `removerLinhasOnde`.
 - Formatação condicional: `realcarSeMaiorQue`, `realcarSeMenorQue`,
-  `realcarSeEntre`, `realcarSeIgual`, `escalaDeCores`.
+  `realcarSeEntre`, `realcarSeIgual`, `escalaDeCores`,
+  `barrasDeDados(intervalo, cor)`, `iconesSemaforo(intervalo)`.
 - Lista suspensa: `listaSuspensa(intervalo, opcoes...)`,
   `listaSuspensaDoIntervalo(intervaloDestino, intervaloOpcoes)`.
 - Validação de limites (sem menu): `validarNumeroEntre`/`validarInteiroEntre(

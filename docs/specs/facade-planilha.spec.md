@@ -155,6 +155,11 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
   do Excel).
 - **Quando** `escalaDeCores(intervalo)`, **Então** é criada uma regra de escala
   de 3 cores (vermelho/amarelo/verde) com limiares MIN / PERCENTIL 50 / MAX.
+- **Quando** `barrasDeDados(intervalo, cor)`, **Então** é criada uma regra
+  `DataBarFormatting` com limiares MIN/MAX e cor igual à informada.
+- **Quando** `iconesSemaforo(intervalo)`, **Então** é criada uma regra
+  `IconMultiStateFormatting` com `IconSet.GYR_3_TRAFFIC_LIGHTS` e limiares
+  percentuais padrão `0`/`33`/`66`.
 - Todas essas regras assumem planilha `.xlsx` (XSSF) — coerente com o resto da
   biblioteca, que só cria/edita workbooks XSSF.
 

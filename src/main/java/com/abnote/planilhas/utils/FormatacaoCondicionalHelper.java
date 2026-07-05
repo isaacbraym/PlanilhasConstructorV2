@@ -6,6 +6,7 @@ import org.apache.poi.ss.usermodel.ConditionalFormattingThreshold.RangeType;
 import org.apache.poi.ss.usermodel.Color;
 import org.apache.poi.ss.usermodel.ColorScaleFormatting;
 import org.apache.poi.ss.usermodel.PatternFormatting;
+import org.apache.poi.ss.usermodel.IconMultiStateFormatting.IconSet;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 import org.apache.poi.xssf.usermodel.XSSFConditionalFormattingRule;
@@ -88,6 +89,27 @@ public final class FormatacaoCondicionalHelper {
 		limiares[2].setRangeType(RangeType.MAX);
 		escala.setThresholds(limiares);
 
+		scf.addConditionalFormatting(regioes, regra);
+	}
+
+	/**
+	 * Aplica barras de dados no intervalo, usando a cor informada para representar
+	 * visualmente a proporção entre o menor e o maior valor.
+	 */
+	public static void aplicarBarrasDeDados(final XSSFSheet sheet, final CellRangeAddress[] regioes, final int red,
+			final int green, final int blue) {
+		final XSSFSheetConditionalFormatting scf = sheet.getSheetConditionalFormatting();
+		final XSSFConditionalFormattingRule regra = scf.createConditionalFormattingRule(corRgb(red, green, blue));
+		scf.addConditionalFormatting(regioes, regra);
+	}
+
+	/**
+	 * Aplica o conjunto de ícones de semáforo (verde/amarelo/vermelho) com os
+	 * limiares percentuais padrão do Excel.
+	 */
+	public static void aplicarIconesSemaforo(final XSSFSheet sheet, final CellRangeAddress[] regioes) {
+		final XSSFSheetConditionalFormatting scf = sheet.getSheetConditionalFormatting();
+		final XSSFConditionalFormattingRule regra = scf.createConditionalFormattingRule(IconSet.GYR_3_TRAFFIC_LIGHTS);
 		scf.addConditionalFormatting(regioes, regra);
 	}
 

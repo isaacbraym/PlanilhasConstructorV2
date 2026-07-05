@@ -2,16 +2,23 @@ package com.abnote.planilhas;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.File;
+
 import org.apache.poi.ss.usermodel.Color;
 import org.apache.poi.ss.usermodel.ColorScaleFormatting;
 import org.apache.poi.ss.usermodel.ComparisonOperator;
 import org.apache.poi.ss.usermodel.ConditionalFormatting;
 import org.apache.poi.ss.usermodel.ConditionalFormattingRule;
 import org.apache.poi.ss.usermodel.ConditionalFormattingThreshold.RangeType;
+import org.apache.poi.ss.usermodel.DataBarFormatting;
+import org.apache.poi.ss.usermodel.IconMultiStateFormatting;
+import org.apache.poi.ss.usermodel.IconMultiStateFormatting.IconSet;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
 import com.abnote.planilhas.estilos.estilos.CorEnum;
 
@@ -20,6 +27,9 @@ import com.abnote.planilhas.estilos.estilos.CorEnum;
  */
 @DisplayName("Planilha — formatação condicional")
 class FormatacaoCondicionalFacadeTest {
+
+	@TempDir
+	File tempDir;
 
 	private ConditionalFormatting regraUnica(Planilha planilha) {
 		Sheet sheet = planilha.workbook().getSheetAt(0);
@@ -97,6 +107,46 @@ class FormatacaoCondicionalFacadeTest {
 			assertEquals(RangeType.PERCENTILE, escala.getThresholds()[1].getRangeType());
 			assertEquals(50.0, escala.getThresholds()[1].getValue(), 0.001);
 			assertEquals(RangeType.MAX, escala.getThresholds()[2].getRangeType());
+		}
+	}
+
+	@Test
+	@DisplayName("barrasDeDados deve criar data bar colorida e persistir em OOXML")
+	void deveAplicarBarrasDeDados() throws Exception {
+		final File arquivo = new File(tempDir, "barras.xlsx");
+		try (Planilha planilha = Planilha.nova("T")) {
+			planilha.escreverColuna("A1", 10, 20, 30)
+					.barrasDeDados("A1:A3", CorEnum.AZUL)
+					.salvar(arquivo.getAbsolutePath());
+		}
+
+		try (XSSFWorkbook workbook = new XSSFWorkbook(arquivo)) {
+			final ConditionalFormattingRule regra = workbook.getSheetAt(0).getSheetConditionalFormatting()
+					.getConditionalFormattingAt(0).getRule(0);
+			final DataBarFormatting barras = regra.getDataBarFormatting();
+			final byte[] rgb = ((XSSFColor) barras.getColor()).getRGB();
+			assertEquals(RangeType.MIN, barras.getMinThreshold().getRangeType());
+			assertEquals(RangeType.MAX, barras.getMaxThreshold().getRangeType());
+			assertArrayEquals(new byte[] { 0, 0, (byte) 255 }, rgb);
+		}
+	}
+
+	@Test
+	@DisplayName("iconesSemaforo deve criar conjunto de ícones de semáforo e persistir em OOXML")
+	void deveAplicarIconesSemaforo() throws Exception {
+		final File arquivo = new File(tempDir, "icones.xlsx");
+		try (Planilha planilha = Planilha.nova("T")) {
+			planilha.escreverColuna("A1", 10, 20, 30).iconesSemaforo("A1:A3").salvar(arquivo.getAbsolutePath());
+		}
+
+		try (XSSFWorkbook workbook = new XSSFWorkbook(arquivo)) {
+			final ConditionalFormattingRule regra = workbook.getSheetAt(0).getSheetConditionalFormatting()
+					.getConditionalFormattingAt(0).getRule(0);
+			final IconMultiStateFormatting icones = regra.getMultiStateFormatting();
+			assertEquals(IconSet.GYR_3_TRAFFIC_LIGHTS, icones.getIconSet());
+			assertEquals(RangeType.PERCENT, icones.getThresholds()[1].getRangeType());
+			assertEquals(33.0, icones.getThresholds()[1].getValue(), 0.001);
+			assertEquals(66.0, icones.getThresholds()[2].getValue(), 0.001);
 		}
 	}
 }
