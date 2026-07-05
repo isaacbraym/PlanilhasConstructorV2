@@ -43,7 +43,7 @@ public class Gerar {
   `procurarValorNaAba` (PROCV/VLOOKUP).
 - Ordenar: `ordenarPorCrescente`, `ordenarPorDecrescente`, `ordenarPor`
   (fórmulas ordenam pelo resultado calculado e referências relativas acompanham
-  a nova linha).
+  a nova linha; altura/ocultação/estilo de linha também viajam com os dados).
 - Busca/filtro: `buscarLinhas`, `contarLinhasOnde`, `copiarLinhasParaAba`,
   `moverLinhasParaAba`, `removerLinhasOnde`.
 - Formatação condicional: `realcarSeMaiorQue`, `realcarSeMenorQue`,
@@ -128,7 +128,8 @@ Detalhes/contrato: `docs/specs/facade-planilha.spec.md`.
 10. Ao mexer em ordenação (`ordenarPorCrescente`, `ordenarPorDecrescente`,
    `ordenarPor`) ou `OrdenadorDeLinhas`, rode
    `mvn "-Dtest=OrdenarFacadeTest" test`; ele protege ordenação por texto,
-   números e resultado de fórmulas, incluindo ajuste de referências relativas.
+   números e resultado de fórmulas, incluindo ajuste de referências relativas
+   e preservação de atributos da linha.
 11. Ao mexer em escrita massiva, ordenação, filtros ou cópia de linhas, rode
    `mvn "-Dtest=CargaFacadeTest" test` além do teste focal da feature.
 12. Ao mexer em linhas de total/resumo da API fluente legada, rode

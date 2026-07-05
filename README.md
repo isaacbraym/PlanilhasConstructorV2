@@ -213,7 +213,7 @@ célula se ela não existir) — se a célula não existir, o retorno é `null`
 ### Ordenar
 | Comando | O que faz |
 |---|---|
-| `ordenarPorCrescente("B")` | ordena por uma coluna (A→Z, menor→maior), mantendo o cabeçalho; fórmulas usam o resultado calculado |
+| `ordenarPorCrescente("B")` | ordena por uma coluna (A→Z, menor→maior), mantendo cabeçalho; fórmulas usam o resultado calculado |
 | `ordenarPorDecrescente("B")` | ordena ao contrário |
 | `ordenarPor("B", true, 1)` | ordena sem cabeçalho (a partir da linha 1) |
 
@@ -402,6 +402,10 @@ e com `procurarValor`/`procurarValorNaAba`.
 Sim. A ordenação usa o resultado calculado da fórmula e, quando a linha muda de
 posição, ajusta referências relativas como `B3*2` para a nova linha.
 
+**Se eu ordenar, altura ou linha oculta acompanham os dados?**
+Sim. A ordenação move junto altura personalizada, linha oculta e estilo de
+linha, para a aparência não ficar presa na posição antiga.
+
 ---
 
 ## Para desenvolvedores
@@ -424,7 +428,7 @@ posição, ajusta referências relativas como `B3*2` para a nova linha.
   mvn "-Dtest=OrdenarFacadeTest" test
   ```
   Cobre ordenação por texto, número e fórmula, incluindo ajuste de referências
-  relativas e round-trip com `XSSFWorkbook` fresco.
+  relativas, atributos de linha e round-trip com `XSSFWorkbook` fresco.
 - **Rodar só os testes dos cálculos legados:**
   ```bash
   mvn "-Dtest=CalculosTest" test
@@ -462,7 +466,7 @@ posição, ajusta referências relativas como `B3*2` para a nova linha.
 - **Changelog:** veja [`CHANGELOG.md`](CHANGELOG.md) para o histórico de
   versões.
 - **Cobertura de testes:** `mvn clean test` já gera um relatório JaCoCo em
-  `target/site/jacoco/index.html`. Suíte atual: 235 testes. Os pontos fracos
+  `target/site/jacoco/index.html`. Suíte atual: 236 testes. Os pontos fracos
   históricos (`Fontes`, `ManipuladorPlanilhaHelper`, `LogsDeModificadores`)
   já receberam cobertura estrutural; consulte o relatório para escolher novos
   alvos.

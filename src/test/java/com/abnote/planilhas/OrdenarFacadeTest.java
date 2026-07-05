@@ -112,6 +112,29 @@ class OrdenarFacadeTest {
 		}
 	}
 
+	@Test
+	@DisplayName("ordenar deve mover altura e ocultacao junto com a linha")
+	void deveMoverAtributosDaLinhaAoOrdenar(@TempDir Path tempDir) throws Exception {
+		Path arquivo = tempDir.resolve("ordenado-atributos-linha.xlsx");
+
+		try (Planilha planilha = Planilha.nova("Dados")) {
+			planilha.escreverLinha("A1", "Nome", "Valor")
+					.escreverLinha("A2", "Baixo", 1)
+					.escreverLinha("A3", "Alto", 9)
+					.alturaLinha(3, 42)
+					.ocultarLinha(3)
+					.ordenarPorDecrescente("B");
+
+			assertAtributosDeLinhaOrdenada(planilha.workbook().getSheetAt(0));
+			planilha.salvar(arquivo.toString());
+		}
+
+		try (InputStream entrada = Files.newInputStream(arquivo);
+				XSSFWorkbook workbook = new XSSFWorkbook(entrada)) {
+			assertAtributosDeLinhaOrdenada(workbook.getSheetAt(0));
+		}
+	}
+
 	private void assertLinhasOrdenadasPorFormula(Sheet sheet) {
 		FormulaEvaluator avaliador = sheet.getWorkbook().getCreationHelper().createFormulaEvaluator();
 		assertLinhaFormula(sheet, avaliador, 1, "Pequeno", 2.0, "B2*2", 4.0);
@@ -126,5 +149,15 @@ class OrdenarFacadeTest {
 		assertEquals(base, sheet.getRow(indiceLinha).getCell(1).getNumericCellValue(), 0.001);
 		assertEquals(formula, celulaFormula.getCellFormula());
 		assertEquals(resultado, avaliador.evaluate(celulaFormula).getNumberValue(), 0.001);
+	}
+
+	private void assertAtributosDeLinhaOrdenada(Sheet sheet) {
+		assertEquals("Alto", sheet.getRow(1).getCell(0).getStringCellValue());
+		assertEquals(42.0f, sheet.getRow(1).getHeightInPoints(), 0.1f);
+		assertTrue(sheet.getRow(1).getZeroHeight());
+
+		assertEquals("Baixo", sheet.getRow(2).getCell(0).getStringCellValue());
+		assertEquals(sheet.getDefaultRowHeightInPoints(), sheet.getRow(2).getHeightInPoints(), 0.1f);
+		assertFalse(sheet.getRow(2).getZeroHeight());
 	}
 }

@@ -88,7 +88,9 @@ public final class OrdenadorDeLinhas {
 			} else {
 				limparLinha(linha);
 			}
-			for (final CelulaCapturada celula : capturadas.get(posicao).celulas) {
+			final LinhaCapturada capturada = capturadas.get(posicao);
+			capturada.aplicarAtributos(linha);
+			for (final CelulaCapturada celula : capturada.celulas) {
 				celula.aplicar(linha);
 			}
 		}
@@ -105,6 +107,10 @@ public final class OrdenadorDeLinhas {
 
 	/** Foto de uma linha: suas células e a chave de ordenação. */
 	private static final class LinhaCapturada {
+		private boolean linhaExistente;
+		private short altura;
+		private boolean oculta;
+		private CellStyle estilo;
 		private Double chaveNumerica;
 		private String chaveTexto;
 		private final List<CelulaCapturada> celulas = new ArrayList<>();
@@ -114,6 +120,10 @@ public final class OrdenadorDeLinhas {
 			if (linha == null) {
 				return capturada;
 			}
+			capturada.linhaExistente = true;
+			capturada.altura = linha.getHeight();
+			capturada.oculta = linha.getZeroHeight();
+			capturada.estilo = linha.getRowStyle();
 			for (final Cell celula : linha) {
 				capturada.celulas.add(CelulaCapturada.de(celula));
 			}
@@ -165,6 +175,18 @@ public final class OrdenadorDeLinhas {
 				}
 			} catch (RuntimeException e) {
 				chaveTexto = chave.getCellFormula();
+			}
+		}
+
+		private void aplicarAtributos(final Row linha) {
+			if (linhaExistente) {
+				linha.setHeight(altura);
+				linha.setZeroHeight(oculta);
+				linha.setRowStyle(estilo);
+			} else {
+				linha.setHeight(linha.getSheet().getDefaultRowHeight());
+				linha.setZeroHeight(false);
+				linha.setRowStyle(null);
 			}
 		}
 	}

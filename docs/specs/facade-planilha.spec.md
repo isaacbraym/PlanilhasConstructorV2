@@ -272,6 +272,11 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
   das fórmulas acompanham a nova posição da linha (`B3*2` vira `B2*2` se a
   linha for para a linha 2); o contrato deve sobreviver a salvar e reabrir o
   `.xlsx`.
+- Atributos da linha acompanham os dados ordenados: altura personalizada,
+  `Row.getZeroHeight()` (linha oculta) e `RowStyle` viajam junto com a linha.
+  Uma posição que recebe uma linha sem atributos personalizados volta ao padrão
+  da planilha, sem herdar altura/ocultação da linha que ocupava aquela posição
+  antes da ordenação.
 
 ## Buscar e filtrar linhas
 

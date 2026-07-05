@@ -239,6 +239,14 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   ajusta referências relativas com `FormulaShifter.createForRowCopy`.
   `OrdenarFacadeTest` cobre a estrutura real do POI e round-trip com
   `XSSFWorkbook` fresco. Total: 235 testes verdes.
+- [x] **Ordenação preserva atributos da linha**:
+  Debug empírico mostrou que `OrdenadorDeLinhas` movia as células, mas deixava
+  atributos da linha física (altura personalizada e `zeroHeight` de linha
+  oculta) presos no índice antigo. Assim, ordenar podia fazer o conteúdo subir
+  enquanto a altura/ocultação ficava em outra linha. Agora a captura da linha
+  inclui altura, ocultação e estilo de linha (`RowStyle`), e a reescrita limpa
+  atributos residuais quando a linha capturada era vazia. `OrdenarFacadeTest`
+  cobre o caso com round-trip OOXML. Total: 236 testes verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -467,7 +475,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **235 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **236 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -580,6 +588,11 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
     mover a linha, fórmulas relativas como `B3*2` precisam virar `B2*2` se a
     linha for reescrita na linha 2; use `FormulaShifter.createForRowCopy` e
     valide com round-trip OOXML.
+17. **Ordenação deve mover atributos da linha junto com as células** — altura
+    personalizada, linha oculta (`Row.getZeroHeight()`) e `RowStyle` fazem parte
+    da linha que está sendo ordenada. Ao reescrever em outra posição, limpe
+    atributos residuais quando a linha capturada era vazia para evitar que a
+    posição antiga "empreste" altura/ocultação à linha errada.
 
 ## 5. Convenções de código (obrigatórias)
 
