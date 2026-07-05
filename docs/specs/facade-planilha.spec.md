@@ -375,6 +375,11 @@ Comparação por texto; números casam sem `.0` (ex.: `10` casa com `"10"`).
 - Linhas de total/resumo em cálculos legados devem preservar células já
   existentes fora da área calculada. Helpers internos devem reutilizar a linha
   quando ela já existe, em vez de chamar `Sheet.createRow(indice)` às cegas.
+- Manipulação de colunas deve copiar/colar tipos reais do POI sem chamar
+  `Cell.setCellType(CellType.FORMULA)`; fórmulas devem ser recriadas com
+  `setCellFormula(...)`, erros com `setCellErrorValue(...)`, e células em
+  branco com `setBlank()`. O recorte temporário deve preservar valor e estilo
+  para texto, número, booleano, fórmula, erro e branco.
 - Estilos internos devem respeitar o alvo selecionado (célula, linha inteira,
   intervalo ou planilha inteira). Cores em hexadecimal inválido devem lançar
   `IllegalArgumentException`, e `centralizarERedimensionarTudo` deve avaliar

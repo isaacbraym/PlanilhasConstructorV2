@@ -421,6 +421,12 @@ e com `procurarValor`/`procurarValorNaAba`.
   ```
   Útil ao mexer em linhas de total/resumo, porque protege contra perda de
   células já existentes na linha onde o total é criado.
+- **Rodar só os testes de manipulação de colunas:**
+  ```bash
+  mvn "-Dtest=ManipuladorPlanilhaTest" test
+  ```
+  Cobre mover/remover/limpar/inserir coluna e preservação de tipo, fórmula,
+  erro e estilo durante recortes internos de coluna.
 - **Rodar só os testes de estilos:**
   ```bash
   mvn "-Dtest=EstiloCelulaTest" test
@@ -433,9 +439,9 @@ e com `procurarValor`/`procurarValorNaAba`.
 - **Changelog:** veja [`CHANGELOG.md`](CHANGELOG.md) para o histórico de
   versões.
 - **Cobertura de testes:** `mvn clean test` já gera um relatório JaCoCo em
-  `target/site/jacoco/index.html`. Suíte atual: 214 testes. Pontos mais fracos:
-  `ManipuladorPlanilhaHelper` e `LogsDeModificadores` — candidatos ao roadmap
-  de cobertura do `AGENTS.md`.
+  `target/site/jacoco/index.html`. Suíte atual: 217 testes. Ponto mais fraco:
+  `LogsDeModificadores` (log/auditoria) — candidato ao roadmap de cobertura do
+  `AGENTS.md`.
 - **Skills para agentes de IA** (Claude Code e Codex): veja
   [`.claude/skills/`](.claude/skills/) e [`docs/skills-codex/`](docs/skills-codex/).
 

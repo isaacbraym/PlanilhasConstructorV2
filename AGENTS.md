@@ -172,6 +172,15 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   Também foi removido código morto em `Fontes` (`fontMatchesAttributes` e
   comparadores privados não chamados), reduzindo área enganosa de cobertura.
   Total: 214 testes verdes.
+- [x] **Bug em mover/colar coluna com fórmula corrigido**:
+  `ManipuladorPlanilhaHelper` chamava `Cell.setCellType(CellType.FORMULA)`
+  antes de `setCellFormula(...)`, operação ilegal no POI 5.2.5. Uma coluna com
+  fórmula deslocada por `moverColuna` podia quebrar com
+  `IllegalArgumentException`. Corrigido para usar o setter correto de cada
+  tipo (fórmula, erro, branco etc.) sem forçar `setCellType`, e coberto em
+  `ManipuladorPlanilhaTest` com fluxo público e recorte temporário preservando
+  texto, número, booleano, fórmula, erro, branco e estilo. Total: 217 testes
+  verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -279,10 +288,11 @@ sugestões e mandar "pode ir pra cima") — em andamento
   era **código morto de verdade** (nunca referenciado em `src/main`, testes
   ou docs) — removido, mesmo precedente do `IBuscaDados` (retomada inicial).
   Pontos ainda fracos naquele baseline (ver `jacoco.csv` para a lista atual):
-  `ManipuladorPlanilhaHelper.CellData` (45%) e `LogsDeModificadores` (7%, área
-  de log/auditoria, baixo risco). `Fontes` já teve código morto removido e
-  round-trip OOXML coberto em lote posterior. Candidatos para um próximo lote
-  de cobertura se o Codex quiser continuar essa frente.
+  `LogsDeModificadores` (7%, área de log/auditoria, baixo risco). `Fontes` já
+  teve código morto removido/round-trip OOXML coberto, e
+  `ManipuladorPlanilhaHelper` recebeu cobertura estrutural e bugfix de fórmula
+  em lotes posteriores. Candidato para um próximo lote de cobertura se o Codex
+  quiser continuar essa frente.
 - [x] **"Colar como valores"**: `colarComoValores(intervalo)` +
   `colarComoValores()` (toda a área usada), via novo
   `utils/ColarComoValoresHelper`. **Bug real encontrado e corrigido pelos
@@ -401,7 +411,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **214 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **217 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -483,6 +493,12 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
     Bug real corrigido em `Calculos.multiplicarColunasComTexto`: uma linha de
     total que já tivesse células em outras colunas podia ser substituída,
     apagando esses dados.
+11. **Nunca chame `Cell.setCellType(CellType.FORMULA)` ao copiar fórmulas** —
+    no POI 5.2.5 isso lança `IllegalArgumentException`; use
+    `setCellFormula(...)` diretamente. O mesmo padrão vale para tipos especiais
+    em cópias manuais: erro com `setCellErrorValue(...)`, branco com
+    `setBlank()`. Bug real corrigido em `ManipuladorPlanilhaHelper` ao mover
+    colunas com fórmula.
 
 ## 5. Convenções de código (obrigatórias)
 

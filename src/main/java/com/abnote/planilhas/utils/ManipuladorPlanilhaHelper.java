@@ -341,7 +341,6 @@ public class ManipuladorPlanilhaHelper {
 	 * @param dadosCelula   Objeto com os dados.
 	 */
 	private void colarDadosCelula(Cell celulaDestino, CellData dadosCelula) {
-		celulaDestino.setCellType(dadosCelula.getCellType());
 		celulaDestino.setCellStyle(dadosCelula.getCellStyle());
 		switch (dadosCelula.getCellType()) {
 		case STRING:
@@ -360,6 +359,7 @@ public class ManipuladorPlanilhaHelper {
 			celulaDestino.setCellErrorValue(dadosCelula.getErrorValue());
 			break;
 		case BLANK:
+			celulaDestino.setBlank();
 			break;
 		default:
 			break;
@@ -438,7 +438,6 @@ public class ManipuladorPlanilhaHelper {
 	 * @param destino A célula de destino.
 	 */
 	private void copiarValorEntreCelulas(Cell origem, Cell destino) {
-		destino.setCellType(origem.getCellType());
 		switch (origem.getCellType()) {
 		case STRING:
 			destino.setCellValue(origem.getStringCellValue());
@@ -456,6 +455,7 @@ public class ManipuladorPlanilhaHelper {
 			destino.setCellErrorValue(origem.getErrorCellValue());
 			break;
 		case BLANK:
+			destino.setBlank();
 			break;
 		default:
 			break;

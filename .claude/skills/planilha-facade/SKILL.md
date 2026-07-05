@@ -118,7 +118,11 @@ Detalhes/contrato: `docs/specs/facade-planilha.spec.md`.
 8. Ao mexer em linhas de total/resumo da API fluente legada, rode
    `mvn "-Dtest=CalculosTest" test` para proteger contra perda de células em
    linhas já existentes.
-9. Ao mexer em fonte, cores, bordas, alinhamento ou autoajuste, rode
+9. Ao mexer em mover/remover/limpar/inserir coluna, rode
+   `mvn "-Dtest=ManipuladorPlanilhaTest" test`; ele protege fórmulas contra o
+   bug real de `Cell.setCellType(CellType.FORMULA)` e valida preservação de
+   tipo/estilo no recorte de colunas.
+10. Ao mexer em fonte, cores, bordas, alinhamento ou autoajuste, rode
    `mvn "-Dtest=EstiloCelulaTest" test`; ele também salva/reabre fonte
    combinada para proteger a serialização OOXML de nome, tamanho, cor e
    atributos.
