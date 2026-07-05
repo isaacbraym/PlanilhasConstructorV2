@@ -36,16 +36,19 @@ linhas (mover/remover/limpar/inserir/duplicar); estilos (negrito, cores, bordas,
 mesclar, largura/altura, congelar N, filtros, autoajuste); **formatação
 condicional** (realçar/escala de cores); **lista suspensa** (dropdown, fixa ou
 de intervalo, e validação numérica/de data); **nomes de intervalo**
-(`definirNome`); **`adicionarTotais()`** automático; **gráficos**
-(barras/pizza/linha); **imagens/logo**; **comentários** em células;
-**impressão** (orientação/área/ajustar em N páginas); **proteção** de
+(`definirNome`, com nome inválido virando `DadosInvalidosException` amigável);
+**`adicionarTotais()`** automático; **gráficos** (barras/pizza/linha, com
+suporte a categorias/valores em abas diferentes da do gráfico); **imagens/
+logo**; **comentários** em células; **impressão** (orientação/área/ajustar em
+N páginas/cabeçalho e rodapé com marcadores amigáveis); **proteção** de
 planilha e desbloqueio de células (formulários); **leitura** (`ler`/
 `lerTexto`/`lerNumero`/`lerData`/`lerTabela`/`contarLinhasPreenchidas` — o
-"inverso" de escrever, sem precisar de `workbook()`). Veja a seção 7 para o
-que ainda falta e `docs/specs/facade-planilha.spec.md` para o contrato exato
-de cada comando.
+"inverso" de escrever, sem precisar de `workbook()`); **ocultar/exibir**
+(linha/coluna/aba); **desmesclar**; **cor da aba**; **formato numérico
+personalizado** (escape hatch). Veja a seção 7 para o que ainda falta e
+`docs/specs/facade-planilha.spec.md` para o contrato exato de cada comando.
 
-### Sessão de "fechar vazamentos de POI" (2026-07-04, após reanálise crítica) — EM ANDAMENTO
+### Sessão de "fechar vazamentos de POI" (2026-07-04, após reanálise crítica) — CONCLUÍDA
 
 O usuário pediu uma reanálise crítica sob a lente "o objetivo é o usuário
 **nunca** precisar tocar em Apache POI para criações avançadas". Achado
@@ -94,9 +97,21 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   nome começando com dígito, com espaço, igual a uma referência de célula
   (`"A1"`, `"$B$2"`) ou vazio. Teste parametrizado (`@ValueSource`) cobre os 5
   casos em `NomeDeIntervaloFacadeTest`. Total: 195 testes verdes.
-- [ ] `graficoDeX` com categorias/valores em **abas diferentes** monta o
-  gráfico silenciosamente com dado errado (sem erro nenhum) — precisa validar
-  e lançar exceção amigável, ou dar suporte de verdade a cross-sheet.
+- [x] **Suporte de verdade a gráfico entre abas**: `graficoDeBarras`/
+  `graficoDePizza`/`graficoDeLinha` ganharam uma sobrecarga de 6 argumentos —
+  `(titulo, abaCategorias, intervaloCategorias, abaValores, intervaloValores,
+  celulaSuperiorEsquerda)` — que busca categorias e valores em abas diferentes
+  entre si (e diferentes da aba onde o gráfico é desenhado). Escolhida em vez
+  da opção "só validar e barrar": o cenário de dashboard resumindo dados de
+  outras abas é comum o bastante para merecer suporte real, não só um erro
+  melhor. Internamente, `GraficoHelper` ganhou overloads aceitando duas
+  `XSSFSheet` (uma por fonte de dados) — a versão de 1 sheet virou um atalho
+  que chama a de 2 sheets com a mesma folha duas vezes. Aba inexistente lança
+  `IllegalArgumentException` (via `xssfDaAba`, mesma convenção de
+  `indiceDaAba`/`selecionarSheet`). Verificado empiricamente que
+  `getDataRangeReference()` do XDDF traz o nome da aba corretamente
+  (`"Produtos!$A$2:$A$4"`) e que os valores resolvem certo. Total: 197 testes
+  verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -456,11 +471,11 @@ células sem borda prévia). Ver seção 4 para os detalhes que não podem regre
 
 ### Prioridade alta (maior valor prático, ainda não coberto)
 
-1. ~~**Configuração de impressão**~~ — **ENTREGUE** nesta sessão:
-   `orientacaoPaisagem`/`orientacaoRetrato`, `areaDeImpressao`,
-   `ajustarImpressaoEmPaginas`. Margens (`sheet.getMargin`/`setMargin`) e
-   cabeçalho/rodapé de impressão (`sheet.getHeader()`/`getFooter()`) ainda não
-   cobertos, se houver demanda.
+1. ~~**Configuração de impressão**~~ — **ENTREGUE**: `orientacaoPaisagem`/
+   `orientacaoRetrato`, `areaDeImpressao`, `ajustarImpressaoEmPaginas`,
+   `cabecalhoDeImpressao`/`rodapeDeImpressao` (com marcadores amigáveis tipo
+   `{pagina}`/`{total}`). Margens (`sheet.getMargin`/`setMargin`) ainda não
+   cobertas, se houver demanda.
 2. ~~**Proteção de planilha/células**~~ — **ENTREGUE** nesta sessão:
    `protegerPlanilha(senha)` + `desbloquearCelulas(intervalo)`, via novo
    `utils/ProtecaoHelper` (clona `CellStyle` antes de destravar — nunca muta o
@@ -494,12 +509,13 @@ células sem borda prévia). Ver seção 4 para os detalhes que não podem regre
 
 ### Prioridade baixa / nice-to-have
 
-- Duplicar planilha inteira para outro arquivo (hoje só duplica aba dentro do
-  mesmo workbook).
 - Testes de performance/carga com planilhas de milhares de linhas (confiança,
   não funcionalidade nova).
 - Exportar para CSV (fora do escopo original — esta lib foca em `.xlsx`;
   avaliar com o usuário antes de assumir que é desejado).
+- Margens de impressão (`sheet.getMargin`/`setMargin`) — ver item 1 acima.
+- `somar`/`media`/`contar`/`minimo`/`maximo` ainda não aceitam nomes definidos
+  por `definirNome` (só `formula`/`procurarValor` aceitam) — ver item 4 acima.
 
 ### Convenção para continuar
 

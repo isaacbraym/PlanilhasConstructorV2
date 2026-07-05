@@ -250,9 +250,12 @@ célula se ela não existir) — se a célula não existir, o retorno é `null`
 | `graficoDeBarras("Vendas", "A2:A5", "B2:B5", "D2")` | gráfico de barras verticais |
 | `graficoDePizza("Regiões", "A2:A5", "B2:B5", "D2")` | gráfico de pizza |
 | `graficoDeLinha("Progresso", "A2:A5", "B2:B5", "D2")` | gráfico de linha |
+| `graficoDeBarras("Vendas", "Produtos", "A2:A5", "Vendas", "B2:B5", "D2")` | mesma coisa, mas categorias e valores vêm de abas diferentes ("Produtos" e "Vendas") — ótimo para um "Dashboard" que resume dados de outras abas |
 
 Os três recebem: título, intervalo das categorias, intervalo dos valores e a
-célula onde o canto superior esquerdo do gráfico deve ficar.
+célula onde o canto superior esquerdo do gráfico deve ficar. A versão de 6
+argumentos aceita o nome da aba de cada intervalo separadamente (o gráfico em
+si sempre fica na aba atual).
 
 ### Comentários
 | Comando | O que faz |

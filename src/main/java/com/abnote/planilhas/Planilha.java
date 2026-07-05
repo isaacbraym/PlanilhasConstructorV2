@@ -974,6 +974,36 @@ public final class Planilha implements AutoCloseable {
 	}
 
 	/**
+	 * Cria um gráfico de barras verticais com categorias e valores vindos de
+	 * abas diferentes (ex.: um "Dashboard" que resume dados de outras abas).
+	 * O gráfico em si é desenhado na aba atual.
+	 *
+	 * <p>Exemplo:</p>
+	 * <pre>{@code
+	 * planilha.irParaAba("Dashboard")
+	 *         .graficoDeBarras("Vendas por região", "Produtos", "A2:A5", "Vendas", "B2:B5", "D2");
+	 * }</pre>
+	 *
+	 * @param titulo                 Título do gráfico.
+	 * @param abaCategorias          Nome da aba onde estão as categorias.
+	 * @param intervaloCategorias    Intervalo com os nomes das categorias, na aba acima.
+	 * @param abaValores             Nome da aba onde estão os valores.
+	 * @param intervaloValores       Intervalo com os valores numéricos, na aba acima.
+	 * @param celulaSuperiorEsquerda Célula (na aba atual) onde o canto superior
+	 *                               esquerdo do gráfico será posicionado.
+	 * @return Esta planilha, para encadear comandos.
+	 * @throws IllegalArgumentException se {@code abaCategorias} ou {@code abaValores} não existir.
+	 */
+	public Planilha graficoDeBarras(final String titulo, final String abaCategorias,
+			final String intervaloCategorias, final String abaValores, final String intervaloValores,
+			final String celulaSuperiorEsquerda) {
+		final int[] ancora = PosicaoConverter.converterPosicao(celulaSuperiorEsquerda);
+		GraficoHelper.criarGraficoDeBarras(xssf(), titulo, xssfDaAba(abaCategorias), regioesDe(intervaloCategorias)[0],
+				xssfDaAba(abaValores), regioesDe(intervaloValores)[0], ancora[0], ancora[1]);
+		return this;
+	}
+
+	/**
 	 * Cria um gráfico de pizza a partir de um intervalo de categorias (fatias) e
 	 * um de valores.
 	 *
@@ -993,6 +1023,28 @@ public final class Planilha implements AutoCloseable {
 	}
 
 	/**
+	 * Cria um gráfico de pizza com categorias e valores vindos de abas
+	 * diferentes. O gráfico em si é desenhado na aba atual.
+	 *
+	 * @param titulo                 Título do gráfico.
+	 * @param abaCategorias          Nome da aba onde estão as fatias (categorias).
+	 * @param intervaloCategorias    Intervalo com os nomes das fatias, na aba acima.
+	 * @param abaValores             Nome da aba onde estão os valores.
+	 * @param intervaloValores       Intervalo com os valores numéricos, na aba acima.
+	 * @param celulaSuperiorEsquerda Célula (na aba atual) onde o canto superior
+	 *                               esquerdo do gráfico será posicionado.
+	 * @return Esta planilha, para encadear comandos.
+	 * @throws IllegalArgumentException se {@code abaCategorias} ou {@code abaValores} não existir.
+	 */
+	public Planilha graficoDePizza(final String titulo, final String abaCategorias, final String intervaloCategorias,
+			final String abaValores, final String intervaloValores, final String celulaSuperiorEsquerda) {
+		final int[] ancora = PosicaoConverter.converterPosicao(celulaSuperiorEsquerda);
+		GraficoHelper.criarGraficoDePizza(xssf(), titulo, xssfDaAba(abaCategorias), regioesDe(intervaloCategorias)[0],
+				xssfDaAba(abaValores), regioesDe(intervaloValores)[0], ancora[0], ancora[1]);
+		return this;
+	}
+
+	/**
 	 * Cria um gráfico de linha a partir de um intervalo de categorias e um de
 	 * valores.
 	 *
@@ -1008,6 +1060,28 @@ public final class Planilha implements AutoCloseable {
 		final int[] ancora = PosicaoConverter.converterPosicao(celulaSuperiorEsquerda);
 		GraficoHelper.criarGraficoDeLinha(xssf(), titulo, regioesDe(intervaloCategorias)[0],
 				regioesDe(intervaloValores)[0], ancora[0], ancora[1]);
+		return this;
+	}
+
+	/**
+	 * Cria um gráfico de linha com categorias e valores vindos de abas
+	 * diferentes. O gráfico em si é desenhado na aba atual.
+	 *
+	 * @param titulo                 Título do gráfico (também usado como nome da série).
+	 * @param abaCategorias          Nome da aba onde estão as categorias.
+	 * @param intervaloCategorias    Intervalo com os nomes das categorias, na aba acima.
+	 * @param abaValores             Nome da aba onde estão os valores.
+	 * @param intervaloValores       Intervalo com os valores numéricos, na aba acima.
+	 * @param celulaSuperiorEsquerda Célula (na aba atual) onde o canto superior
+	 *                               esquerdo do gráfico será posicionado.
+	 * @return Esta planilha, para encadear comandos.
+	 * @throws IllegalArgumentException se {@code abaCategorias} ou {@code abaValores} não existir.
+	 */
+	public Planilha graficoDeLinha(final String titulo, final String abaCategorias, final String intervaloCategorias,
+			final String abaValores, final String intervaloValores, final String celulaSuperiorEsquerda) {
+		final int[] ancora = PosicaoConverter.converterPosicao(celulaSuperiorEsquerda);
+		GraficoHelper.criarGraficoDeLinha(xssf(), titulo, xssfDaAba(abaCategorias), regioesDe(intervaloCategorias)[0],
+				xssfDaAba(abaValores), regioesDe(intervaloValores)[0], ancora[0], ancora[1]);
 		return this;
 	}
 
@@ -1886,6 +1960,10 @@ public final class Planilha implements AutoCloseable {
 
 	private XSSFSheet xssf() {
 		return (XSSFSheet) sheetAtual();
+	}
+
+	private XSSFSheet xssfDaAba(final String nomeDaAba) {
+		return (XSSFSheet) planilha.obterWorkbook().getSheetAt(indiceDaAba(nomeDaAba));
 	}
 
 	private CellRangeAddress[] regioesDe(final String intervalo) {

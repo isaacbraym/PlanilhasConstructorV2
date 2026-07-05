@@ -46,6 +46,26 @@ public final class GraficoHelper {
 	public static void criarGraficoDeBarras(final XSSFSheet sheet, final String titulo,
 			final CellRangeAddress categorias, final CellRangeAddress valores, final int colunaAncora,
 			final int linhaAncora) {
+		criarGraficoDeBarras(sheet, titulo, sheet, categorias, sheet, valores, colunaAncora, linhaAncora);
+	}
+
+	/**
+	 * Cria um gráfico de barras verticais com categorias e valores vindos de
+	 * abas diferentes entre si (e/ou diferentes da aba onde o gráfico é
+	 * desenhado) — útil para um "dashboard" que resume dados de outras abas.
+	 *
+	 * @param sheet          A folha onde o gráfico será desenhado (ancoragem).
+	 * @param titulo         Título do gráfico (também usado como nome da série).
+	 * @param folhaCategorias Folha onde está o intervalo de categorias.
+	 * @param categorias     Intervalo com os nomes das categorias (eixo X).
+	 * @param folhaValores   Folha onde está o intervalo de valores.
+	 * @param valores        Intervalo com os valores numéricos (eixo Y).
+	 * @param colunaAncora   Coluna (0-based) do canto superior esquerdo do gráfico.
+	 * @param linhaAncora    Linha (0-based) do canto superior esquerdo do gráfico.
+	 */
+	public static void criarGraficoDeBarras(final XSSFSheet sheet, final String titulo,
+			final XSSFSheet folhaCategorias, final CellRangeAddress categorias, final XSSFSheet folhaValores,
+			final CellRangeAddress valores, final int colunaAncora, final int linhaAncora) {
 		final XSSFChart chart = criarChartVazio(sheet, titulo, colunaAncora, linhaAncora);
 		final XDDFCategoryAxis eixoCategorias = chart.createCategoryAxis(AxisPosition.BOTTOM);
 		final XDDFValueAxis eixoValores = chart.createValueAxis(AxisPosition.LEFT);
@@ -53,7 +73,7 @@ public final class GraficoHelper {
 		final XDDFChartData dados = chart.createData(ChartTypes.BAR, eixoCategorias, eixoValores);
 		((XDDFBarChartData) dados).setBarDirection(BarDirection.COL);
 
-		adicionarSerie(dados, sheet, categorias, valores, titulo);
+		adicionarSerie(dados, folhaCategorias, categorias, folhaValores, valores, titulo);
 		chart.plot(dados);
 	}
 
@@ -70,12 +90,31 @@ public final class GraficoHelper {
 	public static void criarGraficoDePizza(final XSSFSheet sheet, final String titulo,
 			final CellRangeAddress categorias, final CellRangeAddress valores, final int colunaAncora,
 			final int linhaAncora) {
+		criarGraficoDePizza(sheet, titulo, sheet, categorias, sheet, valores, colunaAncora, linhaAncora);
+	}
+
+	/**
+	 * Cria um gráfico de pizza com categorias e valores vindos de abas
+	 * diferentes entre si (e/ou diferentes da aba onde o gráfico é desenhado).
+	 *
+	 * @param sheet          A folha onde o gráfico será desenhado (ancoragem).
+	 * @param titulo         Título do gráfico.
+	 * @param folhaCategorias Folha onde está o intervalo de categorias.
+	 * @param categorias     Intervalo com os nomes das fatias.
+	 * @param folhaValores   Folha onde está o intervalo de valores.
+	 * @param valores        Intervalo com os valores numéricos de cada fatia.
+	 * @param colunaAncora   Coluna (0-based) do canto superior esquerdo do gráfico.
+	 * @param linhaAncora    Linha (0-based) do canto superior esquerdo do gráfico.
+	 */
+	public static void criarGraficoDePizza(final XSSFSheet sheet, final String titulo,
+			final XSSFSheet folhaCategorias, final CellRangeAddress categorias, final XSSFSheet folhaValores,
+			final CellRangeAddress valores, final int colunaAncora, final int linhaAncora) {
 		final XSSFChart chart = criarChartVazio(sheet, titulo, colunaAncora, linhaAncora);
 		// Pizza não usa eixos — POI espera null nos dois parâmetros de eixo.
 		final XDDFChartData dados = chart.createData(ChartTypes.PIE, null, null);
 		dados.setVaryColors(true); // cada fatia com uma cor diferente
 
-		adicionarSerie(dados, sheet, categorias, valores, titulo);
+		adicionarSerie(dados, folhaCategorias, categorias, folhaValores, valores, titulo);
 		chart.plot(dados);
 	}
 
@@ -92,12 +131,31 @@ public final class GraficoHelper {
 	public static void criarGraficoDeLinha(final XSSFSheet sheet, final String titulo,
 			final CellRangeAddress categorias, final CellRangeAddress valores, final int colunaAncora,
 			final int linhaAncora) {
+		criarGraficoDeLinha(sheet, titulo, sheet, categorias, sheet, valores, colunaAncora, linhaAncora);
+	}
+
+	/**
+	 * Cria um gráfico de linha com categorias e valores vindos de abas
+	 * diferentes entre si (e/ou diferentes da aba onde o gráfico é desenhado).
+	 *
+	 * @param sheet          A folha onde o gráfico será desenhado (ancoragem).
+	 * @param titulo         Título do gráfico (também usado como nome da série).
+	 * @param folhaCategorias Folha onde está o intervalo de categorias.
+	 * @param categorias     Intervalo com os nomes das categorias (eixo X).
+	 * @param folhaValores   Folha onde está o intervalo de valores.
+	 * @param valores        Intervalo com os valores numéricos (eixo Y).
+	 * @param colunaAncora   Coluna (0-based) do canto superior esquerdo do gráfico.
+	 * @param linhaAncora    Linha (0-based) do canto superior esquerdo do gráfico.
+	 */
+	public static void criarGraficoDeLinha(final XSSFSheet sheet, final String titulo,
+			final XSSFSheet folhaCategorias, final CellRangeAddress categorias, final XSSFSheet folhaValores,
+			final CellRangeAddress valores, final int colunaAncora, final int linhaAncora) {
 		final XSSFChart chart = criarChartVazio(sheet, titulo, colunaAncora, linhaAncora);
 		final XDDFCategoryAxis eixoCategorias = chart.createCategoryAxis(AxisPosition.BOTTOM);
 		final XDDFValueAxis eixoValores = chart.createValueAxis(AxisPosition.LEFT);
 
 		final XDDFChartData dados = chart.createData(ChartTypes.LINE, eixoCategorias, eixoValores);
-		adicionarSerie(dados, sheet, categorias, valores, titulo);
+		adicionarSerie(dados, folhaCategorias, categorias, folhaValores, valores, titulo);
 		chart.plot(dados);
 	}
 
@@ -113,10 +171,12 @@ public final class GraficoHelper {
 		return chart;
 	}
 
-	private static void adicionarSerie(final XDDFChartData dados, final XSSFSheet sheet,
-			final CellRangeAddress categorias, final CellRangeAddress valores, final String titulo) {
-		final XDDFCategoryDataSource fonteCategorias = XDDFDataSourcesFactory.fromStringCellRange(sheet, categorias);
-		final XDDFNumericalDataSource<Double> fonteValores = XDDFDataSourcesFactory.fromNumericCellRange(sheet,
+	private static void adicionarSerie(final XDDFChartData dados, final XSSFSheet folhaCategorias,
+			final CellRangeAddress categorias, final XSSFSheet folhaValores, final CellRangeAddress valores,
+			final String titulo) {
+		final XDDFCategoryDataSource fonteCategorias = XDDFDataSourcesFactory.fromStringCellRange(folhaCategorias,
+				categorias);
+		final XDDFNumericalDataSource<Double> fonteValores = XDDFDataSourcesFactory.fromNumericCellRange(folhaValores,
 				valores);
 		final XDDFChartData.Series serie = dados.addSeries(fonteCategorias, fonteValores);
 		serie.setTitle(titulo, null);

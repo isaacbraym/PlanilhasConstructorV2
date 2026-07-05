@@ -20,7 +20,11 @@ import org.junit.jupiter.api.Test;
 class GraficoFacadeTest {
 
 	private XSSFChart unicoGrafico(Planilha planilha) {
-		Sheet sheet = planilha.workbook().getSheetAt(0);
+		return unicoGrafico(planilha, planilha.workbook().getSheetAt(0).getSheetName());
+	}
+
+	private XSSFChart unicoGrafico(Planilha planilha, String nomeDaAba) {
+		Sheet sheet = planilha.workbook().getSheet(nomeDaAba);
 		XSSFDrawing drawing = (XSSFDrawing) sheet.getDrawingPatriarch();
 		assertNotNull(drawing, "Deve existir um desenho na aba");
 		List<XSSFChart> graficos = drawing.getCharts();
@@ -77,6 +81,35 @@ class GraficoFacadeTest {
 			XSSFChart chart = unicoGrafico(planilha);
 			assertEquals("Progresso", chart.getTitleText().getString());
 			assertEquals(2, chart.getAxes().size(), "Linha deve ter eixo de categoria e de valor");
+		}
+	}
+
+	@Test
+	@DisplayName("graficoDeBarras(abaCategorias, abaValores) deve buscar categorias e valores em abas diferentes da aba do gráfico")
+	void deveCriarGraficoDeBarrasEntreAbas() throws Exception {
+		try (Planilha planilha = Planilha.nova("Produtos")) {
+			planilha.escreverColuna("A2", "Caneta", "Caderno", "Lapis");
+			planilha.novaAba("Vendas").escreverColuna("B2", 10.0, 20.0, 30.0);
+			planilha.novaAba("Dashboard")
+					.graficoDeBarras("Vendas por produto", "Produtos", "A2:A4", "Vendas", "B2:B4", "D2");
+
+			XSSFChart chart = unicoGrafico(planilha, "Dashboard");
+			XDDFChartData.Series serie = chart.getChartSeries().get(0).getSeries(0);
+
+			assertEquals("Produtos!$A$2:$A$4", serie.getCategoryData().getDataRangeReference());
+			assertEquals("Vendas!$B$2:$B$4", serie.getValuesData().getDataRangeReference());
+			assertEquals("Caneta", serie.getCategoryData().getPointAt(0));
+			assertEquals(10.0, (Double) serie.getValuesData().getPointAt(0), 0.001);
+		}
+	}
+
+	@Test
+	@DisplayName("graficoDeBarras entre abas deve lançar IllegalArgumentException para aba inexistente")
+	void deveRecusarAbaInexistenteNoGraficoEntreAbas() throws Exception {
+		try (Planilha planilha = Planilha.nova("Produtos")) {
+			planilha.escreverColuna("A2", "Caneta").novaAba("Vendas").escreverColuna("B2", 10.0);
+			assertThrows(IllegalArgumentException.class,
+					() -> planilha.graficoDeBarras("X", "NaoExiste", "A1:A1", "Vendas", "B2:B2", "D2"));
 		}
 	}
 }

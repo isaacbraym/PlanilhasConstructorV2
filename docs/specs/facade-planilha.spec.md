@@ -183,6 +183,18 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
 - `graficoDePizza` **não** cria eixos (`chart.getAxes()` vazio) e ativa cores
   variadas por fatia (`setVaryColors(true)`).
 - Todos sobrevivem a salvar em disco e reabrir (round-trip OOXML verificado).
+- **Quando** `graficoDeBarras(titulo, abaCategorias, categorias, abaValores,
+  valores, celula)` (sobrecarga de 6 argumentos), **Então** categorias e
+  valores são lidos de `abaCategorias`/`abaValores` (que podem ser diferentes
+  entre si e diferentes da aba atual, onde o gráfico é ancorado). Confirmado
+  empiricamente que `Series.getCategoryData().getDataRangeReference()` traz o
+  nome da aba de origem (ex.: `"Produtos!$A$2:$A$4"`), não da aba do gráfico.
+  Antes desta sobrecarga existir, montar um gráfico assim silenciosamente lia
+  dado errado (intervalo resolvido contra a aba atual, sem erro nenhum) — por
+  isso a versão de 4 argumentos permanece restrita a uma única aba (a atual);
+  cross-sheet exige a sobrecarga explícita. Aba inexistente lança
+  `IllegalArgumentException`. Mesmo contrato para `graficoDePizza`/
+  `graficoDeLinha`.
 
 ## Comentários
 

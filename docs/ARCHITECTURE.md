@@ -148,6 +148,16 @@ NumericCellRange` → `chart.createData(ChartTypes.X, ...)` →
 `data.addSeries(...)` → `chart.plot(data)`. Barras usam `BarDirection.COL`
 (verticais). Verificado com round-trip real (salvar em disco + reabrir).
 
+`XDDFDataSourcesFactory.from...CellRange` recebe uma `XSSFSheet` **por
+intervalo**, não uma só para o gráfico inteiro — por isso `GraficoHelper` tem
+overloads que aceitam `folhaCategorias`/`folhaValores` separadas da folha onde
+o gráfico é ancorado, permitindo categorias e valores de abas diferentes
+(usado pela facade `graficoDeX(..., abaCategorias, ..., abaValores, ...)`, a
+sobrecarga de 6 argumentos). A versão de 1 folha só é um atalho que chama a de
+2 folhas passando a mesma folha duas vezes. Confirmado empiricamente que
+`getDataRangeReference()` da série resultante inclui o nome da aba de origem
+de cada intervalo.
+
 ## Imagens (`imagens/ImagemHelper`)
 
 Usa `workbook.addPicture(bytes, tipo)` + `drawing.createPicture(anchor, idx)`.

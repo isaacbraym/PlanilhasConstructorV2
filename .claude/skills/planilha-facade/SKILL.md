@@ -58,7 +58,11 @@ public class Gerar {
 - Colar como valores: `colarComoValores(intervalo)` ou `colarComoValores()`
   (toda a área usada) — remove fórmulas, congela os valores calculados.
 - Gráficos: `graficoDeBarras`/`graficoDePizza`/`graficoDeLinha(titulo,
-  intervaloCategorias, intervaloValores, celulaSuperiorEsquerda)`.
+  intervaloCategorias, intervaloValores, celulaSuperiorEsquerda)`. Sobrecarga
+  de 6 argumentos — `(titulo, abaCategorias, intervaloCategorias, abaValores,
+  intervaloValores, celulaSuperiorEsquerda)` — busca categorias e valores em
+  abas diferentes entre si (ex.: um "Dashboard" resumindo dados de outras
+  abas); o gráfico em si sempre fica na aba atual.
 - Imagens: `inserirImagem(celula, caminho)` ou `inserirImagem(celula, caminho,
   escala)` — aceita `.png`/`.jpg`/`.jpeg`.
 - Impressão: `orientacaoPaisagem`/`orientacaoRetrato`, `areaDeImpressao`,
