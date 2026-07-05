@@ -2,16 +2,26 @@ package com.abnote.planilhas;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.io.File;
+
+import org.apache.poi.ss.usermodel.PageMargin;
 import org.apache.poi.ss.usermodel.PrintSetup;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import com.abnote.planilhas.exceptions.DadosInvalidosException;
 
 /**
  * Testes de configuração de impressão e proteção de planilha na facade.
  */
 @DisplayName("Planilha — impressão e proteção")
 class ImpressaoEProtecaoFacadeTest {
+
+	@TempDir
+	File tempDir;
 
 	@Test
 	@DisplayName("orientacaoPaisagem e orientacaoRetrato devem alternar a orientação de impressão")
@@ -47,6 +57,32 @@ class ImpressaoEProtecaoFacadeTest {
 			assertTrue(sheet.getFitToPage());
 			assertEquals(1, sheet.getPrintSetup().getFitWidth());
 			assertEquals(2, sheet.getPrintSetup().getFitHeight());
+		}
+	}
+
+	@Test
+	@DisplayName("margensDeImpressao deve gravar margens em centímetros e persistir em OOXML")
+	void deveDefinirMargensDeImpressao() throws Exception {
+		final File arquivo = new File(tempDir, "margens.xlsx");
+		try (Planilha planilha = Planilha.nova("T")) {
+			planilha.margensDeImpressao(2.54, 1.27, 0.635, 3.81).salvar(arquivo.getAbsolutePath());
+		}
+
+		try (XSSFWorkbook workbook = new XSSFWorkbook(arquivo)) {
+			final Sheet sheet = workbook.getSheetAt(0);
+			assertEquals(1.0, sheet.getMargin(PageMargin.TOP), 0.001);
+			assertEquals(0.5, sheet.getMargin(PageMargin.BOTTOM), 0.001);
+			assertEquals(0.25, sheet.getMargin(PageMargin.LEFT), 0.001);
+			assertEquals(1.5, sheet.getMargin(PageMargin.RIGHT), 0.001);
+		}
+	}
+
+	@Test
+	@DisplayName("margensDeImpressao deve recusar margem negativa")
+	void deveRecusarMargemNegativa() throws Exception {
+		try (Planilha planilha = Planilha.nova("T")) {
+			assertThrows(DadosInvalidosException.class,
+					() -> planilha.margensDeImpressao(1.0, -0.1, 1.0, 1.0));
 		}
 	}
 

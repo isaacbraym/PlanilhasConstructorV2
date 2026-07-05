@@ -68,6 +68,7 @@ public class Gerar {
   escala)` — aceita `.png`/`.jpg`/`.jpeg`.
 - Impressão: `orientacaoPaisagem`/`orientacaoRetrato`, `areaDeImpressao`,
   `ajustarImpressaoEmPaginas(larguraPaginas, alturaPaginas)`,
+  `margensDeImpressao(superiorCm, inferiorCm, esquerdaCm, direitaCm)`,
   `cabecalhoDeImpressao(centro)`/`cabecalhoDeImpressao(esquerda, centro,
   direita)`, `rodapeDeImpressao(centro)`/`rodapeDeImpressao(esquerda, centro,
   direita)` — aceitam marcadores `{pagina}`, `{total}`, `{data}`, `{hora}`,

@@ -42,6 +42,7 @@ import com.abnote.planilhas.utils.FormatosDeCelula;
 import com.abnote.planilhas.utils.LeitorDeCelulas;
 import com.abnote.planilhas.utils.LeitorDeTabela;
 import com.abnote.planilhas.utils.ListaSuspensaHelper;
+import com.abnote.planilhas.utils.MargensDeImpressaoHelper;
 import com.abnote.planilhas.utils.OrdenadorDeLinhas;
 import com.abnote.planilhas.utils.PosicaoConverter;
 import com.abnote.planilhas.utils.ProtecaoHelper;
@@ -1760,6 +1761,28 @@ public final class Planilha implements AutoCloseable {
 		final PrintSetup configuracao = sheet.getPrintSetup();
 		configuracao.setFitWidth((short) larguraPaginas);
 		configuracao.setFitHeight((short) alturaPaginas);
+		return this;
+	}
+
+	/**
+	 * Define as margens principais de impressão em centímetros.
+	 *
+	 * <p>
+	 * Exemplo: {@code planilha.margensDeImpressao(1.5, 1.5, 1.0, 1.0)} usa 1,5 cm
+	 * no topo/rodapé e 1 cm nas laterais.
+	 * </p>
+	 *
+	 * @param superiorCm Margem superior em centímetros.
+	 * @param inferiorCm Margem inferior em centímetros.
+	 * @param esquerdaCm Margem esquerda em centímetros.
+	 * @param direitaCm  Margem direita em centímetros.
+	 * @return Esta planilha, para encadear comandos.
+	 * @throws DadosInvalidosException se alguma margem for negativa, infinita ou
+	 *                                  não numérica.
+	 */
+	public Planilha margensDeImpressao(final double superiorCm, final double inferiorCm, final double esquerdaCm,
+			final double direitaCm) {
+		MargensDeImpressaoHelper.aplicar(sheetAtual(), superiorCm, inferiorCm, esquerdaCm, direitaCm);
 		return this;
 	}
 

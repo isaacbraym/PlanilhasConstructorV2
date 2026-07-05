@@ -120,6 +120,14 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   validação estrita de `FormulaBuilder.validarRange`; ela agora aceita ranges
   de células ou nomes existentes no `Workbook`, mantendo `FormulaException`
   amigável para texto solto não definido. Total: 198 testes verdes.
+- [x] **Margens de impressão**: `margensDeImpressao(superiorCm, inferiorCm,
+  esquerdaCm, direitaCm)` expõe margens em centímetros (mais natural em pt-BR)
+  e converte para polegadas no novo `utils/MargensDeImpressaoHelper`, que é a
+  unidade nativa de `Sheet.setMargin(PageMargin, ...)`. Investigação empírica
+  confirmou round-trip em OOXML (`2,54 cm` → `1.0` polegada ao reabrir).
+  Teste dedicado salva/reabre com `XSSFWorkbook` fresco e valida as quatro
+  margens reais, além de recusar margem negativa com `DadosInvalidosException`.
+  Total: 200 testes verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -482,8 +490,7 @@ células sem borda prévia). Ver seção 4 para os detalhes que não podem regre
 1. ~~**Configuração de impressão**~~ — **ENTREGUE**: `orientacaoPaisagem`/
    `orientacaoRetrato`, `areaDeImpressao`, `ajustarImpressaoEmPaginas`,
    `cabecalhoDeImpressao`/`rodapeDeImpressao` (com marcadores amigáveis tipo
-   `{pagina}`/`{total}`). Margens (`sheet.getMargin`/`setMargin`) ainda não
-   cobertas, se houver demanda.
+   `{pagina}`/`{total}`) e `margensDeImpressao` em centímetros.
 2. ~~**Proteção de planilha/células**~~ — **ENTREGUE** nesta sessão:
    `protegerPlanilha(senha)` + `desbloquearCelulas(intervalo)`, via novo
    `utils/ProtecaoHelper` (clona `CellStyle` antes de destravar — nunca muta o
@@ -518,7 +525,6 @@ células sem borda prévia). Ver seção 4 para os detalhes que não podem regre
   não funcionalidade nova).
 - Exportar para CSV (fora do escopo original — esta lib foca em `.xlsx`;
   avaliar com o usuário antes de assumir que é desejado).
-- Margens de impressão (`sheet.getMargin`/`setMargin`) — ver item 1 acima.
 
 ### Convenção para continuar
 

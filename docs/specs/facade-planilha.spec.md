@@ -296,6 +296,11 @@ Comparação por texto; números casam sem `.0` (ex.: `10` casa com `"10"`).
   convertendo para referência absoluta automaticamente.
 - `ajustarImpressaoEmPaginas(larguraPaginas, alturaPaginas)` ativa
   `sheet.getFitToPage()` e define `PrintSetup.getFitWidth()`/`getFitHeight()`.
+- `margensDeImpressao(superiorCm, inferiorCm, esquerdaCm, direitaCm)` recebe
+  centímetros, converte para polegadas (unidade nativa do OOXML/POI), grava
+  `PageMargin.TOP`/`BOTTOM`/`LEFT`/`RIGHT` e persiste no
+  arquivo salvo. Margem negativa, infinita ou `NaN` lança
+  `DadosInvalidosException`.
 - `cabecalhoDeImpressao(centro)`/`cabecalhoDeImpressao(esquerda, centro, direita)`
   escrevem em `sheet.getHeader()` (Left/Center/Right). Sobrecarga de 1 argumento
   preenche só o centro, deixando esquerda/direita vazios (`""`, nunca `null`).
