@@ -6,6 +6,7 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
@@ -14,10 +15,12 @@ import javax.imageio.ImageIO;
 
 import org.apache.poi.ss.usermodel.PictureData;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.util.Units;
 import org.apache.poi.xssf.usermodel.XSSFClientAnchor;
 import org.apache.poi.xssf.usermodel.XSSFDrawing;
 import org.apache.poi.xssf.usermodel.XSSFPicture;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -71,6 +74,27 @@ class ImagemFacadeTest {
 	}
 
 	@Test
+	@DisplayName("Deve preservar imagem inserida ao salvar e reabrir o XLSX")
+	void devePreservarImagemEmRoundTrip() throws Exception {
+		String caminho = criarImagemPng("logo.png", 120, 60);
+		File arquivo = pasta.resolve("saida.xlsx").toFile();
+
+		try (Planilha planilha = Planilha.nova("T")) {
+			planilha.inserirImagem("B2", caminho).salvar(arquivo.getAbsolutePath());
+		}
+
+		try (FileInputStream entrada = new FileInputStream(arquivo);
+				XSSFWorkbook workbook = new XSSFWorkbook(entrada)) {
+			assertEquals(1, workbook.getAllPictures().size());
+			assertEquals(Workbook.PICTURE_TYPE_PNG, workbook.getAllPictures().get(0).getPictureType());
+
+			XSSFDrawing drawing = (XSSFDrawing) workbook.getSheetAt(0).getDrawingPatriarch();
+			assertNotNull(drawing);
+			assertEquals(1, drawing.getShapes().size());
+		}
+	}
+
+	@Test
 	@DisplayName("Deve redimensionar a imagem quando uma escala é informada")
 	void deveInserirImagemComEscala() throws Exception {
 		String caminho = criarImagemPng("logo.png", 100, 100);
@@ -113,6 +137,35 @@ class ImagemFacadeTest {
 		String inexistente = pasta.resolve("nao-existe.png").toString();
 		try (Planilha planilha = Planilha.nova("T")) {
 			assertThrows(ArquivoException.class, () -> planilha.inserirImagem("A1", inexistente));
+		}
+	}
+
+	@Test
+	@DisplayName("Deve lançar ArquivoException para caminho obrigatório ou inválido sem criar imagem parcial")
+	void deveLancarArquivoExceptionParaCaminhoObrigatorioOuInvalido() throws Exception {
+		try (Planilha planilha = Planilha.nova("T")) {
+			assertThrows(ArquivoException.class, () -> planilha.inserirImagem("A1", null));
+			assertThrows(ArquivoException.class, () -> planilha.inserirImagem("A1", " "));
+			assertThrows(ArquivoException.class, () -> planilha.inserirImagem("A1", "\0.png"));
+
+			assertTrue(planilha.workbook().getAllPictures().isEmpty());
+			assertNull(planilha.workbook().getSheetAt(0).getDrawingPatriarch());
+		}
+	}
+
+	@Test
+	@DisplayName("Deve recusar escala inválida sem criar imagem parcial")
+	void deveRecusarEscalaInvalidaSemCriarImagemParcial() throws Exception {
+		String caminho = criarImagemPng("logo.png", 100, 100);
+		try (Planilha planilha = Planilha.nova("T")) {
+			assertThrows(DadosInvalidosException.class, () -> planilha.inserirImagem("A1", caminho, 0.0));
+			assertThrows(DadosInvalidosException.class, () -> planilha.inserirImagem("A1", caminho, -0.5));
+			assertThrows(DadosInvalidosException.class, () -> planilha.inserirImagem("A1", caminho, Double.NaN));
+			assertThrows(DadosInvalidosException.class,
+					() -> planilha.inserirImagem("A1", caminho, Double.POSITIVE_INFINITY));
+
+			assertTrue(planilha.workbook().getAllPictures().isEmpty());
+			assertNull(planilha.workbook().getSheetAt(0).getDrawingPatriarch());
 		}
 	}
 }

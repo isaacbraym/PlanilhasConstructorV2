@@ -274,6 +274,15 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   parcial com `Workbook.removeName(...)`. `NomeDeIntervaloFacadeTest` valida
   nome invalido e intervalo invalido sem mutar a colecao real de nomes. Total:
   241 testes verdes.
+- [x] **`inserirImagem` valida caminho/escala sem imagem parcial**:
+  Debug empirico mostrou que `inserirImagem("A1", null)` vazava
+  `NullPointerException`, caminho em branco ou invalido vazava
+  `InvalidPathException`, e `escala = 0.0` passava criando uma imagem sem
+  tamanho util. `ImagemHelper` agora valida caminho obrigatorio/sintatico como
+  `ArquivoException`, valida escala finita maior que zero como
+  `DadosInvalidosException` e faz isso antes de `Workbook.addPicture(...)`.
+  `ImagemFacadeTest` cobre erro sem desenho/picture parcial e round-trip OOXML
+  da imagem inserida. Total: 244 testes verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -502,7 +511,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **241 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **244 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -636,6 +645,10 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
     valide/monte a referencia antes de criar o `Name` e remova o objeto criado
     com `Workbook.removeName(...)` se o POI rejeitar nome ou formula. A regra
     vale para nome invalido e intervalo invalido.
+21. **Falha em `inserirImagem` nao pode deixar imagem parcial no workbook** —
+    valide caminho e escala antes de chamar `Workbook.addPicture(...)` ou criar
+    desenho. Caminho nulo/vazio/invalido deve virar `ArquivoException`;
+    escala `NaN`, infinita, zero ou negativa deve virar `DadosInvalidosException`.
 
 ## 5. Convenções de código (obrigatórias)
 

@@ -228,12 +228,15 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
 
 - **Quando** `inserirImagem(celula, caminho)`, **Então** a imagem é inserida
   ancorada na célula, no tamanho natural (pixels reais do arquivo convertidos
-  para EMU via DPI padrão).
+  para EMU via DPI padrão) e sobrevive a salvar/reabrir o `.xlsx`.
 - **Quando** `inserirImagem(celula, caminho, escala)`, **Então** a imagem é
   inserida redimensionada por esse fator em relação ao tamanho natural (ex.:
   `0.5` = metade, `2.0` = dobro).
+- **Quando** a escala for zero, negativa, infinita ou `NaN`, **Então** lança
+  `DadosInvalidosException` antes de criar desenho/imagem parcial.
 - Aceita apenas `.png`/`.jpg`/`.jpeg` (senão `DadosInvalidosException`);
-  arquivo inexistente/ilegível → `ArquivoException`.
+  caminho nulo, vazio, sintaticamente inválido, inexistente ou ilegível →
+  `ArquivoException` sem criar desenho/imagem parcial.
 
 ## Colunas e linhas
 

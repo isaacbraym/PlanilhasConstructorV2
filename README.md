@@ -274,7 +274,8 @@ si sempre fica na aba atual).
 | `inserirImagem("B2", "logo.png")` | insere a imagem no tamanho original |
 | `inserirImagem("B2", "logo.png", 0.5)` | insere reduzida pela metade |
 
-Aceita `.png`, `.jpg` e `.jpeg`.
+Aceita `.png`, `.jpg` e `.jpeg`. Caminho nulo, vazio, invalido ou inacessivel
+lanca `ArquivoException`; escala precisa ser finita e maior que zero.
 
 ### Aparência (estilos)
 | Comando | O que faz |
@@ -410,6 +411,11 @@ Sim. `duplicarLinha`, `duplicarColuna` e a copia de linhas filtradas ajustam
 referencias relativas como o Excel faria. Partes absolutas, como `$A$2`, ficam
 fixas.
 
+**Por que minha imagem nao entrou?**
+Use caminho real para `.png`, `.jpg` ou `.jpeg`. Caminho vazio/invalido vira
+`ArquivoException`; escala `0`, negativa, infinita ou `NaN` vira
+`DadosInvalidosException`, sem deixar imagem parcial no arquivo.
+
 **Se eu ordenar, altura ou linha oculta acompanham os dados?**
 Sim. A ordenação move junto altura personalizada, linha oculta e estilo de
 linha, para a aparência não ficar presa na posição antiga.
@@ -456,6 +462,12 @@ linha, para a aparência não ficar presa na posição antiga.
   ```
   Cobre `definirNome`, uso em formulas prontas/PROCV e ausencia de `Name`
   parcial quando nome ou intervalo sao invalidos.
+- **Rodar só os testes de imagens:**
+  ```bash
+  mvn "-Dtest=ImagemFacadeTest" test
+  ```
+  Cobre insercao, escala, round-trip OOXML e ausencia de imagem parcial em
+  caminho/escala invalidos.
 - **Rodar só os testes dos cálculos legados:**
   ```bash
   mvn "-Dtest=CalculosTest" test
@@ -493,7 +505,7 @@ linha, para a aparência não ficar presa na posição antiga.
 - **Changelog:** veja [`CHANGELOG.md`](CHANGELOG.md) para o histórico de
   versões.
 - **Cobertura de testes:** `mvn clean test` já gera um relatório JaCoCo em
-  `target/site/jacoco/index.html`. Suíte atual: 241 testes. Os pontos fracos
+  `target/site/jacoco/index.html`. Suíte atual: 244 testes. Os pontos fracos
   históricos (`Fontes`, `ManipuladorPlanilhaHelper`, `LogsDeModificadores`)
   já receberam cobertura estrutural; consulte o relatório para escolher novos
   alvos.

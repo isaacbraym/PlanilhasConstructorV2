@@ -71,7 +71,9 @@ public class Gerar {
   abas diferentes entre si (ex.: um "Dashboard" resumindo dados de outras
   abas); o gráfico em si sempre fica na aba atual.
 - Imagens: `inserirImagem(celula, caminho)` ou `inserirImagem(celula, caminho,
-  escala)` — aceita `.png`/`.jpg`/`.jpeg`.
+  escala)` — aceita `.png`/`.jpg`/`.jpeg`; caminho ruim vira
+  `ArquivoException`, escala invalida vira `DadosInvalidosException` e nenhum
+  dos dois deixa imagem parcial no workbook.
 - Impressão: `orientacaoPaisagem`/`orientacaoRetrato`, `areaDeImpressao`,
   `ajustarImpressaoEmPaginas(larguraPaginas, alturaPaginas)`,
   `margensDeImpressao(superiorCm, inferiorCm, esquerdaCm, direitaCm)`,
@@ -146,22 +148,25 @@ Detalhes/contrato: `docs/specs/facade-planilha.spec.md`.
 14. Ao mexer em `definirNome` ou referencias de nomes de intervalo, rode
    `mvn "-Dtest=NomeDeIntervaloFacadeTest" test`; ele protege nomes validos,
    agregacoes prontas/PROCV e ausencia de `Name` parcial em erros.
-15. Ao mexer em linhas de total/resumo da API fluente legada, rode
+15. Ao mexer em imagens ou `ImagemHelper`, rode
+   `mvn "-Dtest=ImagemFacadeTest" test`; ele protege insercao, escala,
+   round-trip OOXML e ausencia de imagem parcial em caminho/escala invalidos.
+16. Ao mexer em linhas de total/resumo da API fluente legada, rode
    `mvn "-Dtest=CalculosTest" test` para proteger contra perda de células em
    linhas já existentes.
-16. Ao mexer em mover/remover/limpar/inserir coluna, rode
+17. Ao mexer em mover/remover/limpar/inserir coluna, rode
    `mvn "-Dtest=ManipuladorPlanilhaTest" test`; ele protege fórmulas contra o
    bug real de `Cell.setCellType(CellType.FORMULA)` e valida preservação de
    tipo/estilo no recorte de colunas.
-17. Ao mexer em `logAlteracoes()` ou `LogsDeModificadores`, rode
+18. Ao mexer em `logAlteracoes()` ou `LogsDeModificadores`, rode
    `mvn "-Dtest=LogsDeModificadoresTest" test`; ele captura `System.out` e
    confirma que a fila interna é limpa após exibir.
-18. Ao mexer em inserção delimitada, importação de arquivo texto ou
+19. Ao mexer em inserção delimitada, importação de arquivo texto ou
    `InsersorDeDados`, rode `mvn "-Dtest=PlanilhaXlsxTest,CoercaoNumericaTest" test`;
    isso protege campos vazios finais (`"A,B,"`) em string/lista/arquivo,
    coerção segura de CPF/CEP, dados nulos amigáveis e caminhos básicos de
    erro/no-op da API fluente.
-19. Ao mexer em fonte, cores, bordas, alinhamento ou autoajuste, rode
+20. Ao mexer em fonte, cores, bordas, alinhamento ou autoajuste, rode
    `mvn "-Dtest=EstiloCelulaTest" test`; ele também salva/reabre fonte
    combinada para proteger a serialização OOXML de nome, tamanho, cor e
    atributos.

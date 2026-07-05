@@ -2,6 +2,7 @@ package com.abnote.planilhas.imagens;
 
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.apache.poi.ss.usermodel.Workbook;
@@ -49,6 +50,7 @@ public final class ImagemHelper {
 	 */
 	public static void inserir(final XSSFSheet sheet, final String caminhoArquivo, final int colunaAncora,
 			final int linhaAncora, final double escala) {
+		validarEscala(escala);
 		final XSSFPicture picture = criarImagem(sheet, caminhoArquivo, colunaAncora, linhaAncora);
 		// resize(double) do POI escala o tamanho ATUAL da âncora, não o tamanho
 		// natural da imagem — e uma âncora recém-criada tem tamanho zero. É preciso
@@ -60,8 +62,9 @@ public final class ImagemHelper {
 
 	private static XSSFPicture criarImagem(final XSSFSheet sheet, final String caminhoArquivo,
 			final int colunaAncora, final int linhaAncora) {
-		final byte[] bytes = lerArquivo(caminhoArquivo);
+		final Path caminho = caminhoValido(caminhoArquivo);
 		final int tipo = tipoDaImagem(caminhoArquivo);
+		final byte[] bytes = lerArquivo(caminho, caminhoArquivo);
 		final int indiceImagem = sheet.getWorkbook().addPicture(bytes, tipo);
 
 		final XSSFDrawing desenho = sheet.createDrawingPatriarch();
@@ -70,12 +73,29 @@ public final class ImagemHelper {
 		return desenho.createPicture(ancora, indiceImagem);
 	}
 
-	private static byte[] lerArquivo(final String caminhoArquivo) {
+	private static void validarEscala(final double escala) {
+		if (Double.isNaN(escala) || Double.isInfinite(escala) || escala <= 0.0) {
+			throw new DadosInvalidosException("Escala da imagem deve ser um numero finito maior que zero", escala);
+		}
+	}
+
+	private static Path caminhoValido(final String caminhoArquivo) {
+		if (caminhoArquivo == null || caminhoArquivo.trim().isEmpty()) {
+			throw new ArquivoException("Caminho do arquivo de imagem nao pode ser nulo ou vazio", caminhoArquivo);
+		}
 		try {
-			return Files.readAllBytes(Paths.get(caminhoArquivo));
+			return Paths.get(caminhoArquivo);
+		} catch (RuntimeException e) {
+			throw new ArquivoException("Caminho do arquivo de imagem invalido", caminhoArquivo, e);
+		}
+	}
+
+	private static byte[] lerArquivo(final Path caminho, final String caminhoOriginal) {
+		try {
+			return Files.readAllBytes(caminho);
 		} catch (IOException e) {
 			throw new ArquivoException("Erro ao ler arquivo de imagem. Verifique se o caminho existe e é acessível",
-					caminhoArquivo, e);
+					caminhoOriginal, e);
 		}
 	}
 
