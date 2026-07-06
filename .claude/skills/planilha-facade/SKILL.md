@@ -120,9 +120,10 @@ Detalhes/contrato: `docs/specs/facade-planilha.spec.md`.
 6. No PowerShell, coloque argumentos Maven `-D...` entre aspas. Ex.:
    `mvn "-Dtest=ListaSuspensaFacadeTest" test`; sem aspas, argumentos com ponto
    (como `-Dmdep.outputFile=...`) podem ser quebrados pelo shell.
-7. Ao mexer em abas da facade (`novaAba`, `irParaAba`, `duplicarAba`), rode
-   `mvn "-Dtest=PlanilhaFacadeTest" test`; ele protege duplicação sem mutação
-   parcial quando o nome da cópia já existe ou é inválido.
+7. Ao mexer em abas da facade (`novaAba`, `irParaAba`, `duplicarAba`) ou em
+   append/escrita basica (`adicionarLinha`, `LinhasDaPlanilha`), rode
+   `mvn "-Dtest=PlanilhaFacadeTest" test`; ele protege duplicacao sem mutacao
+   parcial e append ignorando linhas fisicas vazias.
 8. Ao mexer em `Planilha.duplicarArquivo`, rode
    `mvn "-Dtest=DuplicarArquivoFacadeTest" test`; ele protege cópia
    independente e erros amigáveis para origem/destino ausentes ou inválidos.

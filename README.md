@@ -151,7 +151,7 @@ Para CPF, CNPJ, telefone e códigos, prefira **`escreverTexto(...)`**.
 | `escreverTexto("A1", "007")` | escreve **sempre** como texto |
 | `escreverLinha("A1", v1, v2, ...)` | escreve valores lado a lado (horizontal) |
 | `escreverColuna("A1", v1, v2, ...)` | escreve valores um embaixo do outro |
-| `adicionarLinha(v1, v2, ...)` | acrescenta uma linha após a última preenchida |
+| `adicionarLinha(v1, v2, ...)` | acrescenta uma linha após a última preenchida (ignora linhas só formatadas) |
 | `escreverTabela("A1", listaDeLinhas)` | escreve uma tabela inteira |
 | `escreverData("A1", LocalDate.of(2024,1,15))` | escreve uma data (dd/MM/aaaa) |
 | `escreverDataHora("A1", LocalDateTime.now())` | escreve data e hora |
@@ -431,6 +431,12 @@ linha, para a aparência não ficar presa na posição antiga.
   ```bash
   mvn clean test
   ```
+- **Rodar só os testes básicos da facade:**
+  ```bash
+  mvn "-Dtest=PlanilhaFacadeTest" test
+  ```
+  Cobre escrita, append, abas, estilos simples e copia/duplicacao sem mutacao
+  parcial; protege `adicionarLinha` contra linhas fisicas vazias.
 - **Rodar só os testes de carga:**
   ```bash
   mvn "-Dtest=CargaFacadeTest" test
@@ -505,7 +511,7 @@ linha, para a aparência não ficar presa na posição antiga.
 - **Changelog:** veja [`CHANGELOG.md`](CHANGELOG.md) para o histórico de
   versões.
 - **Cobertura de testes:** `mvn clean test` já gera um relatório JaCoCo em
-  `target/site/jacoco/index.html`. Suíte atual: 244 testes. Os pontos fracos
+  `target/site/jacoco/index.html`. Suíte atual: 245 testes. Os pontos fracos
   históricos (`Fontes`, `ManipuladorPlanilhaHelper`, `LogsDeModificadores`)
   já receberam cobertura estrutural; consulte o relatório para escolher novos
   alvos.

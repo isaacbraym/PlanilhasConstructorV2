@@ -283,6 +283,13 @@ puro). Lista de gaps identificados, **marque aqui o que já foi feito**:
   `DadosInvalidosException` e faz isso antes de `Workbook.addPicture(...)`.
   `ImagemFacadeTest` cobre erro sem desenho/picture parcial e round-trip OOXML
   da imagem inserida. Total: 244 testes verdes.
+- [x] **`adicionarLinha` ignora linhas fisicas vazias**:
+  Debug empirico mostrou que `alturaLinha(10, 30).adicionarLinha("Item")`
+  gravava em A11, porque a facade usava `Sheet.getLastRowNum()` e contava uma
+  linha criada apenas por altura como se fosse dado preenchido. Novo
+  `utils/LinhasDaPlanilha` localiza a proxima linha apos a ultima celula com
+  conteudo real, ignorando linhas vazias/formatadas. `PlanilhaFacadeTest` cobre
+  o fluxo publico. Total: 245 testes verdes.
 
 ### Sessão autônoma de 2026-07-04 (lotes E-I) — CONCLUÍDA
 
@@ -511,7 +518,7 @@ Duas camadas de API:
 | Build | Maven (`mvn clean test`) |
 | Dependência | Apache POI 5.2.5 |
 | Testes | JUnit 5.10.1 (+ Mockito disponível, pouco usado) |
-| Estado dos testes | **244 testes, todos verdes** (ver seção 0 para o número mais atual) |
+| Estado dos testes | **245 testes, todos verdes** (ver seção 0 para o número mais atual) |
 
 Não é Spring. **Não** introduzir Spring, Lombok, Jakarta Validation nem
 dependências novas sem confirmar com o usuário.
@@ -649,6 +656,10 @@ Há testes cobrindo cada item — rode `mvn clean test` após qualquer mudança.
     valide caminho e escala antes de chamar `Workbook.addPicture(...)` ou criar
     desenho. Caminho nulo/vazio/invalido deve virar `ArquivoException`;
     escala `NaN`, infinita, zero ou negativa deve virar `DadosInvalidosException`.
+22. **`adicionarLinha` deve procurar conteudo real, nao a ultima linha fisica** —
+    nunca use apenas `Sheet.getLastRowNum()`/`getPhysicalNumberOfRows()` para
+    append. Linhas criadas por altura, estilo ou celulas em branco nao devem
+    empurrar a proxima linha de dados para baixo.
 
 ## 5. Convenções de código (obrigatórias)
 

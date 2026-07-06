@@ -62,6 +62,22 @@ class PlanilhaFacadeTest {
 	}
 
 	@Test
+	@DisplayName("adicionarLinha deve ignorar linhas vazias criadas por altura")
+	void deveAdicionarLinhaAposUltimaLinhaComConteudoReal() throws Exception {
+		try (Planilha planilha = Planilha.nova("Vendas")) {
+			planilha.alturaLinha(10, 30).adicionarLinha("Caneta").alturaLinha(20, 30).adicionarLinha("Caderno");
+
+			Sheet sheet = planilha.workbook().getSheetAt(0);
+			assertEquals("Caneta", sheet.getRow(0).getCell(0).getStringCellValue());
+			assertEquals("Caderno", sheet.getRow(1).getCell(0).getStringCellValue());
+			assertNotNull(sheet.getRow(9));
+			assertNotNull(sheet.getRow(19));
+			assertNull(sheet.getRow(9).getCell(0));
+			assertNull(sheet.getRow(19).getCell(0));
+		}
+	}
+
+	@Test
 	@DisplayName("escreverTabela deve escrever uma matriz de dados")
 	void deveEscreverTabela() throws Exception {
 		try (Planilha planilha = Planilha.nova("Tabela")) {

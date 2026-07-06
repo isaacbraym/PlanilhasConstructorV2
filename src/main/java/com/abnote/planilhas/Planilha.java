@@ -43,6 +43,7 @@ import com.abnote.planilhas.utils.FormatacaoCondicionalHelper;
 import com.abnote.planilhas.utils.FormatosDeCelula;
 import com.abnote.planilhas.utils.LeitorDeCelulas;
 import com.abnote.planilhas.utils.LeitorDeTabela;
+import com.abnote.planilhas.utils.LinhasDaPlanilha;
 import com.abnote.planilhas.utils.ListaSuspensaHelper;
 import com.abnote.planilhas.utils.MargensDeImpressaoHelper;
 import com.abnote.planilhas.utils.OrdenadorDeLinhas;
@@ -280,7 +281,7 @@ public final class Planilha implements AutoCloseable {
 	 */
 	public Planilha adicionarLinha(final Object... valores) {
 		final Sheet sheet = sheetAtual();
-		final int proximaLinha = sheet.getPhysicalNumberOfRows() == 0 ? 0 : sheet.getLastRowNum() + 1;
+		final int proximaLinha = LinhasDaPlanilha.proximaLinhaAposUltimaPreenchida(sheet);
 		return escreverLinha("A" + (proximaLinha + 1), valores);
 	}
 

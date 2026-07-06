@@ -43,6 +43,8 @@ A classe `com.abnote.planilhas.Planilha` é a API amigável. Todo método (excet
 - **Quando** `escreverColuna("A1", 1, 2, 3)`, **Então** A1/A2/A3 recebem 1/2/3.
 - **Dado** uma linha já preenchida, **Quando** `adicionarLinha("x", "y")`,
   **Então** os valores vão para a **próxima** linha vazia, a partir da coluna A.
+- Linhas criadas apenas por altura/estilo, sem célula com conteúdo real, não
+  contam como preenchidas para `adicionarLinha`.
 - **Quando** `escreverTabela("A1", [[a,b],[1,2]])`, **Então** a matriz é escrita
   a partir de A1.
 - **Quando** `escreverData("A1", data)`, **Então** A1 é uma data formatada
